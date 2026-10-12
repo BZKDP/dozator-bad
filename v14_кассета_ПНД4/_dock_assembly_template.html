@@ -1,0 +1,233 @@
+<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>СБОРКА ДОКА V14 — по шагам (3D)</title>
+<style>
+ html,body{margin:0;height:100%;background:#0f1216;color:#e6e6e6;font-family:Segoe UI,Arial,sans-serif;overflow:hidden}
+ #ui{position:fixed;top:12px;left:12px;z-index:10;background:rgba(20,24,30,.94);padding:14px 16px;border-radius:14px;width:368px;max-height:92vh;overflow-y:auto}
+ #ui h1{font-size:16px;margin:0 0 4px;color:#7fd1ff}
+ #prog{font-size:12px;color:#8fa4b8;margin-bottom:8px}
+ #steps{display:flex;flex-wrap:wrap;gap:5px;margin:8px 0}
+ #steps button{padding:6px 9px;border:1px solid #3a4655;background:#1b2330;color:#cfe0ef;border-radius:8px;cursor:pointer;font-size:12px}
+ #steps button.on{background:#2f6ea5;border-color:#4aa3e0;color:#fff;font-weight:700}
+ #tools{font-size:12.5px;background:#26313d;border-radius:8px;padding:7px 10px;margin:8px 0;color:#cfe3f5}
+ #txt{font-size:13px;line-height:1.55;color:#e2ecf5}
+ #txt li{margin:7px 0}
+ .nav{display:flex;gap:8px;margin-top:10px}
+ .nav button{flex:1;padding:11px;border:1px solid #3a4655;background:#1b2330;color:#dfe7ef;border-radius:10px;cursor:pointer;font-size:14px;font-weight:700}
+ .nav button.go{background:#2f8f4e;border-color:#49c979;color:#fff}
+ #card{position:fixed;top:12px;right:12px;z-index:11;width:300px;background:rgba(24,30,40,.96);border:1px solid #3a5570;border-radius:12px;padding:13px 15px;display:none}
+ #card h2{font-size:13.5px;margin:0 22px 6px 0;color:#7fd1ff}
+ #card .d{font-size:12.3px;line-height:1.5;color:#dfe7ef}
+ #card .close{position:absolute;top:7px;right:10px;cursor:pointer;color:#8aa;font-size:16px}
+ #help{position:fixed;bottom:10px;left:12px;z-index:10;background:rgba(20,24,30,.75);padding:7px 11px;border-radius:9px;font-size:11.5px;color:#9fb2c6}
+ label{font-size:12px;color:#9fb2c6}
+</style></head><body>
+<div id="ui">
+ <h1 id="ttl">Сборка дока V14</h1>
+ <div id="prog"></div>
+ <div id="steps"></div>
+ <div id="tools"></div>
+ <ol id="txt"></ol>
+ <div class="nav"><button onclick="go(-1)">⟵ назад</button><button class="go" onclick="go(1)">ДАЛЬШЕ ⟶</button></div>
+ <label style="display:block;margin-top:8px"><input type="checkbox" id="all" onchange="showAll(this.checked)"> показать готовую сборку целиком</label>
+</div>
+<div id="card"><span class="close" onclick="card.style.display='none'">✕</span><h2 id="ct"></h2><div class="d" id="cd"></div></div>
+<div id="help">ПРОБЕЛ — следующий шаг · 🖱 вращать · колесо — зум · ПКМ — панорама · WASD — полёт · R/F — вверх/вниз</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+const DATA=__DATA__; const C=DATA.C;
+// ---------- шаги ----------
+const STEPS=[
+ {t:'Левая щёчка + блок каналы 1-2', slide:[0,0,150], tools:'левая щёчка · блок каналы 1-2', cam:[70,55,-70,520],
+  txt:['ВАЖНО: сначала положи на стол ЛЕВУЮ ЩЁЧКУ шипами вверх — блок садится НА неё (сверху в собранный ряд щёчка не вставляется).',
+       'Потом опусти на её шипы блок каналов 1-2. Ориентация блока: наклонная полка-горка смотрит ВВЕРХ и спускается К ТЕБЕ; высокие столбы с карманами — СЗАДИ (приёмная сторона, туда выезжают банки).',
+       'Короткие язычки полок (нависают вперёд над столом) — это сторона КАССЕТЫ.']},
+ {t:'Батарея: 3 куска в ряд', slide:[0,0,150], tools:'блок каналы 1-2 · блок 3-4 · канал 5', cam:[70,80,-202,850],
+  txt:['Каналы печатаются СЛИТНЫМИ 2-канальными блоками: блок [1-2] и блок [3-4] — цельные, стыка внутри пары НЕТ. Плюс одиночный канал 5. Итого 3 куска, 2 стыка.',
+       'На боковой грани: с одной стороны два хвоста-трапеции (ШИПЫ), с другой два выреза (ПАЗЫ). Опускай следующий кусок СВЕРХУ так, чтобы пазы сели на шипы соседа.',
+       'Зазор ласточкина теперь 0,6 мм — должно идти ОТ РУКИ, без напильника. Порядок: блок[1-2] → блок[3-4] → канал 5.',
+       'Проверь: передние язычки полок в одну линию, столбы в одну линию. Клей НЕ нужен (по желанию — капля в ласточкины).']},
+ {t:'Концевые щёчки L и R', slide:[0,0,130], tools:'2 щёчки (зелёные)', cam:[40,70,-202,850],
+  txt:['Щёчки закрывают крайние щели снаружи — у крайних стенок кассеты нет соседнего моноблока, их держат щёчки.',
+       'ЛЕВАЯ щёчка ставится ПЕРВОЙ, ещё до батареи: положи её на стол шипами вверх, и опусти на них блок каналов 1-2. СВЕРХУ в уже стоящий блок она не вставляется — только блок на неё.',
+       'ПРАВАЯ щёчка — наоборот, в конце: у правого блока шипы, опусти щёчку пазом и нишей НА эти шипы сверху.',
+       'Высокая пластина щёчки смотрит вперёд, к кассете.']},
+ {t:'Вкладыши-сёдла на рёбра', slide:[0,0,110], tools:'10 пар вкладышей «номинал+узкий» (с листов 1-3)', cam:[0,55,-160,560],
+  txt:['У каждой щели между моноблоками — низкое ребро (или два). Вкладыш-седло надевается СВЕРХУ на ребро и защёлкивает размер щели.',
+       'Под ТВОЙ гофролист Т23С (~4 мм): на каждую стенку ПАРА «номинал (2 зуба) + узкий (3 зуба)» = щель 4,6. Под картон 5 мм — два номинала (5,6). Сначала замерь лист штангелем!',
+       'Надевай ЗАГЛУШКОЙ ВПЕРЁД (к кассете) и двигай вниз-вперёд до упора заглушки в торец ребра. Скошенная грань (раструб) должна смотреть ВВЕРХ — она ловит кассету.',
+       'ЭТО И ЕСТЬ РЕГУЛИРОВКА: комбинацией двух калибров щель 3,6 / 4,6 / 5,6. Стенка не по центру — поменяй пару местами (сдвиг ±0,5). Все замены руками, без перепечатки конструкции.']},
+ {t:'Серва в держатель + качалка', slide:[0,0,150], cam:[60,110,-202,800], tools:'5 держателей (лист 5) · 5×MG996R · 20 винтов M3 с гайками · штатные качалки',
+  txt:['Перекладин больше НЕТ — балка уже часть моноблока, без единой дырки.',
+       'Собери головы (удобнее в руках): вставь MG996R в окно держателя КОРПУСОМ НАРУЖУ (вал к механизму), прикрути 4×M3 с гайками через овальные уши.',
+       'Качалку — на шлиц, закрепи центральным винтом. ВИНТ ТЯГИ — строго в отверстие 10 мм от оси (плечо зафиксировано: анимация и расчёт сходятся именно на 10).',
+       'Готовую голову опусти СВЕРХУ: сквозной ХВОСТ ложится в паз балки и выходит сзади на 17 мм (видно с другой стороны), зуб на конце опускается ЗА балкой. Провод сервы — вверх и назад.']},
+ {t:'Коромысло, втулка, тяга', slide:[0,150,0], cam:[40,105,-202,700], tools:'5 коромысел с ВАЛИКАМИ (лист 4) · втулки · M3×30 + 2 шайбы + 2 гайки · тяга + M2×12/M2×8 + проставка',
+  txt:['Коромысло НОВОЕ — с широкими носиками-валиками: они накрывают центр банки, контакт линией, не проскальзывает. Кинематика прежняя.',
+       'Втулку в отверстие коромысла (должно вращаться свободно — если туго, есть калибры из ночного листа). Пакет: M3×30 → шайба → коромысло на втулке → ухо держателя → шайба → гайка + контргайка. Затяжка лёгкая!',
+       'Тяга: M2×12 → качалка → зелёная проставка → тяга → гайка; у коромысла M2×8. Шарниры должны вращаться.',
+       'Проверь рукой за качалку БЕЗ питания: плавно на всём ходу, валики не задевают ничего (проверено и в CAD).']},
+ {t:'Замки-салазки', slide:[80,0,0], cam:[130,100,-160,560], tools:'5 замков-салазок (лист 4, + 2 запасных)',
+  txt:['Новый замок ЗАДВИГАЕТСЯ СЗАДИ — со стороны приёмной зоны, горизонтально, по Т-пазу балки НАД хвостом держателя.',
+       'Ушки замка заходят в боковые пазы, двигай вперёд до упора ручки в торец балки. В конце ушки переезжают бугорки — почувствуешь щелчок.',
+       'Замок теперь НЕСУЩИЙ: он прижимает хвост сверху — вторая опора головы (перед лежит на дне паза). Зуб хвоста за балкой не даёт голове выехать вперёд.',
+       'Снять — потяни за рифлёную ручку. Никакого клея и винтов.']},
+ {t:'Кассета одним движением', slide:[-70,0,190], cam:[-90,170,-202,1500], tools:'кассета V14 (собранная, с листами ПНД)',
+  txt:['Опусти кассету ПЕРЕД доком: передние кромки стенок попадают в раструбы вкладышей и соскальзывают в щели до самого стола.',
+       'Придвинь кассету к доку до ЛЁГКОГО упора: торец нижнего листа ПНД коснётся язычков полок. Это и есть точная позиция — банка поедет с листа на полку без ступеньки.',
+       'Дальше кассету ничего держать не должно: банки едут вперёд и сами прижимают её к доку.',
+       'Вынуть — просто подними вверх. Заменить на вторую кассету — 5 секунд.']},
+ {t:'Финал, покупки и первый тест', slide:[0,0,0], cam:[30,170,-202,1250], tools:'см. список покупок в README_ПЕЧАТЬ_ДОКА',
+  txt:['ПОКУПКИ на новый ящик: 5×MG996R, ESP32 (WROOM32), понижайка 5-6В с запасом ≥4-5А (пики серв 2-3А!), винты M3×16-25 ×20 + гайки, M3×30 ×5 + гайки ×10 + шайбы ×10, M2×12 ×5 и M2×8 ×5 + гайки M2, провода.',
+       'Под крайние моноблоки — по полоске двустороннего скотча (чтобы док не ездил по столу).',
+       'Подключение: дорожки 1-5 = D13/D14/D27/D26/D25, ОБЩАЯ ЗЕМЛЯ понижайки с ESP32 (помним урок!).',
+       'СПЕРЕДИ У СРЕЗА подставь низкий лоток или коробку: банка выкатывается ИЗ дозатора сама — внутри ничего её не держит.',
+       'Первый запуск БЕЗ банок: каждой голове цикл — ничего не задевает. Потом 1 банка, потом 3-5.',
+       'Калибровка HOME/EJECT для новых серв — софтом ПРИВЕСТИ_СЕРВО_В_HOME и панелью, как отработано.']},
+];
+function stepOf(g){
+ if(g==='MONO0')return 0;
+ if(g.startsWith('MONO'))return 1;
+ if(g.startsWith('CHEEK'))return 2;
+ if(g.startsWith('INS_'))return 3;
+ if(['B401','H_servo','H_servo_screw0','H_servo_screw1','H_servo_nut0','H_servo_nut1',
+     'H_horn','H_servo_center_screw'].includes(g))return 4;
+ if(g==='ZAMOK_SLIDE')return 6;
+ if(g.startsWith('CAS_'))return 7;
+ return 5;                                   // коромысло, втулка, ось, тяга, проставка
+}
+// ---------- кинематика (поза q=-28, статично) ----------
+function Rym(deg,cx,cz){const a=deg*Math.PI/180;
+ return new THREE.Matrix4().makeTranslation(cx,0,cz)
+  .multiply(new THREE.Matrix4().makeRotationY(a))
+  .multiply(new THREE.Matrix4().makeTranslation(-cx,0,-cz));}
+function drive(q){const a=q*Math.PI/180;
+ const Qx=-17.5*Math.sin(a), Qz=58+17.5*Math.cos(a);
+ const dx=Qx+55, dz=Qz-82, dd=Math.hypot(dx,dz);
+ const co=(100+dd*dd-55.5*55.5)/(2*10*dd);
+ const b=Math.atan2(dz,dx)+Math.acos(Math.max(-1,Math.min(1,co)));
+ return {Qx,Qz,Hx:-55+10*Math.cos(b),Hz:82+10*Math.sin(b),B:b*180/Math.PI};}
+function pose(mo){const d=drive(-28);
+ if(mo==='rocker')return Rym(28,0,58);
+ if(mo==='horn')return Rym(-d.B,-55,82);
+ if(mo==='link'){const ang=Math.atan2(d.Qz-d.Hz,d.Qx-d.Hx)*180/Math.PI;
+  return new THREE.Matrix4().makeTranslation(d.Hx,0,d.Hz).multiply(Rym(-ang,0,0));}
+ if(mo==='pin_horn')return new THREE.Matrix4().makeTranslation(d.Hx,0,d.Hz);
+ if(mo==='pin_crank')return new THREE.Matrix4().makeTranslation(d.Qx,0,d.Qz);
+ return new THREE.Matrix4();}
+// ---------- сцена ----------
+let scene,camera,renderer,root; const objs=[], clickable=[];
+let cur=0, animT=1;
+function init(){
+ scene=new THREE.Scene(); scene.background=new THREE.Color(0x0f1216);
+ scene.fog=new THREE.Fog(0x0f1216,2000,4200);
+ camera=new THREE.PerspectiveCamera(45,innerWidth/innerHeight,1,7000);
+ renderer=new THREE.WebGLRenderer({antialias:true});
+ renderer.setPixelRatio(devicePixelRatio); renderer.setSize(innerWidth,innerHeight);
+ document.body.appendChild(renderer.domElement);
+ scene.add(new THREE.AmbientLight(0xffffff,.5));
+ const d1=new THREE.DirectionalLight(0xffffff,.85); d1.position.set(500,800,400); scene.add(d1);
+ const d2=new THREE.DirectionalLight(0x9db8ff,.32); d2.position.set(-500,400,-300); scene.add(d2);
+ root=new THREE.Group(); root.rotation.x=-Math.PI/2; scene.add(root);
+ const table=new THREE.Mesh(new THREE.BoxGeometry(1160,700,8),
+  new THREE.MeshStandardMaterial({color:0x1d242e,roughness:.9}));
+ table.position.set(-190,202.5,-4); root.add(table);
+ const geos={};
+ for(const k in DATA.meshes){
+  const g=DATA.meshes[k], geo=new THREE.BufferGeometry();
+  geo.setAttribute('position',new THREE.Float32BufferAttribute(g.v,3));
+  geo.setIndex(g.f); geo.computeVertexNormals(); geos[k]=geo;
+ }
+ for(const it of DATA.inst){
+  const g=DATA.meshes[it.g];
+  const mat=new THREE.MeshStandardMaterial({color:g.c,roughness:.72,metalness:.05,flatShading:true,
+   transparent:it.g.startsWith('CAS_'),opacity:it.g.startsWith('CAS_')?0.8:1});
+  const m=new THREE.Mesh(geos[it.g],mat);
+  m.matrixAutoUpdate=false;
+  m.userData={t:g.t,n:g.n};
+  const M=new THREE.Matrix4().fromArray(it.mb);
+  if(['rocker','horn','link','pin_horn','pin_crank'].includes(g.mo)) M.multiply(pose(g.mo));
+  const st=stepOf(it.g);
+  objs.push({m,M,st,ord:objs.length});
+  root.add(m); clickable.push(m);
+ }
+ buildUI(); setStep(0,true);
+ setupCtl();
+ addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
+}
+function buildUI(){
+ const box=document.getElementById('steps');
+ STEPS.forEach((s,i)=>{const b=document.createElement('button');
+  b.textContent=(i+1); b.title=s.t; b.onclick=()=>setStep(i);
+  box.appendChild(b);});
+}
+function setStep(n,inst){
+ cur=Math.max(0,Math.min(STEPS.length-1,n));
+ animT=inst?1:0;
+ const s=STEPS[cur];
+ document.getElementById('ttl').textContent=`Шаг ${cur+1}. ${s.t}`;
+ document.getElementById('prog').textContent=`шаг ${cur+1} из ${STEPS.length} — рама целиком на пазах, винты только внутри головы`;
+ document.getElementById('tools').textContent='🧰 '+s.tools;
+ document.getElementById('txt').innerHTML=s.txt.map(t=>`<li>${t}</li>`).join('');
+ [...document.getElementById('steps').children].forEach((b,i)=>b.classList.toggle('on',i===cur));
+ document.getElementById('all').checked=false;
+ const c=s.cam||[30,170,-202,1150];
+ tgt.set(c[0],c[1],c[2]); radius=c[3];       // камера подъезжает к месту шага
+}
+function go(d){ setStep(cur+d); }
+function showAll(on){ if(on){cur=STEPS.length-1; animT=1; setStep(cur,true); document.getElementById('all').checked=true;} }
+addEventListener('keydown',e=>{ if(e.code==='Space'){e.preventDefault(); go(1);} });
+// ---------- управление ----------
+const ray=new THREE.Raycaster(), ndc=new THREE.Vector2();
+function pick(x,y){ ndc.x=x/innerWidth*2-1; ndc.y=-(y/innerHeight)*2+1;
+ ray.setFromCamera(ndc,camera);
+ const h=ray.intersectObjects(clickable,false).filter(i=>i.object.visible);
+ if(h.length){ const u=h[0].object.userData; if(!u.t)return;
+  document.getElementById('ct').textContent=u.t;
+  document.getElementById('cd').textContent=u.n;
+  card.style.display='block'; } }
+let tgt=new THREE.Vector3(30,170,-202), radius=1150, theta=0.62, phi=1.13; const keys={};
+function setupCtl(){
+ const el=renderer.domElement; let drag=false,pan=false,px=0,py=0,mv=0;
+ el.addEventListener('contextmenu',e=>e.preventDefault());
+ el.addEventListener('pointerdown',e=>{drag=true;pan=(e.button===2||e.shiftKey);px=e.clientX;py=e.clientY;mv=0;});
+ addEventListener('pointerup',e=>{if(drag&&mv<6)pick(e.clientX,e.clientY);drag=false;});
+ addEventListener('pointermove',e=>{ if(!drag)return;
+  const dx=e.clientX-px,dy=e.clientY-py; mv+=Math.abs(dx)+Math.abs(dy);
+  if(pan){ const f=new THREE.Vector3().subVectors(tgt,camera.position).normalize();
+   const r=new THREE.Vector3().crossVectors(f,camera.up).normalize();
+   const up=new THREE.Vector3().crossVectors(r,f);
+   tgt.addScaledVector(r,-dx*radius*0.0011); tgt.addScaledVector(up,dy*radius*0.0011);
+  } else { theta-=dx*.005; phi-=dy*.005; phi=Math.max(.1,Math.min(Math.PI-.1,phi)); }
+  px=e.clientX;py=e.clientY;});
+ el.addEventListener('wheel',e=>{e.preventDefault();radius*=(1+Math.sign(e.deltaY)*.08);radius=Math.max(120,Math.min(4500,radius));},{passive:false});
+ addEventListener('keydown',e=>{keys[e.code]=true;if(e.code.startsWith('Arrow'))e.preventDefault();});
+ addEventListener('keyup',e=>{keys[e.code]=false;});
+}
+function fly(){ const st=13;
+ const f=new THREE.Vector3().subVectors(tgt,camera.position); f.y=0; f.normalize();
+ const r=new THREE.Vector3().crossVectors(f,new THREE.Vector3(0,1,0)).normalize();
+ if(keys.KeyW||keys.ArrowUp)tgt.addScaledVector(f,st);
+ if(keys.KeyS||keys.ArrowDown)tgt.addScaledVector(f,-st);
+ if(keys.KeyD||keys.ArrowRight)tgt.addScaledVector(r,st);
+ if(keys.KeyA||keys.ArrowLeft)tgt.addScaledVector(r,-st);
+ if(keys.KeyR||keys.PageUp)tgt.y+=st; if(keys.KeyF||keys.PageDown)tgt.y-=st;}
+const tmp=new THREE.Matrix4();
+function anim(){ requestAnimationFrame(anim); fly();
+ if(animT<1) animT=Math.min(1,animT+0.022);
+ const e=1-Math.pow(1-animT,3), sl=STEPS[cur].slide;
+ for(const o of objs){
+  if(o.st>cur){ o.m.visible=false; continue; }
+  o.m.visible=true;
+  if(o.st===cur && animT<1){
+   tmp.makeTranslation(sl[0]*(1-e),sl[1]*(1-e),sl[2]*(1-e));
+   o.m.matrix.copy(tmp).multiply(o.M);
+  } else o.m.matrix.copy(o.M);
+ }
+ camera.position.set(tgt.x+radius*Math.sin(phi)*Math.cos(theta),
+  tgt.y+radius*Math.cos(phi), tgt.z+radius*Math.sin(phi)*Math.sin(theta));
+ camera.lookAt(tgt); renderer.render(scene,camera);
+}
+init(); requestAnimationFrame(anim);
+const hs=location.hash.match(/^#s(\d+)$/); if(hs) setStep(+hs[1]-1,true);
+</script></body></html>

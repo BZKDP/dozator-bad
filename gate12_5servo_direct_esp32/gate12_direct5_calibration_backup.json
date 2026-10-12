@@ -1,0 +1,75 @@
+{
+  "port": "COM6",
+  "selected_servo": 4,
+  "cooldown_s": 3.0,
+  "eject_hold_ms": 900,
+  "power_max_ms": 3000,
+  "hold_torque": false,
+  "servos": [
+    {
+      "name": "Дорожка 1",
+      "enabled": true,
+      "closed_us": 817,
+      "eject_us": 1661,
+      "speed_us_s": 500,
+      "guard_min_us": 757,
+      "guard_max_us": 1721,
+      "up_sign": 1,
+      "home_fixed": true,
+      "eject_fixed": true,
+      "dispense_count": 16
+    },
+    {
+      "name": "Дорожка 2",
+      "enabled": true,
+      "closed_us": 817,
+      "eject_us": 1661,
+      "speed_us_s": 500,
+      "guard_min_us": 757,
+      "guard_max_us": 1721,
+      "up_sign": 1,
+      "home_fixed": true,
+      "eject_fixed": true,
+      "dispense_count": 15
+    },
+    {
+      "name": "Дорожка 3",
+      "enabled": true,
+      "closed_us": 817,
+      "eject_us": 1767,
+      "speed_us_s": 500,
+      "guard_min_us": 757,
+      "guard_max_us": 1827,
+      "up_sign": 1,
+      "home_fixed": true,
+      "eject_fixed": true,
+      "dispense_count": 14
+    },
+    {
+      "name": "Дорожка 4",
+      "enabled": true,
+      "closed_us": 817,
+      "eject_us": 1661,
+      "speed_us_s": 500,
+      "guard_min_us": 757,
+      "guard_max_us": 1721,
+      "up_sign": 1,
+      "home_fixed": true,
+      "eject_fixed": true,
+      "dispense_count": 13
+    },
+    {
+      "name": "Дорожка 5",
+      "enabled": true,
+      "closed_us": 817,
+      "eject_us": 1767,
+      "speed_us_s": 500,
+      "guard_min_us": 757,
+      "guard_max_us": 1827,
+      "up_sign": 1,
+      "home_fixed": true,
+      "eject_fixed": true,
+      "dispense_count": 16
+    }
+  ]
+}

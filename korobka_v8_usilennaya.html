@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Дозатор БАД v8 · усиленная коробка 600×400×400 · старый раскрой сохранён</title>
+<style>
+  html,body{margin:0;height:100%;background:#0f1216;color:#e6e6e6;font-family:Segoe UI,Arial,sans-serif;overflow:hidden}
+  #top{position:fixed;top:12px;left:12px;z-index:10;background:rgba(20,24,30,.88);padding:12px 15px;border-radius:12px;max-width:300px}
+  #top h1{font-size:15px;margin:0 0 6px}
+  #top p{font-size:12.5px;line-height:1.5;margin:4px 0;color:#c7d2dd}
+  #top .hint{color:#8fd08f;font-weight:bold}
+  #top button{width:100%;margin-top:8px;padding:10px;border:1px solid #4aa3e0;background:#2f6ea5;color:#fff;border-radius:8px;cursor:pointer;font-size:13px;font-weight:bold}
+  #card{position:fixed;top:0;right:0;bottom:0;z-index:11;width:360px;background:rgba(22,28,37,.97);border-left:1px solid #3a5570;padding:18px;overflow-y:auto;display:none;box-shadow:-8px 0 30px rgba(0,0,0,.5)}
+  #card h2{font-size:17px;margin:0 32px 6px 0;color:#7fd1ff}
+  #card .badges{margin:6px 0 10px}
+  #card .badge{display:inline-block;background:#28405c;border-radius:6px;padding:3px 9px;font-size:12px;margin-right:6px;color:#bfe0ff}
+  #card .badge.red{background:#5c2830;color:#ffbfc6}
+  #card svg{background:#12161c;border:1px solid #2c3947;border-radius:8px;display:block;margin:8px 0}
+  #card h3{font-size:13px;color:#9fd0a0;margin:14px 0 4px;text-transform:uppercase;letter-spacing:.5px}
+  #card .t{font-size:13.5px;line-height:1.65;color:#dfe7ef}
+  #card ol{margin:4px 0;padding-left:20px;font-size:13.5px;line-height:1.7}
+  #card .close{position:fixed;top:12px;right:12px;cursor:pointer;color:#8aa;font-size:22px;background:#22303e;border-radius:8px;padding:2px 10px}
+  #help{position:fixed;bottom:12px;left:12px;z-index:10;background:rgba(20,24,30,.75);padding:8px 12px;border-radius:10px;font-size:12px;color:#9fb2c6}
+</style>
+</head>
+<body>
+<div id="top">
+  <h1>Дозатор v8 · усиление без переделки раскроя</h1>
+  <p><b>5 каналов</b> · старые детали сохранены · добавлены общие борта, стяжка фасада и опора под лотками</p>
+  <p class="hint">👆 Кликни на любую деталь — справа её чертёж с размерами</p>
+  <button onclick="showAssembly()">📋 ПОРЯДОК СБОРКИ — 10 шагов</button>
+</div>
+<div id="card"><span class="close" onclick="document.getElementById('card').style.display='none'">✕</span><div id="cbody"></div></div>
+<div id="help">🖱 ЛКМ — вращать · колесо — зум · <b>стрелки/WASD</b> — лететь · <b>R/F</b> — вверх/вниз</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// ================= геометрия =================
+const POD=100, Y0=POD+2.5;
+const IN={w:595,h:395,d:395}, T=2.5;          // внутри коробки 600×400×400
+const JD=47,JR=23.5,JL=70,LANEW=75,PITCH=79;   // канал 75 + перегородка 4
+const NCH=5;
+const TB=13*Math.PI/180, TAN_B=Math.tan(TB);
+const TT=18*Math.PI/180, TAN_T=Math.tan(TT);
+const UP_LEN=540;                              // склад по горизонтали (обрыв ~55-60 сзади)
+const CARD=0xc8a16a, EXITC=0x54c079, PRINT=0xd98a3f, WOOD=0x9b7042, METAL=0xb8c4cf;
+const SKU=[0x4e93c8,0xd08a4e,0x9a5fd0,0x4ec9a0,0xc95f7b];
+let scene,camera,renderer,world;
+const clickable=[];
+function lowY(lx){ return Y0 + lx*TAN_B; }                    // нижний лист: 0 → 138
+function upY(lx){ return Y0+184 + (UP_LEN-lx)*TAN_T; }        // склад: 360 (перед) → 184 (обрыв)
+
+// ================= SVG-чертежи =================
+function dim(x1,y1,x2,y2,txt,off){
+  const mx=(x1+x2)/2, my=(y1+y2)/2;
+  return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#9fd0a0" stroke-width="1" marker-start="url(#a)" marker-end="url(#a)"/>
+  <text x="${mx}" y="${my+(off||-5)}" fill="#9fd0a0" font-size="12" text-anchor="middle" font-weight="bold">${txt}</text>`;
+}
+const DEFS=`<defs><marker id="a" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,5 L10,0 L10,10 z" fill="#9fd0a0"/></marker></defs>`;
+
+const SVG={
+divider:`<svg width="320" height="270" viewBox="0 0 320 270">${DEFS}
+<rect x="40" y="30" width="250" height="166" fill="#3a3125" stroke="#c8a16a" stroke-width="2"/>
+<line x1="40" y1="196" x2="290" y2="138" stroke="#e0c14a" stroke-width="2.5"/>
+<line x1="40" y1="45" x2="267" y2="119" stroke="#54c079" stroke-width="2.5"/>
+<line x1="267" y1="119" x2="267" y2="196" stroke="#666" stroke-width="1" stroke-dasharray="4 3"/>
+${dim(40,20,290,20,'595')}
+${dim(30,30,30,196,'395',0)}
+<text x="60" y="215" fill="#e0c14a" font-size="11">линия А (нижний лист): 0 → 138</text>
+<text x="60" y="62" fill="#54c079" font-size="11">линия Б (склад): 360 → 184</text>
+${dim(300,138,300,196,'138',0)}
+${dim(267,205,290,205,'60',10)}
+<text x="34" y="115" fill="#54c079" font-size="11" transform="rotate(-90 34 115)">360</text>
+${dim(275,119,275,196,'184',0)}
+${dim(40,232,267,232,'540 (точка конца линии Б)',10)}
+<text x="42" y="252" fill="#8fb0cc" font-size="10">◀ ПЕРЕД (окна выдачи)</text>
+<text x="240" y="252" fill="#8fb0cc" font-size="10">ЗАД ▶</text>
+</svg>`,
+bottom:`<svg width="320" height="150" viewBox="0 0 320 150">${DEFS}
+<rect x="20" y="55" width="279" height="25" fill="#3a3125" stroke="#c8a16a" stroke-width="2"/>
+<line x1="93" y1="55" x2="93" y2="80" stroke="#54c079" stroke-width="2" stroke-dasharray="5 3"/>
+${dim(20,42,299,42,'845 (режь по этой длине)')}
+${dim(309,55,309,80,'75',0)}
+${dim(20,94,93,94,'220 наружу')}
+${dim(93,94,299,94,'625 внутрь коробки')}
+<text x="40" y="118" fill="#54c079" font-size="11">← нос (борта сюда)</text>
+<text x="120" y="136" fill="#8fb0cc" font-size="11">пунктир = здесь лист проходит сквозь окно</text>
+</svg>`,
+upper:`<svg width="320" height="130" viewBox="0 0 320 130">${DEFS}
+<rect x="30" y="45" width="256" height="34" fill="#3a3125" stroke="#c8a16a" stroke-width="2"/>
+${dim(30,32,286,32,'568')}
+${dim(296,45,296,79,'75',0)}
+<text x="35" y="102" fill="#8fb0cc" font-size="11">просто прямоугольник — наклон 18° задаст линия Б</text>
+</svg>`,
+wall:`<svg width="320" height="130" viewBox="0 0 320 130">${DEFS}
+<rect x="45" y="40" width="198" height="42" fill="#3a3125" stroke="#c8a16a" stroke-width="2"/>
+${dim(45,28,243,28,'220')}
+${dim(253,40,253,82,'47',0)}
+<text x="45" y="105" fill="#ff9a9a" font-size="12" font-weight="bold">⚠ картон СТРОГО 3 мм — под пазы затвора!</text>
+</svg>`,
+riser:`<svg width="320" height="200" viewBox="0 0 320 200">${DEFS}
+<rect x="85" y="30" width="150" height="134" fill="#3a3125" stroke="#c8a16a" stroke-width="2"/>
+<line x1="160" y1="30" x2="160" y2="164" stroke="#54c079" stroke-width="2" stroke-dasharray="6 4"/>
+${dim(85,18,235,18,'150')}
+${dim(73,30,73,164,'134',0)}
+<text x="70" y="186" fill="#54c079" font-size="11">согни пополам по пунктиру → уголок 75+75</text>
+</svg>`,
+front:`<svg width="320" height="250" viewBox="0 0 320 250">${DEFS}
+<rect x="75" y="20" width="166" height="166" fill="#2a2f38" stroke="#c8a16a" stroke-width="2"/>
+<rect x="77" y="162" width="30" height="23" fill="#12161c" stroke="#54c079" stroke-width="2"/>
+<rect x="110" y="162" width="30" height="23" fill="#12161c" stroke="#54c079" stroke-width="2"/>
+<rect x="143" y="162" width="30" height="23" fill="#12161c" stroke="#54c079" stroke-width="2"/>
+<rect x="176" y="162" width="30" height="23" fill="#12161c" stroke="#54c079" stroke-width="2"/>
+<rect x="209" y="162" width="30" height="23" fill="#12161c" stroke="#54c079" stroke-width="2"/>
+${dim(77,198,107,198,'76',10)}
+${dim(250,162,250,185,'56',0)}
+<text x="62" y="222" fill="#8fb0cc" font-size="11">низ окон = дно · 5 окон напротив каналов · шаг 79</text>
+<text x="62" y="240" fill="#ff9a9a" font-size="11" font-weight="bold">режь ПОСЛЕ вклейки перегородок, по месту!</text>
+</svg>`,
+floorplan:`<svg width="320" height="230" viewBox="0 0 320 230">${DEFS}
+<rect x="35" y="25" width="250" height="166" fill="#2a2f38" stroke="#c8a16a" stroke-width="2"/>
+<line x1="35" y1="56.5" x2="285" y2="56.5" stroke="#e0c14a" stroke-width="2.5"/>
+<line x1="35" y1="89.7" x2="285" y2="89.7" stroke="#e0c14a" stroke-width="2.5"/>
+<line x1="35" y1="122.9" x2="285" y2="122.9" stroke="#e0c14a" stroke-width="2.5"/>
+<line x1="35" y1="156.1" x2="285" y2="156.1" stroke="#e0c14a" stroke-width="2.5"/>
+${dim(25,25,25,56.5,'75',0)}
+${dim(25,56.5,25,89.7,'+4',0)}
+<text x="42" y="45" fill="#8fb0cc" font-size="10">канал 1</text>
+<text x="42" y="78" fill="#8fb0cc" font-size="10">канал 2</text>
+<text x="42" y="111" fill="#8fb0cc" font-size="10">канал 3</text>
+<text x="42" y="145" fill="#8fb0cc" font-size="10">канал 4</text>
+<text x="42" y="178" fill="#8fb0cc" font-size="10">канал 5</text>
+<text x="40" y="212" fill="#8fb0cc" font-size="11">разметка: 75—4—75—4—75—4—75—4—75 (жёлтое = перегородки)</text>
+</svg>`,
+gate:`<svg width="320" height="110" viewBox="0 0 320 110">${DEFS}
+<rect x="60" y="30" width="120" height="55" fill="#4a3520" stroke="#d98a3f" stroke-width="2"/>
+<text x="70" y="62" fill="#d98a3f" font-size="13" font-weight="bold">gate12 (печать)</text>
+<text x="45" y="105" fill="#8fb0cc" font-size="11">НЕ режется — готовая печатная деталь с серво</text>
+</svg>`
+};
+
+// ================= карточки =================
+const CARDS={
+divider:{t:'Перегородки',q:'4 шт',m:'картон 4 мм',svg:SVG.divider,
+ cut:['Вырежи прямоугольник <b>595×395</b> (проверь по своей коробке изнутри: длина × высота, минус 2-3 мм чтобы вошло).',
+  'Начерти <b style="color:#e0c14a">линию А</b>: от нижнего ПЕРЕДНЕГО угла (0) до точки <b>138 мм</b> вверх на заднем крае. По ней ляжет нижний лист.',
+  'Начерти <b style="color:#54c079">линию Б</b>: от точки <b>360</b> на переднем крае до точки <b>184</b> на расстоянии <b>540 от переднего края</b>. Дальше линии НЕТ — там обрыв ~60 мм.'],
+ glue:['Приклей стоймя на дно коробки по разметке (см. деталь «Дно — разметка»). Всего 4 перегородки = 5 каналов.',
+  'Те же линии А и Б начерти на ВНУТРЕННИХ боковых стенках коробки — для крайних каналов 1 и 5.']},
+bottom:{t:'Нижний лист (выдача + дно лотка)',q:'5 шт',m:'картон 4 мм',svg:SVG.bottom,
+ cut:['Вырежи полосу <b>845×75</b>.','Больше ничего размечать не надо — это просто длинная полоса.'],
+ glue:['Заведи сверху в канал наклонно, просунь нос в окно так, чтобы <b>снаружи торчало 220 мм</b>.',
+  'Внутри лист ложится: перед — на дно у окна, зад — на уголок-опору (134). Кромки промажь клеем по <b style="color:#e0c14a">линии А</b> на перегородках.',
+  'Если лист упирается сзади — подрежь задний конец. Нос 220 — святое.']},
+upper:{t:'Верхний лист (склад)',q:'5 шт',m:'картон 4 мм',svg:SVG.upper,
+ cut:['Вырежи полосу <b>568×75</b>.'],
+ glue:['Вклей по <b style="color:#54c079">линии Б</b>: передний край на высоте 360 упирается в переднюю стенку, задний край повисает на высоте 184, НЕ доходя ~60 мм до задней стенки — это обрыв, банки тут падают вниз.',
+  'Клей на кромки по линии Б. Банки сыпать будешь прямо на него сверху — коробка без крышки.']},
+sharedWall:{t:'Общие борта пяти лотков',q:'6 из уже нарезанных 10',m:'картон СТРОГО 3 мм',svg:SVG.wall,
+ cut:['Ничего заново не режь. Возьми <b>6 деталей 220×47</b> из уже нарезанных десяти. Четыре лишние останутся запасными.'],
+ glue:['Поставь два крайних борта и <b>четыре общих борта</b> между соседними дорожками. Две стенки рядом ставить нельзя — они геометрически не помещаются.',
+  'Совмести четыре общих борта с торцами внутренних перегородок. Получится пять просветов примерно по <b>75–76 мм</b>. Перед клеем прокати банку по каждому каналу.']},
+riser:{t:'Задняя опора (уголок)',q:'5 шт',m:'картон 4 мм',svg:SVG.riser,
+ cut:['Вырежи <b>150×134</b>, согни пополам вдоль длинной стороны → уголок 75+75, высота 134.'],
+ glue:['Приклей в задний нижний угол канала. На его верхний торец ляжет задний конец нижнего листа (верх листа получится на 138 — как по линии А).']},
+front:{t:'Окна выхода (в торце коробки)',q:'5 окон',m:'режутся в коробке',svg:SVG.front,
+ cut:['<b>СНАЧАЛА вклей перегородки</b>, потом режь окна!','Изнутри обведи каждый канал на переднем торце у дна: ширина канала (~75-76), высота <b>56</b> от дна. Вырежи канцелярским ножом.'],
+ glue:['Клеить нечего — это дырки. Сквозь них пройдут нижние листы. Перемычки между окнами приклей к торцам перегородок — будет жёстко.']},
+floorplan:{t:'Дно — разметка каналов',q:'1 раз',m:'карандаш + линейка',svg:SVG.floorplan,
+ cut:['Внутри коробки на дне отмерь от левой стенки: <b>75 — 4 — 75 — 4 — 75 — 4 — 75 — 4 — 75</b>, проведи линии вдоль всей длины (остаток ~4 мм у правой стенки — норм).'],
+ glue:['По этим линиям встанут 4 перегородки.']},
+gate:{t:'Затвор gate12',q:'5 шт',m:'печатная деталь (готовая)',svg:SVG.gate,
+ cut:['Не режется. Взять готовый напечатанный узел с серво SG90.'],
+ glue:['Надень рамой на общие борта лотков: четыре плоско напечатанные ножки только <b>позиционируют</b> узел в картоне.',
+  'Зафиксируй раму каплей суперклея, но основную нагрузку передай на общую опору под лотками. Нож Г2 должен оказаться примерно в <b>35 мм от конца</b> лотка.']},
+pod:{t:'Подиум',q:'1 шт',m:'КРЕПКИЙ — держит ~15 кг',svg:SVG.gate.replace('gate12 (печать)','высота 100').replace('НЕ режется — готовая печатная деталь с серво','площадка не меньше 600×400, полная коробка весит ~12-14 кг'),
+ cut:['Высота <b>100 мм</b>, площадка не меньше 600×400. Полная коробка ~12-14 кг — хлипкая картонка не пойдёт, нужен ящик/брус/двойной гофрокартон на ребро.'],
+ glue:['Поставь коробку на подиум. Лотки с затворами повиснут ниже дна коробки — им нужно это место.']},
+tray:{t:'Приёмник',q:'5 шт (или 1 общий широкий)',m:'любая коробочка',svg:SVG.gate.replace('gate12 (печать)','~110×96, борт 40').replace('НЕ режется — готовая печатная деталь с серво','на дно — поролон/тряпку, банка падает с ~50 мм'),
+ cut:['Любая коробочка ~110×96, борт до 40 мм. Или один общий лоток на все 5 каналов: ~420×110.'],
+ glue:['Поставь на стол под концами лотков.']},
+drop:{t:'Обрыв (деталей нет!)',q:'—',m:'пустота',svg:`<svg width="320" height="90" viewBox="0 0 320 90"><text x="20" y="30" fill="#dfe7ef" font-size="13">Верхний лист короче коробки на ~60 мм.</text><text x="20" y="52" fill="#dfe7ef" font-size="13">Банки доезжают до края и падают вниз</text><text x="20" y="74" fill="#dfe7ef" font-size="13">на нижний лист. Резать/клеить нечего.</text></svg>`,
+ cut:['Ничего не резать.'],
+ glue:['Начни с зазора <b>60 мм</b>, но последние 100 мм верхнего листа окончательно не приклеивай до прогона 20 банок. Если банка клинит между краем и задней стенкой — подрежь край ещё на 5 мм.']},
+frontBrace:{t:'Стяжка фасада над окнами',q:'2 планки + 6 болтов',m:'без переделки окон',svg:`<svg width="320" height="105" viewBox="0 0 320 105"><rect x="20" y="36" width="280" height="30" fill="#9b7042"/><circle cx="35" cy="51" r="4" fill="#b8c4cf"/><circle cx="85" cy="51" r="4" fill="#b8c4cf"/><circle cx="135" cy="51" r="4" fill="#b8c4cf"/><circle cx="185" cy="51" r="4" fill="#b8c4cf"/><circle cx="235" cy="51" r="4" fill="#b8c4cf"/><circle cx="285" cy="51" r="4" fill="#b8c4cf"/><text x="20" y="92" fill="#dfe7ef" font-size="12">планки сжимают картон над пятью окнами</text></svg>`,
+ cut:['Две прямые планки примерно <b>395×35×8–12 мм</b>: одна снаружи, одна изнутри. Подойдёт фанера или деревянная рейка.'],
+ glue:['Поставь их друг напротив друга сразу над окнами и стяни <b>6 болтами М4</b> с широкими шайбами: по краям и возле четырёх перегородок.',
+  'Это возвращает жёсткость передней стенке после пяти больших вырезов. Затягивай только до прижатия — картон не сминать.']},
+supportRail:{t:'Общая опора под пятью лотками',q:'1 перекладина + 2 ножки',m:'дерево или слоёный картон',svg:`<svg width="320" height="115" viewBox="0 0 320 115"><rect x="25" y="35" width="270" height="18" fill="#9b7042"/><rect x="38" y="53" width="20" height="48" fill="#9b7042"/><rect x="262" y="53" width="20" height="48" fill="#9b7042"/><text x="25" y="20" fill="#dfe7ef" font-size="12">единый мост под всеми лотками</text></svg>`,
+ cut:['Перекладина на всю ширину, примерно <b>395×40×20 мм</b>, и две короткие ножки. Высоту ножек подгони по месту так, чтобы перекладина лишь коснулась низа лотков.'],
+ glue:['Поставь мост примерно в районе затворов, под всеми пятью лотками. Приклей или притяни лотки к перекладине стяжками.',
+  'Так вес затворов и удары банок уходят в стол, а не выламывают узкие перемычки коробки.']}
+};
+
+const ASSEMBLY=`<h2>📋 Порядок сборки</h2>
+<div class="badges"><span class="badge">v8 усиленная</span><span class="badge">старый раскрой сохранён</span><span class="badge">5 каналов</span></div>
+<ol>
+<li><b>Разметь дно</b> коробки: 75—4—75—4—75—4—75—4—75 (см. «Дно — разметка»).</li>
+<li><b>Разметь 4 перегородки</b>: линии А (0→138) и Б (360→184 в точке 540).</li>
+<li>Те же линии А и Б — на внутренних боковых стенках коробки (для каналов 1 и 5).</li>
+<li><b>Вклей перегородки</b> стоймя по разметке дна.</li>
+<li><b>Прорежь 5 окон</b> в переднем торце — по месту, напротив каналов, высота 56 от дна.</li>
+<li><b>Уголки-опоры</b> (134) — в задние углы каналов.</li>
+<li><b>Нижние листы</b> 845×75: сверху наклонно, нос в окно, снаружи 220. Клей по линиям А.</li>
+<li><b>Борта:</b> используй 6 из 10 нарезанных деталей — два крайних и четыре общих. Сначала проверь все пять просветов банкой.</li>
+<li><b>Верхние листы</b> 568×75 по линиям Б: перед 360, зад 184, до задней стенки НЕ доходить ~60.</li>
+<li><b>Стяни фасад</b> двумя планками над окнами и шестью болтами М4 с широкими шайбами.</li>
+<li><b>Поставь общий мост</b> под пять лотков — одна перекладина и две ножки.</li>
+<li><b>Затворы</b> (5 шт) на общие борта · коробку на КРЕПКИЙ подиум 100 · приёмники под лотки.</li>
+</ol>
+<h3>Проверка каждого канала</h3>
+<div class="t">Насыпь 20 банок: сползли по складу к обрыву → упали → очередь → затвор выдаёт по одной. Если куча залипла на складе — оклей склад глянцевым скотчем. Полная коробка ~200 банок (~12 кг).</div>`;
+
+function showCard(key){
+  const c=CARDS[key];
+  let h=`<h2>${c.t}</h2><div class="badges"><span class="badge">${c.q}</span><span class="badge${c.m.includes('3 мм')||c.m.includes('КРЕПКИЙ')?' red':''}">${c.m}</span></div>${c.svg}`;
+  h+=`<h3>✂ Как резать</h3><ol>${c.cut.map(s=>'<li>'+s+'</li>').join('')}</ol>`;
+  h+=`<h3>🧴 Куда клеить</h3><ol>${c.glue.map(s=>'<li>'+s+'</li>').join('')}</ol>`;
+  document.getElementById('cbody').innerHTML=h;
+  document.getElementById('card').style.display='block';
+}
+function showAssembly(){
+  document.getElementById('cbody').innerHTML=ASSEMBLY;
+  document.getElementById('card').style.display='block';
+}
+
+// ================= 3D =================
+function makeJar(color){
+  const g=new THREE.Group();
+  const b=new THREE.Mesh(new THREE.CylinderGeometry(JR,JR,JL-6,20),
+    new THREE.MeshStandardMaterial({color:color,roughness:.5}));
+  b.rotation.x=Math.PI/2; g.add(b);
+  const c=new THREE.Mesh(new THREE.CylinderGeometry(JR*.68,JR*.68,6,16),
+    new THREE.MeshStandardMaterial({color:0xe8ecef,roughness:.6}));
+  c.rotation.x=Math.PI/2; c.position.z=JL/2-3; g.add(c);
+  return g;
+}
+function bxm(w,h,d,col,op){
+  return new THREE.Mesh(new THREE.BoxGeometry(w,h,d),
+    new THREE.MeshStandardMaterial({color:col,roughness:.85,transparent:!!op,opacity:op||1}));
+}
+function part(mesh,key){ mesh.userData.key=key; clickable.push(mesh); return mesh; }
+function frame(w,h,d,color){ return new THREE.LineSegments(
+  new THREE.EdgesGeometry(new THREE.BoxGeometry(w,h,d)),
+  new THREE.LineBasicMaterial({color:color})); }
+
+function buildChannel(zc,color){
+  const FULL=IN.w+220;
+  const bl=bxm(FULL,4,LANEW,CARD);
+  bl.position.set(T+(IN.w-220)/2, lowY((IN.w-220)/2)-2, zc); bl.rotation.z=TB;
+  world.add(part(bl,'bottom'));
+  for(let lx=30;lx<=570;lx+=47){
+    const j=makeJar(color); j.position.set(T+lx,lowY(lx)+2+JR,zc); world.add(j);
+  }
+  const jc=makeJar(color); jc.position.set(T+560,lowY(560)+2+JR+44,zc); world.add(jc);
+  const ul=bxm(UP_LEN,4,LANEW,CARD);
+  ul.position.set(T+UP_LEN/2, (upY(0)+upY(UP_LEN))/2-2, zc); ul.rotation.z=-TT;
+  world.add(part(ul,'upper'));
+  for(let lx=40;lx<=520;lx+=47){
+    const j=makeJar(color); j.position.set(T+lx,upY(lx)+2+JR,zc); world.add(j);
+  }
+  for(let lx=160;lx<=510;lx+=47){
+    const j=makeJar(color); j.position.set(T+lx,upY(lx)+2+JR+41,zc); world.add(j);
+  }
+  for(let lx=310;lx<=500;lx+=47){
+    const j=makeJar(color); j.position.set(T+lx,upY(lx)+2+JR+82,zc); world.add(j);
+  }
+  const riser=bxm(4,134,LANEW,CARD); riser.position.set(T+IN.w-4,Y0+67,zc);
+  world.add(part(riser,'riser'));
+  const drop=bxm(52,170,LANEW-6,EXITC,0.10);
+  drop.position.set(T+IN.w-30, Y0+210, zc); world.add(part(drop,'drop'));
+  const jf=makeJar(color); jf.position.set(T+565,Y0+215,zc); world.add(jf);
+  const ewv=bxm(5,56,76,EXITC,0.15); ewv.position.set(T,Y0+28,zc); world.add(part(ewv,'front'));
+  const ew=frame(6,56,76,EXITC); ew.position.set(T,Y0+28,zc); world.add(ew);
+  // Борта строятся один раз общими для соседних каналов в buildSharedOutputWalls().
+  const gh=lowY(-190); const gus=bxm(3,gh,40,CARD); gus.position.set(T-190,gh/2,zc); world.add(gus);
+  const gy=lowY(-135);
+  for(const s of[-1,1]){ const sd=bxm(84,56,3,PRINT);
+    sd.position.set(T-135, gy+47, zc+s*(78/2-2)); sd.rotation.z=TB; world.add(part(sd,'gate')); }
+  const sv=bxm(13,32,24,0x3a66aa); sv.position.set(T-135, gy+72, zc); world.add(part(sv,'gate'));
+  const g1=bxm(4,40,66,PRINT); g1.position.set(T-112, lowY(-112)+50, zc); g1.rotation.z=TB; world.add(part(g1,'gate'));
+  const g2=bxm(5,44,66,PRINT); g2.position.set(T-170, lowY(-170)+22, zc); g2.rotation.z=TB; world.add(part(g2,'gate'));
+  const jp=makeJar(color); jp.position.set(T-150, lowY(-150)+2+JR, zc); world.add(jp);
+  const ct=frame(110,42,96,EXITC); ct.position.set(T-250,21,zc); world.add(ct);
+  const cts=bxm(110,2,96,EXITC,0.15); cts.position.set(T-250,1,zc); world.add(part(cts,'tray'));
+  const jt=makeJar(0x5fd08a); jt.position.set(T-250,JR+2,zc); world.add(jt);
+}
+
+function buildSharedOutputWalls(){
+  for(let k=0;k<=NCH;k++){
+    const w=bxm(220,47,3,CARD);
+    w.position.set(T-110,lowY(-110)+23,T-1.5+PITCH*k);
+    w.rotation.z=TB;
+    world.add(part(w,'sharedWall'));
+  }
+}
+
+function buildReinforcement(){
+  // Две планки зажимают ослабленный окнами передний торец.
+  const braceY=Y0+74;
+  const outer=bxm(12,34,392,WOOD); outer.position.set(-6,braceY,200); world.add(part(outer,'frontBrace'));
+  const inner=bxm(8,34,392,WOOD); inner.position.set(8,braceY,200); world.add(part(inner,'frontBrace'));
+  for(const z of[16,80,159,238,317,384]){
+    const bolt=new THREE.Mesh(new THREE.CylinderGeometry(2.2,2.2,28,12),new THREE.MeshStandardMaterial({color:METAL,roughness:.35}));
+    bolt.rotation.z=Math.PI/2; bolt.position.set(0,braceY,z); world.add(bolt);
+  }
+
+  // Отдельный мост принимает вес всех лотков и затворов на стол.
+  const sx=T-190, touchY=lowY(-190)-4;
+  const rail=bxm(50,18,392,WOOD); rail.position.set(sx,touchY-9,200); world.add(part(rail,'supportRail'));
+  const legH=Math.max(12,touchY-18);
+  for(const z of[20,380]){
+    const leg=bxm(30,legH,24,WOOD); leg.position.set(sx,legH/2,z); world.add(part(leg,'supportRail'));
+  }
+}
+
+function build(){
+  const pod=part(bxm(600,POD,400,0x2a3340),'pod');
+  pod.position.set(300,POD/2,200); world.add(pod);
+  const box=frame(600,400,400,0x3a5570); box.position.set(300,POD+200,200); world.add(box);
+  const fp=bxm(IN.w,2,IN.d,0x2a3340,0.6); fp.position.set(300,Y0-1,200); world.add(part(fp,'floorplan'));
+  for(let k=0;k<NCH;k++) buildChannel(T+37.5+PITCH*k, SKU[k]);
+  buildSharedOutputWalls();
+  for(let k=0;k<NCH-1;k++){
+    const d=bxm(IN.w,IN.h,4,CARD,0.25);
+    d.position.set(300,POD+200,T+LANEW+2+PITCH*k);
+    world.add(part(d,'divider'));
+  }
+  buildReinforcement();
+}
+
+// ================= клик =================
+const ray=new THREE.Raycaster(), ndc=new THREE.Vector2();
+function pick(x,y){
+  ndc.x=(x/innerWidth)*2-1; ndc.y=-(y/innerHeight)*2+1;
+  ray.setFromCamera(ndc,camera);
+  const hits=ray.intersectObjects(clickable,false);
+  if(hits.length) showCard(hits[0].object.userData.key);
+}
+
+// ================= сцена/управление =================
+function init(){
+  scene=new THREE.Scene(); scene.background=new THREE.Color(0x0f1216);
+  scene.fog=new THREE.Fog(0x0f1216,1400,3200);
+  camera=new THREE.PerspectiveCamera(48,innerWidth/innerHeight,1,6000);
+  renderer=new THREE.WebGLRenderer({antialias:true});
+  renderer.setPixelRatio(devicePixelRatio); renderer.setSize(innerWidth,innerHeight);
+  document.body.appendChild(renderer.domElement);
+  scene.add(new THREE.AmbientLight(0xffffff,.55));
+  const d1=new THREE.DirectionalLight(0xffffff,.85); d1.position.set(400,800,600); scene.add(d1);
+  const d2=new THREE.DirectionalLight(0x88aaff,.3); d2.position.set(-500,300,-400); scene.add(d2);
+  const fl=new THREE.Mesh(new THREE.PlaneGeometry(4200,4200),
+    new THREE.MeshStandardMaterial({color:0x161b22,roughness:1}));
+  fl.rotation.x=-Math.PI/2; fl.position.y=-2; scene.add(fl);
+  world=new THREE.Group(); scene.add(world);
+  setupControls();
+  addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
+}
+let tgt=new THREE.Vector3(180,240,200), radius=1250, theta=-0.85, phi=1.05;
+const keys={};
+function setupControls(){
+  const el=renderer.domElement; let drag=false,px=0,py=0,mx=0,my=0,moved=0;
+  el.addEventListener('pointerdown',e=>{drag=true;px=mx=e.clientX;py=my=e.clientY;moved=0;});
+  addEventListener('pointerup',e=>{ drag=false; if(moved<6) pick(e.clientX,e.clientY); });
+  addEventListener('pointermove',e=>{
+    if(!drag)return;
+    moved+=Math.abs(e.clientX-mx)+Math.abs(e.clientY-my); mx=e.clientX; my=e.clientY;
+    theta-=(e.clientX-px)*0.006; phi-=(e.clientY-py)*0.006;
+    phi=Math.max(0.15,Math.min(Math.PI-0.15,phi)); px=e.clientX; py=e.clientY;
+  });
+  el.addEventListener('wheel',e=>{e.preventDefault();
+    radius*=(1+Math.sign(e.deltaY)*0.08); radius=Math.max(180,Math.min(3600,radius));},{passive:false});
+  addEventListener('keydown',e=>{keys[e.code]=true; if(e.code.startsWith('Arrow'))e.preventDefault();});
+  addEventListener('keyup',e=>{keys[e.code]=false;});
+}
+function flyStep(){
+  const st=16;
+  const fwd=new THREE.Vector3().subVectors(tgt,camera.position); fwd.y=0; fwd.normalize();
+  const rt=new THREE.Vector3().crossVectors(fwd,new THREE.Vector3(0,1,0)).normalize();
+  if(keys.KeyW||keys.ArrowUp)tgt.addScaledVector(fwd,st);
+  if(keys.KeyS||keys.ArrowDown)tgt.addScaledVector(fwd,-st);
+  if(keys.KeyD||keys.ArrowRight)tgt.addScaledVector(rt,st);
+  if(keys.KeyA||keys.ArrowLeft)tgt.addScaledVector(rt,-st);
+  if(keys.KeyR||keys.PageUp)tgt.y+=st;
+  if(keys.KeyF||keys.PageDown)tgt.y-=st;
+}
+function animate(){
+  requestAnimationFrame(animate);
+  flyStep();
+  camera.position.set(
+    tgt.x+radius*Math.sin(phi)*Math.cos(theta),
+    tgt.y+radius*Math.cos(phi),
+    tgt.z+radius*Math.sin(phi)*Math.sin(theta));
+  camera.lookAt(tgt);
+  renderer.render(scene,camera);
+}
+
+// запуск строго в конце
+init();
+build();
+animate();
+</script>
+</body>
+</html>

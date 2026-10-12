@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="refresh" content="0; url=ОТКРОЙ_ЭТУ_СХЕМУ.html">
+  <title>5 дозаторов — прямое подключение к ESP32</title>
+  <style>
+    :root {
+      --bg:#eef2f6; --card:#fff; --ink:#17212b; --muted:#536273;
+      --blue:#1565c0; --orange:#ef6c00; --red:#d32f2f; --black:#263238;
+      --green:#2e7d32; --purple:#6a1b9a; --line:#d8e0e8;
+    }
+    * { box-sizing:border-box }
+    body { margin:0; background:var(--bg); color:var(--ink); font:17px/1.45 "Segoe UI",Arial,sans-serif }
+    main { max-width:1220px; margin:0 auto; padding:34px 24px 70px }
+    h1 { margin:0 0 8px; font-size:36px; line-height:1.15 }
+    h2 { margin:34px 0 14px; font-size:25px }
+    p { margin:8px 0 }
+    .lead { color:var(--muted); font-size:19px }
+    .badge { display:inline-block; padding:5px 10px; border-radius:999px; background:#e3f2fd; color:#0d47a1; font-weight:700; margin-top:12px }
+    .danger { margin:24px 0; padding:18px 20px; background:#ffebee; border:3px solid #c62828; border-radius:14px }
+    .danger strong { color:#b71c1c; font-size:20px }
+    .diagram { display:grid; grid-template-columns:1fr 80px 1.2fr; gap:16px; align-items:stretch; margin-top:22px }
+    .box { background:var(--card); border:2px solid #b9c5d0; border-radius:16px; padding:20px; box-shadow:0 6px 20px #23384a12 }
+    .box h3 { margin:0 0 12px; font-size:22px }
+    .usb { display:flex; align-items:center; justify-content:center; color:#455a64; font-weight:800; text-align:center }
+    .usb::after { content:"→"; font-size:48px }
+    .esp { border-color:#1565c0; background:#f6fbff }
+    .pin-grid { display:grid; grid-template-columns:1fr 1fr; gap:9px; margin-top:14px }
+    .pin { padding:10px 12px; border-radius:9px; background:#e3f2fd; border:1px solid #90caf9; font:700 16px Consolas,monospace }
+    .pin.off { color:#697580; background:#f2f4f6; border-color:#cfd8dc }
+    .signals { margin-top:18px; display:grid; gap:9px }
+    .signal { display:grid; grid-template-columns:175px 52px 1fr; align-items:center; gap:10px; background:white; border:1px solid var(--line); border-radius:10px; padding:9px 12px }
+    .port { font:800 17px Consolas,monospace; color:#0d47a1 }
+    .arrow { height:5px; background:var(--orange); position:relative; border-radius:9px }
+    .arrow::after { content:""; position:absolute; right:-2px; top:-5px; border-left:11px solid var(--orange); border-top:7px solid transparent; border-bottom:7px solid transparent }
+    .servo-name { font-weight:700 }
+    .power-flow { display:grid; grid-template-columns:1fr 50px 1.05fr 50px 1.2fr; gap:12px; align-items:center }
+    .flow-arrow { text-align:center; font-size:38px; color:#607d8b }
+    .source { border-color:#795548 }
+    .buck { border-color:#ef6c00; background:#fff8ed }
+    .bus { border-color:#2e7d32; background:#f3fbf3 }
+    .term { display:grid; grid-template-columns:84px 1fr; gap:8px; margin-top:10px }
+    .label { font:800 17px Consolas,monospace; padding:7px 9px; border-radius:7px; color:white; text-align:center }
+    .plus { background:var(--red) }.minus { background:var(--black) }
+    .wire-list { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:16px }
+    .rail { border:2px solid; border-radius:12px; padding:14px 16px; background:white }
+    .rail.plus-rail { border-color:var(--red) }.rail.gnd-rail { border-color:var(--black) }
+    .rail h4 { margin:0 0 8px; font-size:19px }
+    .rail ul { margin:6px 0 0; padding-left:22px }
+    table { width:100%; border-collapse:collapse; background:white; border-radius:12px; overflow:hidden; box-shadow:0 4px 16px #23384a0f }
+    th, td { padding:11px 12px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top }
+    th { background:#263238; color:white }
+    tr:last-child td { border-bottom:0 }
+    .sig { color:var(--orange); font-weight:800 }.pwr { color:var(--red); font-weight:800 }.gnd { color:var(--black); font-weight:800 }
+    .steps { counter-reset:step; display:grid; gap:10px }
+    .step { position:relative; background:white; border-left:5px solid var(--blue); border-radius:8px; padding:12px 14px 12px 55px }
+    .step::before { counter-increment:step; content:counter(step); position:absolute; left:14px; top:10px; width:27px; height:27px; border-radius:50%; background:var(--blue); color:white; display:grid; place-items:center; font-weight:800 }
+    code { font:700 0.95em Consolas,monospace; background:#edf1f5; padding:2px 5px; border-radius:4px }
+    .footer-note { margin-top:24px; color:var(--muted) }
+    .print { float:right; border:0; border-radius:9px; padding:10px 15px; background:#263238; color:white; font-weight:700; cursor:pointer }
+    @media (max-width:850px) {
+      .diagram,.power-flow { grid-template-columns:1fr }
+      .usb::after,.flow-arrow { content:"↓" }
+      .wire-list { grid-template-columns:1fr }
+      .signal { grid-template-columns:155px 40px 1fr }
+    }
+    @media print { body{background:white}.print{display:none}.box,table{box-shadow:none}main{padding:0}.danger{break-inside:avoid} }
+  </style>
+</head>
+<body>
+<main>
+  <button class="print" onclick="window.print()">Печать / PDF</button>
+  <h1>Прямое подключение пяти дозаторов к ESP32</h1>
+  <p class="lead">Без PCA9685. Пять отдельных сигнальных GPIO, общее силовое питание серв от понижайки и общая земля.</p>
+  <span class="badge">Распиновка зафиксирована для будущей прошивки</span>
+
+  <div class="danger">
+    <strong>Пока прошивки нет — понижайку не включать.</strong>
+    <p>Провода можно собрать полностью, но питание +5 В на сервы оставить выключенным. Первый запуск сделаем позже с безопасной прошивкой и без банок.</p>
+  </div>
+
+  <h2>1. Компьютер и ESP32</h2>
+  <div class="diagram">
+    <section class="box">
+      <h3>Компьютер</h3>
+      <p>USB-кабель с передачей данных</p>
+      <p>Питает ESP32 и создаёт COM-порт.</p>
+    </section>
+    <div class="usb" title="USB"></div>
+    <section class="box esp">
+      <h3>ESP32 DevKit / WROOM-32</h3>
+      <p>Ищи обозначения, напечатанные непосредственно на своей плате:</p>
+      <div class="pin-grid">
+        <div class="pin">D25 / GPIO25</div><div>сигнал сервы 1</div>
+        <div class="pin">D26 / GPIO26</div><div>сигнал сервы 2</div>
+        <div class="pin">D27 / GPIO27</div><div>сигнал сервы 3</div>
+        <div class="pin">D32 / GPIO32</div><div>сигнал сервы 4</div>
+        <div class="pin">D33 / GPIO33</div><div>сигнал сервы 5</div>
+        <div class="pin">GND</div><div>к общей земле OUT−</div>
+        <div class="pin off">VIN / 5V</div><div><b>не подключать</b></div>
+        <div class="pin off">3V3</div><div><b>не подключать</b></div>
+      </div>
+    </section>
+  </div>
+
+  <h2>2. Пять сигнальных проводов</h2>
+  <div class="signals">
+    <div class="signal"><span class="port">D25 (GPIO25)</span><span class="arrow"></span><span><b>Дозатор 1</b> — SIGNAL сервы</span></div>
+    <div class="signal"><span class="port">D26 (GPIO26)</span><span class="arrow"></span><span><b>Дозатор 2</b> — SIGNAL сервы</span></div>
+    <div class="signal"><span class="port">D27 (GPIO27)</span><span class="arrow"></span><span><b>Дозатор 3</b> — SIGNAL сервы</span></div>
+    <div class="signal"><span class="port">D32 (GPIO32)</span><span class="arrow"></span><span><b>Дозатор 4</b> — SIGNAL сервы</span></div>
+    <div class="signal"><span class="port">D33 (GPIO33)</span><span class="arrow"></span><span><b>Дозатор 5</b> — SIGNAL сервы</span></div>
+  </div>
+  <p class="footer-note">SIGNAL обычно жёлтый, оранжевый или белый. Ориентируйся прежде всего по маркировке конкретной сервы.</p>
+
+  <h2>3. Понижайка и силовое питание серв</h2>
+  <div class="power-flow">
+    <section class="box source">
+      <h3>Твой источник питания</h3>
+      <div class="term"><span class="label plus">+</span><span>к <code>IN+</code></span></div>
+      <div class="term"><span class="label minus">−</span><span>к <code>IN−</code></span></div>
+    </section>
+    <div class="flow-arrow">→</div>
+    <section class="box buck">
+      <h3>Понижайка</h3>
+      <p><code>IN+ / IN−</code> — вход.</p>
+      <p><code>OUT+ / OUT−</code> — выход.</p>
+      <p><b>До серв выставить мультиметром ровно 5,0 В.</b></p>
+    </section>
+    <div class="flow-arrow">→</div>
+    <section class="box bus">
+      <h3>Две распределительные шины / WAGO</h3>
+      <div class="term"><span class="label plus">+5V</span><span>от <code>OUT+</code></span></div>
+      <div class="term"><span class="label minus">GND</span><span>от <code>OUT−</code></span></div>
+    </section>
+  </div>
+
+  <div class="wire-list">
+    <section class="rail plus-rail">
+      <h4 class="pwr">Шина +5V</h4>
+      <ul>
+        <li>к красному проводу сервы 1</li><li>к красному проводу сервы 2</li>
+        <li>к красному проводу сервы 3</li><li>к красному проводу сервы 4</li>
+        <li>к красному проводу сервы 5</li>
+      </ul>
+    </section>
+    <section class="rail gnd-rail">
+      <h4 class="gnd">Шина GND</h4>
+      <ul>
+        <li>к коричневому/чёрному проводу каждой из пяти серв</li>
+        <li><b>обязательно к контакту GND на ESP32</b></li>
+        <li>к минусу конденсатора, если он установлен</li>
+      </ul>
+    </section>
+  </div>
+
+  <h2>4. Короткая таблица</h2>
+  <table>
+    <thead><tr><th>ESP32</th><th>Подключить</th><th>Назначение</th></tr></thead>
+    <tbody>
+      <tr><td><code>D25 / GPIO25</code></td><td class="sig">SIGNAL сервы 1</td><td>Дозатор 1</td></tr>
+      <tr><td><code>D26 / GPIO26</code></td><td class="sig">SIGNAL сервы 2</td><td>Дозатор 2</td></tr>
+      <tr><td><code>D27 / GPIO27</code></td><td class="sig">SIGNAL сервы 3</td><td>Дозатор 3</td></tr>
+      <tr><td><code>D32 / GPIO32</code></td><td class="sig">SIGNAL сервы 4</td><td>Дозатор 4</td></tr>
+      <tr><td><code>D33 / GPIO33</code></td><td class="sig">SIGNAL сервы 5</td><td>Дозатор 5</td></tr>
+      <tr><td><code>GND</code></td><td class="gnd">Понижайка OUT− / общая GND</td><td>Общая точка отсчёта сигналов</td></tr>
+      <tr><td><code>VIN / 5V</code></td><td>оставить свободным</td><td>ESP32 уже питается от USB</td></tr>
+      <tr><td><code>3V3</code></td><td>оставить свободным</td><td>Сервам не использовать</td></tr>
+    </tbody>
+  </table>
+
+  <h2>5. Порядок сборки</h2>
+  <div class="steps">
+    <div class="step">Отключить USB и входное питание понижайки.</div>
+    <div class="step">Без серв выставить на выходе понижайки <b>5,0 В</b> мультиметром.</div>
+    <div class="step">Собрать шины +5V и GND, подключить питание всех пяти серв.</div>
+    <div class="step">Соединить общую GND с единственным контактом <code>GND</code> ESP32.</div>
+    <div class="step">Подключить пять сигнальных проводов строго по таблице D25…D33.</div>
+    <div class="step">Подключить ESP32 к компьютеру по USB, но <b>понижайку пока оставить выключенной</b>.</div>
+    <div class="step">После создания безопасной прошивки будем включать и калибровать по одной серве без банок.</div>
+  </div>
+
+  <div class="danger">
+    <strong>Три запрета</strong>
+    <p>Не подавать питание серв на <code>3V3</code>. Не подавать выход понижайки на <code>VIN/5V</code> при подключённом USB. Не забывать соединить <code>OUT−</code> понижайки с <code>GND</code> ESP32.</p>
+  </div>
+
+  <p class="footer-note">Версия схемы: direct-5, порты закреплены в порядке D25, D26, D27, D32, D33. Будущая прошивка и программа будут использовать именно эту нумерацию.</p>
+</main>
+</body>
+</html>

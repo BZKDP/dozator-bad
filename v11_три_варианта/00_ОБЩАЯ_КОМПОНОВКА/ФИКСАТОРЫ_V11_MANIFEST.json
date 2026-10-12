@@ -1,0 +1,1041 @@
+{
+  "version": "V11 FINAL internal single-bolt cassette fixator",
+  "generated_by": "make_lock_plate.py",
+  "scope": "common six-sheet cassette only; variants A/B/C must be regenerated separately",
+  "legacy": {
+    "status": "DO_NOT_PRINT / DO_NOT_INSTALL / VIEW-ONLY",
+    "backup_directory": "LEGACY_DO_NOT_USE",
+    "blind_clip_files_left_for_reference": {
+      "upper": {
+        "path": "LEGACY_DO_NOT_USE\\cassette_lock_upper_14deg.stl",
+        "sha256": "929fb2c27e55848c9656a41a12369007971a6b76c486d170bd842de5072d6211"
+      },
+      "lower": {
+        "path": "LEGACY_DO_NOT_USE\\cassette_lock_lower_15deg.stl",
+        "sha256": "11e6a5aef512e5f9fe68ecbbc3f0a4ba25526e5df2ad5e5bcef32425eff0a344"
+      }
+    },
+    "independent_rejection_evidence_mm3": {
+      "upper_vs_old_exact_sheet": 673.8,
+      "upper_vs_old_exact_divider": 543.9,
+      "lower_vs_old_exact_sheet": 613.9,
+      "lower_vs_old_exact_divider": 553.7
+    }
+  },
+  "canonical_exact_sources": {
+    "upper_sheet": {
+      "path": "STL_КАССЕТА_СБОРКА\\cassette_upper_sheet.stl",
+      "sha256": "e5f9482580a34b2981a89aaee9832d22993bee156d26c0d4f0ee4761e4569fc5",
+      "watertight": true,
+      "components": 1,
+      "bounds_mm": [
+        [
+          -0.483844,
+          2.0,
+          209.66893
+        ],
+        [
+          535.483826,
+          393.0,
+          346.940582
+        ]
+      ],
+      "volume_mm3": 862131.5287
+    },
+    "lower_sheet": {
+      "path": "STL_КАССЕТА_СБОРКА\\cassette_lower_sheet.stl",
+      "sha256": "a139d99fce96895ee93f2346b14e14aa747d6b0896e7c75c78ecf0cb2931f404",
+      "watertight": true,
+      "components": 1,
+      "bounds_mm": [
+        [
+          39.482361,
+          2.0,
+          8.786116
+        ],
+        [
+          590.517639,
+          393.0,
+          160.021881
+        ]
+      ],
+      "volume_mm3": 890324.6372
+    },
+    "divider": {
+      "path": "STL_КАССЕТА_СБОРКА\\cassette_divider.stl",
+      "sha256": "cc19fa4ecf79f44e2ce96d72fd6fa4d5c24bcc6e6716a20a8d811255f44167cf",
+      "watertight": true,
+      "components": 1,
+      "bounds_mm": [
+        [
+          0.0,
+          -2.0,
+          0.0
+        ],
+        [
+          590.0,
+          2.0,
+          390.0
+        ]
+      ],
+      "volume_mm3": 900952.5282
+    }
+  },
+  "cut_file_sha256": {
+    "РАСКРОЙ_6_ЛИСТОВ\\01_РАЗДЕЛИТЕЛЬ_590x390_4шт.svg": "54238ce25366ebad63ec5787cfe6bfad8f92aa4d628a388261158a6d0a5c8a53",
+    "РАСКРОЙ_6_ЛИСТОВ\\01_РАЗДЕЛИТЕЛЬ_CNC_зазор_0.25_4шт.dxf": "88b61920d56d29a6c615d3ddbcc120848e9b06f99075de9859011c6d2978d673",
+    "РАСКРОЙ_6_ЛИСТОВ\\01_РАЗДЕЛИТЕЛЬ_РУЧНОЙ_зазор_0.45_4шт.dxf": "3d296160461cb576f87bc713750d740f6e5d9cc56af180e3cf1362110dcc2ea1",
+    "РАСКРОЙ_6_ЛИСТОВ\\02_НИЖНИЙ_ЦЕЛЬНЫЙ_ЛИСТ_1шт.dxf": "6cecf644456c1eca72a21bb0faa8f64f1995ab094c185bd74a957298eab0ecb1",
+    "РАСКРОЙ_6_ЛИСТОВ\\02_НИЖНИЙ_ЦЕЛЬНЫЙ_ЛИСТ_1шт.svg": "9ab338a0fe2a25505937dbcc4cb8be6c41082a52fc326948804982fb1d7faa0c",
+    "РАСКРОЙ_6_ЛИСТОВ\\03_ВЕРХНИЙ_ЦЕЛЬНЫЙ_ЛИСТ_1шт.dxf": "4b26b53025a8691905b7ba62d7b5dc4a00a65e6272e47159025c2ecc761ac783",
+    "РАСКРОЙ_6_ЛИСТОВ\\03_ВЕРХНИЙ_ЦЕЛЬНЫЙ_ЛИСТ_1шт.svg": "876f9af77d23a7290eafba4d719fe35fdd5283613374902acdc3b9c861a2915c",
+    "РАСКРОЙ_6_ЛИСТОВ\\04_КООРДИНАТЫ_ВНУТРЕННИХ_ФИКСАТОРОВ_V11.csv": "1a5059fd794a7b8103e30a6a0f2240f65c6ebafe3fe9a39bbd68eca32fc5bd0d"
+  },
+  "mechanical_connection": {
+    "mandatory_fixator_count": 8,
+    "upper_count": 4,
+    "lower_count": 4,
+    "fastener_each": "1 x M4x25 + 2 x M4 DIN 9021 wide washer OD12 + M4 self-locking nut",
+    "fastener_total": "8 x M4x25 + 16 x M4 DIN 9021 wide washers OD12 + 8 x M4 self-locking nuts",
+    "divider_round_hole_diameter_mm": 4.4,
+    "printed_bore": "outward-open 45 degree cradle; closed diamond end contains a 4.6 mm circle",
+    "sheet_hole_diameter_mm": 4.2,
+    "integral_peg_diameter_mm": 3.8,
+    "peg_engagement_mm": 3.0,
+    "bank_surface_recess_mm": 1.0,
+    "shoe_gap_mm": 0.0,
+    "shoe_span_each_side_of_peg_mm": 7.0,
+    "glue": "none",
+    "installation_datums": {
+      "upper_pad_to_divider_face_V_mm": 2.0,
+      "lower_pad_to_divider_face_V_mm": -2.0,
+      "upper_shoe_to_sheet_outer_face_N_mm": 2.0,
+      "lower_shoe_to_sheet_outer_face_N_mm": -2.0,
+      "pad_gap_mm": 0.0,
+      "shoe_gap_mm": 0.0
+    },
+    "outward_open_cradle_geometry": {
+      "diamond_inradius_mm": 2.3,
+      "M4_nominal_radius_mm": 2.0,
+      "diamond_vertex_radius_mm": 3.252691,
+      "mouth_reaches_past_outer_body_face_mm": 0.5,
+      "opening_direction": "away from sheet; towards build plate in print orientation",
+      "withdrawal_direction": "towards closed 45 degree diamond end"
+    },
+    "clearance_stack": {
+      "M4_in_divider_radial_mm": 0.2,
+      "closed_end_circle_in_diamond_center_clearance_mm": 0.424264,
+      "printed_cradle_conservative_center_clearance_at_diamond_throat_mm": 0.424264,
+      "straight_open_mouth_halfwidth_minus_bolt_radius_mm": 1.252691,
+      "manual_slot_half_play_mm": 0.225,
+      "worst_outward_withdrawal_mm": 0.849264,
+      "worst_remaining_peg_engagement_mm": 2.150736
+    }
+  },
+  "exact_coordinates": {
+    "sheet_locator": {
+      "frame_s_mm": 10.0,
+      "transverse_q_from_divider_center_mm": 10.0,
+      "upper_world_centres_mm": [
+        [
+          9.702957,
+          89.0,
+          342.580781
+        ],
+        [
+          9.702957,
+          168.0,
+          342.580781
+        ],
+        [
+          9.702957,
+          247.0,
+          342.580781
+        ],
+        [
+          9.702957,
+          326.0,
+          342.580781
+        ]
+      ],
+      "lower_world_centres_mm": [
+        [
+          580.340742,
+          89.0,
+          155.501833
+        ],
+        [
+          580.340742,
+          168.0,
+          155.501833
+        ],
+        [
+          580.340742,
+          247.0,
+          155.501833
+        ],
+        [
+          580.340742,
+          326.0,
+          155.501833
+        ]
+      ]
+    },
+    "divider_bolt_centres_xz_mm": {
+      "upper": [
+        13.092472,
+        352.041816
+      ],
+      "lower": [
+        581.963006,
+        145.583756
+      ]
+    },
+    "minimum_web_mm": {
+      "divider_hole_to_CNC_sheet_slot": 5.675,
+      "sheet_hole_to_divider_face": 5.9,
+      "true_distance_from_each_M4_hole_edge_to_full_profile_boundary": {
+        "CNC_0.25": {
+          "upper": {
+            "to_nearest_complete_profile_boundary_mm": 5.675,
+            "to_original_590x390_outer_boundary_mm": 10.892472
+          },
+          "lower": {
+            "to_nearest_complete_profile_boundary_mm": 5.675,
+            "to_original_590x390_outer_boundary_mm": 5.836994
+          }
+        },
+        "manual_0.45": {
+          "upper": {
+            "to_nearest_complete_profile_boundary_mm": 5.575,
+            "to_original_590x390_outer_boundary_mm": 10.892472
+          },
+          "lower": {
+            "to_nearest_complete_profile_boundary_mm": 5.575,
+            "to_original_590x390_outer_boundary_mm": 5.836994
+          }
+        }
+      }
+    }
+  },
+  "print_stl": {
+    "universal_quantity_8": {
+      "path": "STL_ПЕЧАТЬ\\фиксатор_ската_универсальный_V11_PRINT.stl",
+      "sha256": "2c625ac29d608c258ea34d67cb3cf2e389d0ece0938a0909a3a180566add414e",
+      "watertight": true,
+      "components": 1,
+      "bounds_mm": [
+        [
+          -8.0,
+          -6.0,
+          0.0
+        ],
+        [
+          8.0,
+          6.0,
+          16.5
+        ]
+      ],
+      "volume_mm3": 1869.6111
+    },
+    "upper_lower_binary_identical": true
+  },
+  "assembly_stl": {
+    "upper": {
+      "path": "STL_ЗАМКИ_СБОРКА\\фиксаторы_верхнего_ската_4шт_world_V11.stl",
+      "sha256": "88ba7685332b1662467cb389ae21b991f82ef28bbad550bb67e275b08f1a4fd2",
+      "watertight": true,
+      "components": 4,
+      "bounds_mm": [
+        [
+          3.02924,
+          81.0,
+          341.150834
+        ],
+        [
+          21.215112,
+          330.0,
+          359.55574
+        ]
+      ],
+      "volume_mm3": 7478.4445
+    },
+    "lower": {
+      "path": "STL_ЗАМКИ_СБОРКА\\фиксаторы_нижнего_ската_4шт_world_V11.stl",
+      "sha256": "fc08f8fd0111389f7bb8562dc6061df275ffc3c0d7658f2ce0b3d5727fc3bc06",
+      "watertight": true,
+      "components": 4,
+      "bounds_mm": [
+        [
+          573.778021,
+          81.0,
+          138.45943
+        ],
+        [
+          592.079844,
+          330.0,
+          156.959515
+        ]
+      ],
+      "volume_mm3": 7478.4445
+    }
+  },
+  "individual_world_stl": {
+    "upper_y79": {
+      "path": "STL_ЗАМКИ_СБОРКА\\фиксатор_верхнего_ската_world_y79_V11.stl",
+      "sha256": "df20641843f92fb510c607c286038f68787dc64c0c273da0131b76b9da2f00b1",
+      "watertight": true,
+      "components": 1,
+      "bounds_mm": [
+        [
+          3.02924,
+          81.0,
+          341.150834
+        ],
+        [
+          21.215112,
+          93.0,
+          359.55574
+        ]
+      ],
+      "volume_mm3": 1869.6111
+    },
+    "lower_y79": {
+      "path": "STL_ЗАМКИ_СБОРКА\\фиксатор_нижнего_ската_world_y79_V11.stl",
+      "sha256": "e26caefe1e9c75db47dc79cb847b12a3d0dbeb89f130b8ec7a99920213a52e4e",
+      "watertight": true,
+      "components": 1,
+      "bounds_mm": [
+        [
+          573.778021,
+          81.0,
+          138.45943
+        ],
+        [
+          592.079844,
+          93.0,
+          156.959515
+        ]
+      ],
+      "volume_mm3": 1869.6111
+    }
+  },
+  "hardware_reference_stl": {
+    "M4x25_screws_8": {
+      "path": "STL_ЗАМКИ_СБОРКА\\M4x25_болты_8шт_world_REFERENCE.stl",
+      "sha256": "9e3afe59fbb90475cd7eb5a1095a3af0221d73441f79de200ceedc8f78853e1a",
+      "watertight": true,
+      "components": 8,
+      "bounds_mm": [
+        [
+          9.592472,
+          73.199997,
+          142.083755
+        ],
+        [
+          585.463013,
+          338.0,
+          355.541809
+        ]
+      ],
+      "volume_mm3": 3358.2167
+    },
+    "M4_wide_flat_washers_DIN9021_16": {
+      "path": "STL_ЗАМКИ_СБОРКА\\M4_шайбы_16шт_world_REFERENCE.stl",
+      "sha256": "cce51e7a4cbb1d891421ab27dddc70d78d044b1bc20baa6ec5aaacb4aabe8838",
+      "watertight": true,
+      "components": 16,
+      "bounds_mm": [
+        [
+          7.092472,
+          76.0,
+          139.583755
+        ],
+        [
+          587.963013,
+          331.0,
+          358.041809
+        ]
+      ],
+      "volume_mm3": 1562.3424
+    },
+    "M4_nyloc_nuts_8": {
+      "path": "STL_ЗАМКИ_СБОРКА\\M4_гайки_Nyloc_8шт_world_REFERENCE.stl",
+      "sha256": "231318e1bd9488e7aa9b4badb13944d92392586fbc7db3755f39fc94204cb94c",
+      "watertight": true,
+      "components": 8,
+      "bounds_mm": [
+        [
+          9.392472,
+          94.0,
+          142.379462
+        ],
+        [
+          585.663006,
+          335.0,
+          355.24611
+        ]
+      ],
+      "volume_mm3": 1138.1652
+    }
+  },
+  "plate_3mf": {
+    "path": "PLATES_3MF\\КАССЕТА_8_ВНУТРЕННИХ_ФИКСАТОРОВ_220x220.3mf",
+    "sha256": "261612fa78d3b356042e1157f7c5e1beaab9bf761505bfaacf976d22232c80ac",
+    "objects_xml": 8,
+    "objects_imported": 8,
+    "bounds_mm": [
+      [
+        27.0,
+        74.0,
+        0.0
+      ],
+      [
+        193.0,
+        146.0,
+        16.5
+      ]
+    ],
+    "placements_mm": {
+      "upper": [
+        [
+          35.0,
+          140.0
+        ],
+        [
+          85.0,
+          140.0
+        ],
+        [
+          135.0,
+          140.0
+        ],
+        [
+          185.0,
+          140.0
+        ]
+      ],
+      "lower": [
+        [
+          35.0,
+          80.0
+        ],
+        [
+          85.0,
+          80.0
+        ],
+        [
+          135.0,
+          80.0
+        ],
+        [
+          185.0,
+          80.0
+        ]
+      ]
+    }
+  },
+  "print_profile": {
+    "material": "PETG",
+    "nozzle_mm": 0.4,
+    "layer_mm": 0.2,
+    "walls": 5,
+    "top_bottom_layers": 5,
+    "infill_percent": 40,
+    "supports": false,
+    "brim_mm": 5
+  },
+  "slice_validation": {
+    "status": "PASS",
+    "slicer": "C:\\Program Files\\Prusa3D\\PrusaSlicer\\prusa-slicer-console.exe",
+    "returncode": 0,
+    "profile": "0.20 mm / 5 walls / 5 top+bottom / 40% / supports OFF / brim 5 mm",
+    "blocking_warning_hits": [],
+    "fresh_nonempty_gcode": true,
+    "support_material_equals_0_in_gcode": true,
+    "gcode_bridge_infill_sections": 32,
+    "bridge_note": "reported honestly; PrusaSlicer emitted no structural warning, supports remain OFF, first-part inspection is still mandatory",
+    "warning_lines": [],
+    "gcode_temp_path": "v11_cassette_8_fixators_validation.gcode"
+  },
+  "frame_to_world": {
+    "upper": [
+      {
+        "divider_y_mm": 79.0,
+        "matrix_row_major": [
+          [
+            0.970295726,
+            0.0,
+            0.241921896,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            79.0
+          ],
+          [
+            -0.241921896,
+            0.0,
+            0.970295726,
+            345.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "peg_center_world_mm": [
+          9.702957,
+          89.0,
+          342.580781
+        ],
+        "bolt_axis_center_world_mm": [
+          13.092472,
+          79.0,
+          352.041816
+        ]
+      },
+      {
+        "divider_y_mm": 158.0,
+        "matrix_row_major": [
+          [
+            0.970295726,
+            0.0,
+            0.241921896,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            158.0
+          ],
+          [
+            -0.241921896,
+            0.0,
+            0.970295726,
+            345.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "peg_center_world_mm": [
+          9.702957,
+          168.0,
+          342.580781
+        ],
+        "bolt_axis_center_world_mm": [
+          13.092472,
+          158.0,
+          352.041816
+        ]
+      },
+      {
+        "divider_y_mm": 237.0,
+        "matrix_row_major": [
+          [
+            0.970295726,
+            0.0,
+            0.241921896,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            237.0
+          ],
+          [
+            -0.241921896,
+            0.0,
+            0.970295726,
+            345.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "peg_center_world_mm": [
+          9.702957,
+          247.0,
+          342.580781
+        ],
+        "bolt_axis_center_world_mm": [
+          13.092472,
+          237.0,
+          352.041816
+        ]
+      },
+      {
+        "divider_y_mm": 316.0,
+        "matrix_row_major": [
+          [
+            0.970295726,
+            0.0,
+            0.241921896,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            316.0
+          ],
+          [
+            -0.241921896,
+            0.0,
+            0.970295726,
+            345.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "peg_center_world_mm": [
+          9.702957,
+          326.0,
+          342.580781
+        ],
+        "bolt_axis_center_world_mm": [
+          13.092472,
+          316.0,
+          352.041816
+        ]
+      }
+    ],
+    "lower": [
+      {
+        "divider_y_mm": 79.0,
+        "matrix_row_major": [
+          [
+            -0.965925826,
+            0.0,
+            -0.258819045,
+            590.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            79.0
+          ],
+          [
+            -0.258819045,
+            0.0,
+            0.965925826,
+            158.090023534
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "peg_center_world_mm": [
+          580.340742,
+          89.0,
+          155.501833
+        ],
+        "bolt_axis_center_world_mm": [
+          581.963006,
+          79.0,
+          145.583756
+        ]
+      },
+      {
+        "divider_y_mm": 158.0,
+        "matrix_row_major": [
+          [
+            -0.965925826,
+            0.0,
+            -0.258819045,
+            590.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            158.0
+          ],
+          [
+            -0.258819045,
+            0.0,
+            0.965925826,
+            158.090023534
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "peg_center_world_mm": [
+          580.340742,
+          168.0,
+          155.501833
+        ],
+        "bolt_axis_center_world_mm": [
+          581.963006,
+          158.0,
+          145.583756
+        ]
+      },
+      {
+        "divider_y_mm": 237.0,
+        "matrix_row_major": [
+          [
+            -0.965925826,
+            0.0,
+            -0.258819045,
+            590.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            237.0
+          ],
+          [
+            -0.258819045,
+            0.0,
+            0.965925826,
+            158.090023534
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "peg_center_world_mm": [
+          580.340742,
+          247.0,
+          155.501833
+        ],
+        "bolt_axis_center_world_mm": [
+          581.963006,
+          237.0,
+          145.583756
+        ]
+      },
+      {
+        "divider_y_mm": 316.0,
+        "matrix_row_major": [
+          [
+            -0.965925826,
+            0.0,
+            -0.258819045,
+            590.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            316.0
+          ],
+          [
+            -0.258819045,
+            0.0,
+            0.965925826,
+            158.090023534
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "peg_center_world_mm": [
+          580.340742,
+          326.0,
+          155.501833
+        ],
+        "bolt_axis_center_world_mm": [
+          581.963006,
+          316.0,
+          145.583756
+        ]
+      }
+    ]
+  },
+  "collision_checks": [
+    {
+      "kind": "upper",
+      "divider_y_mm": 79.0,
+      "sheet_intersection_mm3": 0.0,
+      "divider_intersection_mm3": 0.0,
+      "opposite_sheet_intersection_mm3": 0.0,
+      "tangent_boolean_raw_max_mm3": 4.3169e-05,
+      "tangent_boolean_epsilon_mm3": 0.001,
+      "peg_axis_alignment_error_mm": 0.0,
+      "bolt_axis_alignment_error_mm": 0.0
+    },
+    {
+      "kind": "upper",
+      "divider_y_mm": 158.0,
+      "sheet_intersection_mm3": 0.0,
+      "divider_intersection_mm3": 0.0,
+      "opposite_sheet_intersection_mm3": 0.0,
+      "tangent_boolean_raw_max_mm3": 7.2434e-05,
+      "tangent_boolean_epsilon_mm3": 0.001,
+      "peg_axis_alignment_error_mm": 0.0,
+      "bolt_axis_alignment_error_mm": 0.0
+    },
+    {
+      "kind": "upper",
+      "divider_y_mm": 237.0,
+      "sheet_intersection_mm3": 0.0,
+      "divider_intersection_mm3": 0.0,
+      "opposite_sheet_intersection_mm3": 0.0,
+      "tangent_boolean_raw_max_mm3": 1.8875e-05,
+      "tangent_boolean_epsilon_mm3": 0.001,
+      "peg_axis_alignment_error_mm": 0.0,
+      "bolt_axis_alignment_error_mm": 0.0
+    },
+    {
+      "kind": "upper",
+      "divider_y_mm": 316.0,
+      "sheet_intersection_mm3": 0.0,
+      "divider_intersection_mm3": 0.0,
+      "opposite_sheet_intersection_mm3": 0.0,
+      "tangent_boolean_raw_max_mm3": 6.0363e-05,
+      "tangent_boolean_epsilon_mm3": 0.001,
+      "peg_axis_alignment_error_mm": 0.0,
+      "bolt_axis_alignment_error_mm": 0.0
+    },
+    {
+      "kind": "lower",
+      "divider_y_mm": 79.0,
+      "sheet_intersection_mm3": 0.0,
+      "divider_intersection_mm3": 0.0,
+      "opposite_sheet_intersection_mm3": 0.0,
+      "tangent_boolean_raw_max_mm3": 5.1901e-05,
+      "tangent_boolean_epsilon_mm3": 0.001,
+      "peg_axis_alignment_error_mm": 0.0,
+      "bolt_axis_alignment_error_mm": 0.0
+    },
+    {
+      "kind": "lower",
+      "divider_y_mm": 158.0,
+      "sheet_intersection_mm3": 0.0,
+      "divider_intersection_mm3": 0.0,
+      "opposite_sheet_intersection_mm3": 0.0,
+      "tangent_boolean_raw_max_mm3": 4.8617e-05,
+      "tangent_boolean_epsilon_mm3": 0.001,
+      "peg_axis_alignment_error_mm": 0.0,
+      "bolt_axis_alignment_error_mm": 0.0
+    },
+    {
+      "kind": "lower",
+      "divider_y_mm": 237.0,
+      "sheet_intersection_mm3": 0.0,
+      "divider_intersection_mm3": 0.0,
+      "opposite_sheet_intersection_mm3": 0.0,
+      "tangent_boolean_raw_max_mm3": 0.000250827,
+      "tangent_boolean_epsilon_mm3": 0.001,
+      "peg_axis_alignment_error_mm": 0.0,
+      "bolt_axis_alignment_error_mm": 0.0
+    },
+    {
+      "kind": "lower",
+      "divider_y_mm": 316.0,
+      "sheet_intersection_mm3": 0.0,
+      "divider_intersection_mm3": 0.0,
+      "opposite_sheet_intersection_mm3": 0.0,
+      "tangent_boolean_raw_max_mm3": 1.3181e-05,
+      "tangent_boolean_epsilon_mm3": 0.001,
+      "peg_axis_alignment_error_mm": 0.0,
+      "bolt_axis_alignment_error_mm": 0.0
+    }
+  ],
+  "hardware_collision_checks": {
+    "hardware_vs_upper_sheet_mm3": 0.0,
+    "hardware_vs_lower_sheet_mm3": 0.0,
+    "hardware_vs_4_exact_dividers_mm3": 0.0,
+    "upper_hardware_min_N_mm": 4.0,
+    "upper_clearance_to_channel_half_space_mm": 6.0,
+    "lower_hardware_max_N_mm": -4.0,
+    "lower_clearance_to_channel_half_space_mm": 6.0,
+    "can_half_space_result": "PASS"
+  },
+  "anti_rotation": {
+    "method": "0.05 degree rigid rotation sweep about the transverse M4 axis",
+    "nominal": {
+      "upper": [
+        {
+          "rotation_direction": -1,
+          "first_shoe_contact_deg": 0.0,
+          "full_peg_release_deg": 48.8,
+          "contact_before_release": true
+        },
+        {
+          "rotation_direction": 1,
+          "first_shoe_contact_deg": 0.0,
+          "full_peg_release_deg": 38.4,
+          "contact_before_release": true
+        }
+      ],
+      "lower": [
+        {
+          "rotation_direction": -1,
+          "first_shoe_contact_deg": 0.0,
+          "full_peg_release_deg": 48.8,
+          "contact_before_release": true
+        },
+        {
+          "rotation_direction": 1,
+          "first_shoe_contact_deg": 0.0,
+          "full_peg_release_deg": 38.4,
+          "contact_before_release": true
+        }
+      ]
+    },
+    "worst_clearance_stack": {
+      "closed_diamond_end_center_clearance_mm": 0.424264,
+      "manual_slot_half_play_mm": 0.225,
+      "divider_hole_radial_play_mm": 0.2,
+      "maximum_outward_withdrawal_mm": 0.849264,
+      "shoe_gap_at_hard_stop_mm": 0.849264,
+      "remaining_peg_engagement_mm": 2.150736,
+      "upper": [
+        {
+          "rotation_direction": -1,
+          "first_shoe_contact_deg": 6.45,
+          "full_peg_release_deg": 44.0,
+          "contact_before_release": true
+        },
+        {
+          "rotation_direction": 1,
+          "first_shoe_contact_deg": 9.0,
+          "full_peg_release_deg": 32.75,
+          "contact_before_release": true
+        }
+      ],
+      "lower": [
+        {
+          "rotation_direction": -1,
+          "first_shoe_contact_deg": 6.45,
+          "full_peg_release_deg": 44.0,
+          "contact_before_release": true
+        },
+        {
+          "rotation_direction": 1,
+          "first_shoe_contact_deg": 9.0,
+          "full_peg_release_deg": 32.75,
+          "contact_before_release": true
+        }
+      ]
+    },
+    "note": "lower geometry is the exact 180 degree S-axis image of upper"
+  },
+  "washer_bearing": {
+    "washer_standard": "M4 DIN 9021 or equivalent wide flat washer",
+    "outer_diameter_mm": 12.0,
+    "inner_diameter_reference_mm": 4.4,
+    "thickness_reference_mm": 1.0,
+    "printed_face_bearing_area_mm2": 65.489,
+    "washer_annulus_supported_fraction": 0.669,
+    "minimum_required_bearing_area_mm2": 60.0,
+    "result": "PASS"
+  },
+  "can_swept_envelope_check": {
+    "method": "conservative exact half-space proof against both bank-running sheet faces",
+    "upper_channel_boundary_N_mm": -2.0,
+    "upper_fixator_min_N_mm": -1.0,
+    "upper_clearance_mm": 1.0,
+    "lower_channel_boundary_N_mm": 2.0,
+    "lower_fixator_max_N_mm": 1.0,
+    "lower_clearance_mm": 1.0,
+    "result": "PASS; the complete lock remains outside the channel half-space"
+  },
+  "box_clearance": {
+    "nominal_inside_mm": [
+      595.0,
+      395.0,
+      395.0
+    ],
+    "all_8_fixators_world_bounds_mm": [
+      [
+        3.02924,
+        81.0,
+        138.45943
+      ],
+      [
+        592.079844,
+        330.0,
+        359.55574
+      ]
+    ],
+    "all_8_fixators_and_hardware_bounds_mm": [
+      [
+        3.02924,
+        73.199997,
+        138.45943
+      ],
+      [
+        592.079844,
+        338.0,
+        359.55574
+      ]
+    ],
+    "inside_nominal_box": true,
+    "front_depth_margin_with_hardware_mm": 3.029,
+    "rear_depth_margin_with_hardware_mm": 2.92,
+    "complete_cassette_raw_bounds_mm": [
+      [
+        -0.483844,
+        2.0,
+        0.0
+      ],
+      [
+        592.079844,
+        393.0,
+        390.0
+      ]
+    ],
+    "installation_translation_x_mm": 0.5,
+    "complete_cassette_installed_bounds_mm": [
+      [
+        0.016156,
+        2.0,
+        0.0
+      ],
+      [
+        592.579844,
+        393.0,
+        390.0
+      ]
+    ],
+    "complete_cassette_inside_nominal_box": true,
+    "complete_front_margin_after_translation_mm": 0.016,
+    "complete_rear_margin_after_translation_mm": 2.42
+  },
+  "validation_limits": {
+    "physical_validation_required": true,
+    "first_action": "print and dry-fit one upper plus one lower before the production plate",
+    "not_yet_proven": [
+      "actual plywood thickness and drilling accuracy",
+      "printer-specific peg fit and layer adhesion",
+      "loaded cassette pull-out resistance",
+      "long-term creep, vibration and repeated service cycles"
+    ]
+  }
+}

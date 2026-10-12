@@ -1,0 +1,584 @@
+{
+  "version": "V10-production-prototype",
+  "parameters_mm": {
+    "can_length": 70.0,
+    "can_diameter_nominal": 47.0,
+    "can_diameter_design": 48.0,
+    "box_inside_depth": 595.0,
+    "box_inside_width": 395.0,
+    "box_inside_height": 395.0,
+    "cassette_depth": 590.0,
+    "cassette_width": 391.0,
+    "cassette_height": 390.0,
+    "sheet_thickness": 4.0,
+    "sheet_slot_clearance_cnc": 0.25,
+    "sheet_slot_clearance_manual": 0.45,
+    "lane_clear": 75.0,
+    "lane_pitch": 79.0,
+    "divider_centres_from_cassette_left": [
+      77.0,
+      156.0,
+      235.0,
+      314.0
+    ],
+    "lower_x0": 40.0,
+    "lower_x1": 590.0,
+    "lower_angle_deg": 15.0,
+    "upper_x0": 0.0,
+    "upper_x1": 535.0,
+    "upper_front_height": 345.0,
+    "upper_angle_deg": 14.0,
+    "module_width": 78.4,
+    "module_length": 210.0,
+    "module_y_min": -140.0,
+    "module_y_max": 70.0,
+    "gate_rear_box_x": -15.0,
+    "gate_front_y": 0.0,
+    "gate_rear_y": -50.5,
+    "blade_open_z": -2.0,
+    "blade_closed_z": 26.0,
+    "blade_thickness": 4.0,
+    "blade_working_width": 66.5,
+    "blade_guide_gap": 4.55,
+    "floor_slot_width": 4.8,
+    "servo_cam_axis_y": -25.0,
+    "servo_cam_axis_z": -52.0,
+    "cam_angle_deg": 84.0,
+    "cam_profile_margin_deg": 4.0,
+    "cam_rear_close_end_deg": 46.0,
+    "cam_front_open_start_deg": 52.0,
+    "cam_front_open_end_deg": 82.0,
+    "cam_radius": 48.5,
+    "cam_thickness": 5.4,
+    "cam_slot_width": 6.8,
+    "cam_follower_diameter": 6.0,
+    "blade_pin_below_tip": 45.0,
+    "follower_y_offset": 2.1,
+    "blade_boss_guide_gap": 8.7,
+    "horn_pocket_depth": 3.1
+  },
+  "mechanism": {
+    "type": "one-servo dual-gate positive grooved cam",
+    "servo": "SG90 or MG90S with the stock double horn",
+    "home_to_eject_deg": 84.0,
+    "sequence": [
+      "0–46°: rear separator closes while front stop remains closed",
+      "46–52°: both gates closed",
+      "52–82°: front stop opens while rear stays closed",
+      "82–84°: eject dwell"
+    ],
+    "minimum_of_higher_gate_mm": 26.0,
+    "cam_slots_min_distance_mm": 21.222
+  },
+  "print_parts": [
+    {
+      "file": "M01_лоток_корпус.stl",
+      "extents_mm": [
+        78.4,
+        135.0,
+        32.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 48.17
+    },
+    {
+      "file": "M02_рама_привода.stl",
+      "extents_mm": [
+        72.4,
+        96.4,
+        88.2
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 22.31
+    },
+    {
+      "file": "M03_передняя_заслонка.stl",
+      "extents_mm": [
+        72.0,
+        52.0,
+        8.2
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 12.33
+    },
+    {
+      "file": "M04_задний_сепаратор.stl",
+      "extents_mm": [
+        72.0,
+        52.0,
+        8.2
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 12.33
+    },
+    {
+      "file": "M05_кулачок_SG90_MG90S.stl",
+      "extents_mm": [
+        97.0,
+        97.0,
+        5.4
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 34.55
+    },
+    {
+      "file": "M06_крышка_кулачка.stl",
+      "extents_mm": [
+        101.2,
+        105.4,
+        2.4
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 20.1
+    },
+    {
+      "file": "M07_ролик_толкателя.stl",
+      "extents_mm": [
+        6.0,
+        6.0,
+        5.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 0.1
+    },
+    {
+      "file": "M08_входной_мост.stl",
+      "extents_mm": [
+        7.0,
+        85.0,
+        72.9
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 18.19
+    },
+    {
+      "file": "M09_опорная_втулка_кулачка.stl",
+      "extents_mm": [
+        8.55,
+        11.0,
+        5.65
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 0.16
+    },
+    {
+      "file": "A04U_замок_верхнего_ската_14град.stl",
+      "extents_mm": [
+        22.0,
+        14.0,
+        20.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 4.69
+    },
+    {
+      "file": "A04L_замок_нижнего_ската_15град.stl",
+      "extents_mm": [
+        22.0,
+        14.0,
+        20.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 4.68
+    },
+    {
+      "file": "T01_КУПОН_зазоры_направляющей.stl",
+      "extents_mm": [
+        86.0,
+        34.0,
+        13.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 13.32
+    },
+    {
+      "file": "T02_КУПОН_карман_качалки.stl",
+      "extents_mm": [
+        118.0,
+        30.0,
+        3.2
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 9.66
+    },
+    {
+      "file": "T03_КУПОН_втулка_кулачок_ролик.stl",
+      "extents_mm": [
+        132.0,
+        50.0,
+        4.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 24.08
+    },
+    {
+      "file": "B01_клин_балки_15град.stl",
+      "extents_mm": [
+        46.0,
+        25.0,
+        16.55
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 9.77
+    }
+  ],
+  "assembly_parts": [
+    {
+      "file": "tray.stl",
+      "extents_mm": [
+        78.4,
+        135.0,
+        32.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 48.17
+    },
+    {
+      "file": "drive_frame.stl",
+      "extents_mm": [
+        72.4,
+        96.4,
+        88.2
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 22.31
+    },
+    {
+      "file": "front_blade_ref.stl",
+      "extents_mm": [
+        72.0,
+        8.2,
+        52.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 12.33
+    },
+    {
+      "file": "rear_blade_ref.stl",
+      "extents_mm": [
+        72.0,
+        8.2,
+        52.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 12.33
+    },
+    {
+      "file": "cam_home.stl",
+      "extents_mm": [
+        5.4,
+        97.0,
+        97.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 34.55
+    },
+    {
+      "file": "cam_cover.stl",
+      "extents_mm": [
+        2.4,
+        105.4,
+        101.2
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 20.1
+    },
+    {
+      "file": "follower_roller.stl",
+      "extents_mm": [
+        5.0,
+        6.0,
+        6.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 0.1
+    },
+    {
+      "file": "follower_screw.stl",
+      "extents_mm": [
+        13.7,
+        6.0,
+        6.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 0.14
+    },
+    {
+      "file": "input_bridge.stl",
+      "extents_mm": [
+        72.9,
+        85.0,
+        7.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 18.19
+    },
+    {
+      "file": "cam_support_bushing.stl",
+      "extents_mm": [
+        5.65,
+        34.4,
+        60.55
+      ],
+      "watertight": true,
+      "components": 2,
+      "volume_cm3": 0.3
+    },
+    {
+      "file": "cassette_lock_upper_14deg.stl",
+      "extents_mm": [
+        22.0,
+        20.0,
+        14.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 4.69
+    },
+    {
+      "file": "cassette_lock_lower_15deg.stl",
+      "extents_mm": [
+        22.0,
+        20.0,
+        14.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 4.68
+    },
+    {
+      "file": "cassette_lower_sheet.stl",
+      "extents_mm": [
+        551.04,
+        391.0,
+        151.24
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 890.32
+    },
+    {
+      "file": "cassette_upper_sheet.stl",
+      "extents_mm": [
+        535.97,
+        391.0,
+        137.27
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 862.13
+    },
+    {
+      "file": "cassette_divider.stl",
+      "extents_mm": [
+        590.0,
+        4.0,
+        390.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 901.07
+    },
+    {
+      "file": "servo_body.stl",
+      "extents_mm": [
+        34.1,
+        15.0,
+        32.5
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 9.51
+    },
+    {
+      "file": "servo_shaft.stl",
+      "extents_mm": [
+        5.0,
+        4.7,
+        4.7
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 0.09
+    },
+    {
+      "file": "servo_horn.stl",
+      "extents_mm": [
+        1.8,
+        7.4,
+        35.6
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 0.34
+    },
+    {
+      "file": "servo_screw.stl",
+      "extents_mm": [
+        8.2,
+        4.4,
+        4.4
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 0.04
+    },
+    {
+      "file": "m4_tray_flathead_screws.stl",
+      "extents_mm": [
+        62.9,
+        26.9,
+        16.0
+      ],
+      "watertight": true,
+      "components": 4,
+      "volume_cm3": 0.91
+    },
+    {
+      "file": "m3_frame_flathead_screws.stl",
+      "extents_mm": [
+        41.8,
+        59.3,
+        12.0
+      ],
+      "watertight": true,
+      "components": 4,
+      "volume_cm3": 0.39
+    },
+    {
+      "file": "m3_bridge_flathead_screws.stl",
+      "extents_mm": [
+        42.8,
+        6.8,
+        12.0
+      ],
+      "watertight": true,
+      "components": 2,
+      "volume_cm3": 0.2
+    },
+    {
+      "file": "support_beam_2040.stl",
+      "extents_mm": [
+        43.81,
+        455.0,
+        29.67
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 147.42
+    },
+    {
+      "file": "support_wedges_pair.stl",
+      "extents_mm": [
+        46.0,
+        455.0,
+        16.55
+      ],
+      "watertight": true,
+      "components": 2,
+      "volume_cm3": 19.55
+    },
+    {
+      "file": "support_brackets_pair.stl",
+      "extents_mm": [
+        135.0,
+        450.0,
+        80.92
+      ],
+      "watertight": true,
+      "components": 2,
+      "volume_cm3": 107.96
+    },
+    {
+      "file": "plinth_reference.stl",
+      "extents_mm": [
+        600.0,
+        470.0,
+        100.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 27485.4
+    },
+    {
+      "file": "one_lane_HOME.stl",
+      "extents_mm": [
+        78.4,
+        210.0,
+        133.7
+      ],
+      "watertight": true,
+      "components": 7,
+      "volume_cm3": 179.41
+    },
+    {
+      "file": "one_lane_REAR_CLOSED.stl",
+      "extents_mm": [
+        78.4,
+        210.0,
+        133.7
+      ],
+      "watertight": false,
+      "components": 11,
+      "volume_cm3": 179.42
+    },
+    {
+      "file": "one_lane_BOTH_CLOSED.stl",
+      "extents_mm": [
+        78.4,
+        210.0,
+        133.7
+      ],
+      "watertight": false,
+      "components": 11,
+      "volume_cm3": 179.42
+    },
+    {
+      "file": "one_lane_EJECT.stl",
+      "extents_mm": [
+        78.4,
+        210.0,
+        133.7
+      ],
+      "watertight": false,
+      "components": 11,
+      "volume_cm3": 179.38
+    },
+    {
+      "file": "one_lane_HOME_with_3_cans.stl",
+      "extents_mm": [
+        78.4,
+        216.7,
+        152.8
+      ],
+      "watertight": false,
+      "components": 8,
+      "volume_cm3": 548.4
+    }
+  ],
+  "warning": "Print one channel first. Production release requires a 300-cycle physical test with measured cans."
+}

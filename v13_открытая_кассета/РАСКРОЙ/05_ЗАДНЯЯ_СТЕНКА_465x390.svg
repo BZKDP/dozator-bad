@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="513.0mm" height="455mm" viewBox="0 0 513.0 455">
+<style>.cut{fill:none;stroke:#d94841;stroke-width:.35;fill-rule:evenodd}.score{stroke:#1677aa;stroke-width:.3;stroke-dasharray:4 2}.t{font:bold 5px Arial}.n{font:4px Arial}</style>
+<text x="24" y="9" class="t">V13 · Задняя стенка · 1 шт. · картон 5 мм</text>
+<g transform="translate(24,24)"><path d="M 0.000,390.000 L 0.000,0.000 L 465.000,0.000 L 465.000,390.000 L 355.300,390.000 L 355.300,195.000 L 349.700,195.000 L 349.700,390.000 L 275.300,390.000 L 275.300,195.000 L 269.700,195.000 L 269.700,390.000 L 195.300,390.000 L 195.300,195.000 L 189.700,195.000 L 189.700,390.000 L 115.300,390.000 L 115.300,195.000 L 109.700,195.000 L 109.700,390.000 L 0.000,390.000 Z" class="cut"/></g>
+<line x1="54.0" y1="24" x2="54.0" y2="414" class="score"/><line x1="459.0" y1="24" x2="459.0" y2="414" class="score"/>
+<text x="24" y="425" class="t">Заготовка 465×390; центр 405; крылья 30+30 мм.</text>
+<text x="24" y="434" class="n">Красная = рез; синяя пунктирная = биговка/линия сгиба.</text>
+</svg>

@@ -1,0 +1,1463 @@
+{
+  "name": "V11 A — верхнее коромысло",
+  "status": "PROTOTYPE_FOR_COMPARISON",
+  "prototype": true,
+  "production_ready": false,
+  "prototype_ready_for_one_lane_test": true,
+  "path_base": ".",
+  "path_base_definition": "directory containing manifest_A.json",
+  "path_roots": {
+    "print_files[].file": "STL_ПЕЧАТЬ",
+    "assembly_files[].file": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ",
+    "viewer_assets[].items[].file": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ",
+    "plate_3mf and validation_report": ".",
+    "explicit paths with directories": "."
+  },
+  "parameters_mm_deg": {
+    "status": "PROTOTYPE_FOR_COMPARISON",
+    "can_length": 70.0,
+    "can_diameter_nominal": 47.0,
+    "can_diameter_design": 48.0,
+    "lane_clear": 75.0,
+    "lane_pitch": 79.0,
+    "lane_count": 5,
+    "divider_thickness": 4.0,
+    "lower_deck_angle_deg": 15.0,
+    "cassette_lower_sheet_length": 569.402,
+    "cassette_inside_width": 391.0,
+    "sheet_thickness": 4.0,
+    "sheet_front_edge_u": 80.0,
+    "box_inside_depth": 600.0,
+    "box_inside_width": 395.0,
+    "shelf_supported_depth": 390.0,
+    "rocker_pivot_u": 0.0,
+    "rocker_pivot_n": 41.516266235,
+    "active_gate_half_spacing": 22.421828949,
+    "active_finger_n": 33.868097522,
+    "rocker_home_deg": -22.0,
+    "rocker_eject_deg": 22.0,
+    "rocker_stop_extra_deg": 0.2,
+    "finger_radius": 2.0,
+    "finger_reach": 19.4,
+    "rocker_plate_thickness": 2.2,
+    "can_axis_y_offset": 2.2,
+    "servo_axis_u": -2.774081347,
+    "servo_axis_n": 65.392355356,
+    "servo_horn_radius": 9.0,
+    "servo_home_geom_deg": -107.941574178,
+    "servo_direction": -1.0,
+    "servo_motion_deg": 83.699615607,
+    "rocker_crank_radius": 16.578964743,
+    "rocker_crank_angle_deg": 90.491554673,
+    "link_length": 11.625516263,
+    "bed_x": 220.0,
+    "bed_y": 220.0,
+    "bed_margin": 5.0
+  },
+  "states": {
+    "HOME": {
+      "servo_deg": 0.0,
+      "rocker_deg": -22.0
+    },
+    "MID": {
+      "servo_deg": 41.849808,
+      "rocker_deg": -3.032872
+    },
+    "EJECT": {
+      "servo_deg": 83.699616,
+      "rocker_deg": 22.0
+    }
+  },
+  "print_parts_count": {
+    "per_lane": 4,
+    "for_5_lanes": 20
+  },
+  "print_parts_count_per_lane": 4,
+  "print_parts_count_for_5_lanes": 20,
+  "fasteners_count": {
+    "per_lane_total_including_stock_spline_screw": 5,
+    "user_added_per_lane": 4
+  },
+  "fasteners_count_per_lane": 5,
+  "fasteners_breakdown_per_lane": {
+    "M4_pivot": 1,
+    "M4_attachment": 2,
+    "M2_horn_link": 1,
+    "stock_servo_spline_screw": 1
+  },
+  "supports": "none",
+  "brim_mm": 4.0,
+  "adhesion_note": "Brim 4 mm required for tall A01; verified plate edge and part spacing remain clear.",
+  "assembly_operations": {
+    "count_before_attachment": 6,
+    "steps": [
+      "Осмотреть и снять только заусенцы с четырёх печатных деталей.",
+      "Защёлкнуть SG90/MG90S в A01.",
+      "Поставить A02 на один главный M4 pivot.",
+      "Защёлкнуть большой конец A03 на палец A02.",
+      "Закрепить малый конец A03 одним M2 шарнирным винтом/пальцем с гладкой рабочей шейкой во внешнем отверстии штатного horn.",
+      "Выставить HOME и закрепить штатный horn штатным винтом на шлице сервы."
+    ]
+  },
+  "attachment_operations": {
+    "count": 2,
+    "steps": [
+      "Одним движением завести A01 сверху и A04 снизу на общую переднюю кромку ската.",
+      "Вставить два комплекта M4×16 с самоконтрящимися гайками и равномерно попеременно затянуть их за торцом листа."
+    ]
+  },
+  "action_counting_basis": "one deliberate assembly step with one outcome; matched identical parts or fasteners handled in that step count as one grouped macro-operation; wiring is separate",
+  "total_operations_print_removal_to_mounted_per_lane": 8,
+  "assembly_operations_per_lane": 6,
+  "attachment_operations_per_lane": 2,
+  "stock_horn": true,
+  "separate_beam_or_plinth": false,
+  "print_files": [
+    {
+      "file": "A01_рама_верхнего_коромысла.stl",
+      "extents_mm": [
+        106.141,
+        99.892,
+        68.0
+      ],
+      "bounds_mm": [
+        [
+          -13.891,
+          -91.392,
+          0.0
+        ],
+        [
+          92.25,
+          8.5,
+          68.0
+        ]
+      ],
+      "watertight": true,
+      "is_volume": true,
+      "components": 1,
+      "euler_number": -14,
+      "boundary_edges": 0,
+      "overused_edges": 0,
+      "volume_cm3": 14.681
+    },
+    {
+      "file": "A02_коромысло_с_2_пальцами.stl",
+      "extents_mm": [
+        56.108,
+        37.678,
+        23.6
+      ],
+      "bounds_mm": [
+        [
+          -28.054,
+          -62.195,
+          0.0
+        ],
+        [
+          28.054,
+          -24.516,
+          23.6
+        ]
+      ],
+      "watertight": true,
+      "is_volume": true,
+      "components": 1,
+      "euler_number": 0,
+      "boundary_edges": 0,
+      "overused_edges": 0,
+      "volume_cm3": 2.069
+    },
+    {
+      "file": "A03_короткая_тяга_12мм.stl",
+      "extents_mm": [
+        18.026,
+        6.4,
+        2.0
+      ],
+      "bounds_mm": [
+        [
+          -3.2,
+          -3.2,
+          -0.0
+        ],
+        [
+          14.826,
+          3.2,
+          2.0
+        ]
+      ],
+      "watertight": true,
+      "is_volume": true,
+      "components": 1,
+      "euler_number": -2,
+      "boundary_edges": 0,
+      "overused_edges": 0,
+      "volume_cm3": 0.178
+    },
+    {
+      "file": "A04_нижний_прижим_ската.stl",
+      "extents_mm": [
+        20.0,
+        64.0,
+        4.8
+      ],
+      "bounds_mm": [
+        [
+          72.0,
+          -32.0,
+          0.0
+        ],
+        [
+          92.0,
+          32.0,
+          4.8
+        ]
+      ],
+      "watertight": true,
+      "is_volume": true,
+      "components": 1,
+      "euler_number": -2,
+      "boundary_edges": 0,
+      "overused_edges": 0,
+      "volume_cm3": 5.101
+    }
+  ],
+  "assembly_files": [
+    {
+      "file": "A_ОДИН_КАНАЛ_HOME_3_банки.stl",
+      "extents_mm": [
+        590.518,
+        391.0,
+        390.0
+      ],
+      "bounds_mm": [
+        [
+          -0.0,
+          2.0,
+          -0.0
+        ],
+        [
+          590.518,
+          393.0,
+          390.0
+        ]
+      ],
+      "watertight": false,
+      "is_volume": false,
+      "components": 12,
+      "euler_number": -24,
+      "boundary_edges": 0,
+      "overused_edges": 2,
+      "volume_cm3": 3101.239
+    },
+    {
+      "file": "A_ОДИН_КАНАЛ_MID_3_банки.stl",
+      "extents_mm": [
+        590.518,
+        391.0,
+        390.0
+      ],
+      "bounds_mm": [
+        [
+          -0.0,
+          2.0,
+          -0.0
+        ],
+        [
+          590.518,
+          393.0,
+          390.0
+        ]
+      ],
+      "watertight": false,
+      "is_volume": false,
+      "components": 12,
+      "euler_number": -24,
+      "boundary_edges": 0,
+      "overused_edges": 2,
+      "volume_cm3": 3101.239
+    },
+    {
+      "file": "A_ОДИН_КАНАЛ_EJECT_3_банки.stl",
+      "extents_mm": [
+        603.666,
+        391.0,
+        429.727
+      ],
+      "bounds_mm": [
+        [
+          -13.149,
+          2.0,
+          -39.727
+        ],
+        [
+          590.518,
+          393.0,
+          390.0
+        ]
+      ],
+      "watertight": false,
+      "is_volume": false,
+      "components": 12,
+      "euler_number": -23,
+      "boundary_edges": 0,
+      "overused_edges": 1,
+      "volume_cm3": 3101.239
+    },
+    {
+      "file": "A_5_КАНАЛОВ_HOME.stl",
+      "extents_mm": [
+        590.518,
+        391.0,
+        390.0
+      ],
+      "bounds_mm": [
+        [
+          -0.0,
+          2.0,
+          -0.0
+        ],
+        [
+          590.518,
+          393.0,
+          390.0
+        ]
+      ],
+      "watertight": false,
+      "is_volume": false,
+      "components": 50,
+      "euler_number": -84,
+      "boundary_edges": 0,
+      "overused_edges": 10,
+      "volume_cm3": 6539.18
+    },
+    {
+      "file": "A_КРЕПЛЕНИЕ_КОРОБКА_НАВИСАЕТ_НАД_ПОЛКОЙ.stl",
+      "extents_mm": [
+        595.0,
+        455.0,
+        459.0
+      ],
+      "bounds_mm": [
+        [
+          -0.0,
+          -30.0,
+          -69.0
+        ],
+        [
+          595.0,
+          425.0,
+          390.0
+        ]
+      ],
+      "watertight": false,
+      "is_volume": false,
+      "components": 55,
+      "euler_number": -74,
+      "boundary_edges": 0,
+      "overused_edges": 10,
+      "volume_cm3": 12382.78
+    }
+  ],
+  "viewer_assets": [
+    {
+      "filename": "A_VIEW_HOME_frame.stl",
+      "role": "frame",
+      "state": "HOME",
+      "color": "#4F83CC",
+      "mesh": {
+        "file": "A_VIEW_HOME_frame.stl",
+        "extents_mm": [
+          95.798,
+          68.0,
+          121.151
+        ],
+        "bounds_mm": [
+          [
+            26.495,
+            162.5,
+            3.149
+          ],
+          [
+            122.293,
+            230.5,
+            124.3
+          ]
+        ],
+        "watertight": true,
+        "is_volume": true,
+        "components": 1,
+        "euler_number": -14,
+        "boundary_edges": 0,
+        "overused_edges": 0,
+        "volume_cm3": 14.681
+      }
+    },
+    {
+      "filename": "A_VIEW_HOME_clamp.stl",
+      "role": "clamp",
+      "state": "HOME",
+      "color": "#5BA0DF",
+      "mesh": {
+        "file": "A_VIEW_HOME_clamp.stl",
+        "extents_mm": [
+          20.354,
+          64.0,
+          9.813
+        ],
+        "bounds_mm": [
+          [
+            29.185,
+            165.5,
+            0.851
+          ],
+          [
+            49.539,
+            229.5,
+            10.663
+          ]
+        ],
+        "watertight": true,
+        "is_volume": true,
+        "components": 1,
+        "euler_number": -2,
+        "boundary_edges": 0,
+        "overused_edges": 0,
+        "volume_cm3": 5.101
+      }
+    },
+    {
+      "filename": "A_VIEW_HOME_rocker.stl",
+      "role": "rocker",
+      "state": "HOME",
+      "color": "#FF8A2B",
+      "mesh": {
+        "file": "A_VIEW_HOME_rocker.stl",
+        "extents_mm": [
+          46.581,
+          23.6,
+          37.27
+        ],
+        "bounds_mm": [
+          [
+            81.933,
+            160.25,
+            55.866
+          ],
+          [
+            128.514,
+            183.85,
+            93.136
+          ]
+        ],
+        "watertight": true,
+        "is_volume": true,
+        "components": 1,
+        "euler_number": 0,
+        "boundary_edges": 0,
+        "overused_edges": 0,
+        "volume_cm3": 2.069
+      }
+    },
+    {
+      "filename": "A_VIEW_HOME_link.stl",
+      "role": "link",
+      "state": "HOME",
+      "color": "#E8CF42",
+      "mesh": {
+        "file": "A_VIEW_HOME_link.stl",
+        "extents_mm": [
+          17.657,
+          2.0,
+          9.302
+        ],
+        "bounds_mm": [
+          [
+            92.948,
+            166.6,
+            83.583
+          ],
+          [
+            110.605,
+            168.6,
+            92.884
+          ]
+        ],
+        "watertight": true,
+        "is_volume": true,
+        "components": 1,
+        "euler_number": -2,
+        "boundary_edges": 0,
+        "overused_edges": 0,
+        "volume_cm3": 0.178
+      }
+    },
+    {
+      "filename": "A_VIEW_HOME_servo.stl",
+      "role": "servo",
+      "state": "HOME",
+      "color": "#325A96",
+      "mesh": {
+        "file": "A_VIEW_HOME_servo.stl",
+        "extents_mm": [
+          32.891,
+          17.6,
+          30.734
+        ],
+        "bounds_mm": [
+          [
+            76.076,
+            161.3,
+            90.374
+          ],
+          [
+            108.967,
+            178.9,
+            121.109
+          ]
+        ],
+        "watertight": true,
+        "is_volume": true,
+        "components": 1,
+        "euler_number": 2,
+        "boundary_edges": 0,
+        "overused_edges": 0,
+        "volume_cm3": 7.214
+      }
+    },
+    {
+      "filename": "A_VIEW_HOME_horn.stl",
+      "role": "horn",
+      "state": "HOME",
+      "color": "#D8DCE3",
+      "mesh": {
+        "file": "A_VIEW_HOME_horn.stl",
+        "extents_mm": [
+          21.357,
+          1.5,
+          30.516
+        ],
+        "bounds_mm": [
+          [
+            91.833,
+            164.8,
+            81.98
+          ],
+          [
+            113.19,
+            166.3,
+            112.495
+          ]
+        ],
+        "watertight": true,
+        "is_volume": true,
+        "components": 1,
+        "euler_number": -2,
+        "boundary_edges": 0,
+        "overused_edges": 0,
+        "volume_cm3": 0.241
+      }
+    },
+    {
+      "filename": "A_VIEW_HOME_lower_sheet.stl",
+      "role": "lower_sheet",
+      "state": "HOME",
+      "color": "#B48750",
+      "mesh": {
+        "file": "A_VIEW_HOME_lower_sheet.stl",
+        "extents_mm": [
+          551.035,
+          391.0,
+          151.236
+        ],
+        "bounds_mm": [
+          [
+            39.482,
+            2.0,
+            8.786
+          ],
+          [
+            590.518,
+            393.0,
+            160.022
+          ]
+        ],
+        "watertight": true,
+        "is_volume": true,
+        "components": 1,
+        "euler_number": -6,
+        "boundary_edges": 0,
+        "overused_edges": 0,
+        "volume_cm3": 890.325
+      }
+    },
+    {
+      "filename": "A_VIEW_HOME_can_1.stl",
+      "role": "can_1",
+      "state": "HOME",
+      "color": "#2FBD79",
+      "mesh": {
+        "file": "A_VIEW_HOME_can_1.stl",
+        "extents_mm": [
+          48.0,
+          70.0,
+          48.0
+        ],
+        "bounds_mm": [
+          [
+            88.122,
+            164.7,
+            32.96
+          ],
+          [
+            136.122,
+            234.7,
+            80.96
+          ]
+        ],
+        "watertight": true,
+        "is_volume": true,
+        "components": 1,
+        "euler_number": 2,
+        "boundary_edges": 0,
+        "overused_edges": 0,
+        "volume_cm3": 126.508
+      }
+    },
+    {
+      "filename": "A_VIEW_HOME_can_2.stl",
+      "role": "can_2",
+      "state": "HOME",
+      "color": "#35C984",
+      "mesh": {
+        "file": "A_VIEW_HOME_can_2.stl",
+        "extents_mm": [
+          48.0,
+          70.0,
+          48.0
+        ],
+        "bounds_mm": [
+          [
+            134.486,
+            164.7,
+            45.383
+          ],
+          [
+            182.486,
+            234.7,
+            93.383
+          ]
+        ],
+        "watertight": true,
+        "is_volume": true,
+        "components": 1,
+        "euler_number": 2,
+        "boundary_edges": 0,
+        "overused_edges": 0,
+        "volume_cm3": 126.508
+      }
+    },
+    {
+      "filename": "A_VIEW_HOME_can_3.stl",
+      "role": "can_3",
+      "state": "HOME",
+      "color": "#45D994",
+      "mesh": {
+        "file": "A_VIEW_HOME_can_3.stl",
+        "extents_mm": [
+          48.0,
+          70.0,
+          48.0
+        ],
+        "bounds_mm": [
+          [
+            180.851,
+            164.7,
+            57.807
+          ],
+          [
+            228.851,
+            234.7,
+            105.807
+          ]
+        ],
+        "watertight": true,
+        "is_volume": true,
+        "components": 1,
+        "euler_number": 2,
+        "boundary_edges": 0,
+        "overused_edges": 0,
+        "volume_cm3": 126.508
+      }
+    },
+    {
+      "filename": "A_VIEW_MID_frame.stl",
+      "role": "frame",
+      "state": "MID",
+      "color": "#4F83CC",
+      "mesh": {
+        "file": "A_VIEW_MID_frame.stl",
+        "extents_mm": [
+          95.798,
+          68.0,
+          121.151
+        ],
+        "bounds_mm": [
+          [
+            26.495,
+            162.5,
+            3.149
+          ],
+          [
+            122.293,
+            230.5,
+            124.3
+          ]
+        ],
+        "watertight": true,
+        "is_volume": true,
+        "components": 1,
+        "euler_number": -14,
+        "boundary_edges": 0,
+        "overused_edges": 0,
+        "volume_cm3": 14.681
+      }
+    },
+    {
+      "filename": "A_VIEW_MID_clamp.stl",
+      "role": "clamp",
+      "state": "MID",
+      "color": "#5BA0DF",
+      "mesh": {
+        "file": "A_VIEW_MID_clamp.stl",
+        "extents_mm": [
+          20.354,
+          64.0,
+          9.813
+        ],
+        "bounds_mm": [
+          [
+            29.185,
+            165.5,
+            0.851
+          ],
+          [
+            49.539,
+            229.5,
+            10.663
+          ]
+        ],
+        "watertight": true,
+        "is_volume": true,
+        "components": 1,
+        "euler_number": -2,
+        "boundary_edges": 0,
+        "overused_edges": 0,
+        "volume_cm3": 5.101
+      }
+    },
+    {
+      "filename": "A_VIEW_MID_rocker.stl",
+      "role": "rocker",
+      "state": "MID",
+      "color": "#FF8A2B",
+      "mesh": {
+        "file": "A_VIEW_MID_rocker.stl",
+        "extents_mm": [
+          53.783,
+          23.6,
+          36.22
+        ],
+        "bounds_mm": [
+          [
+            78.714,
+            160.25,
+            57.145
+          ],
+          [
+            132.497,
+            183.85,
+            93.365
+          ]
+        ],
+        "watertight": true,
+        "is_volume": true,
+        "components": 1,
+        "euler_number": 0,
+        "boundary_edges": 0,
+        "overused_edges": 0,
+        "volume_cm3": 2.069
+      }
+    },
+    {
+      "filename": "A_VIEW_MID_link.stl",
+      "role": "link",
+      "state": "MID",
+      "color": "#E8CF42",
+      "mesh": {
+        "file": "A_VIEW_MID_link.stl",
+        "extents_mm": [
+          16.58,
+          2.0,
+          12.01
+        ],
+        "bounds_mm": [
+          [
+            97.815,
+            166.6,
+            86.066
+          ],
+          [
+            114.395,
+            168.6,
+            98.076
+          ]
+        ],
+        "watertight": true,
+        "is_volume": true,
+        "components": 1,
+        "euler_number": -2,
+        "boundary_edges": 0,
+        "overused_edges": 0,
+        "volume_cm3": 0.178
+      }
+    },
+    {
+      "filename": "A_VIEW_MID_servo.stl",
+      "role": "servo",
+      "state": "MID",
+      "color": "#325A96",
+      "mesh": {
+        "file": "A_VIEW_MID_servo.stl",
+        "extents_mm": [
+          32.891,
+          17.6,
+          30.734
+        ],
+        "bounds_mm": [
+          [
+            76.076,
+            161.3,
+            90.374
+          ],
+          [
+            108.967,
+            178.9,
+            121.109
+          ]
+        ],
+        "watertight": true,
+        "is_volume": true,
+        "components": 1,
+        "euler_number": 2,
+        "boundary_edges": 0,
+        "overused_edges": 0,
+        "volume_cm3": 7.214
+      }
+    },
+    {
+      "filename": "A_VIEW_MID_horn.stl",
+      "role": "horn",
+      "state": "MID",
+      "color": "#D8DCE3",
+      "mesh": {
+        "file": "A_VIEW_MID_horn.stl",
+        "extents_mm": [
+          34.414,
+          1.5,
+          12.632
+        ],
+        "bounds_mm": [
+          [
+            85.304,
+            164.8,
+            90.921
+          ],
+          [
+            119.718,
+            166.3,
+            103.554
+          ]
+        ],
+        "watertight": true,
+        "is_volume": true,
+        "components": 1,
+        "euler_number": -2,
+        "boundary_edges": 0,
+        "overused_edges": 0,
+        "volume_cm3": 0.241
+      }
+    },
+    {
+      "filename": "A_VIEW_MID_lower_sheet.stl",
+      "role": "lower_sheet",
+      "state": "MID",
+      "color": "#B48750",
+      "mesh": {
+        "file": "A_VIEW_MID_lower_sheet.stl",
+        "extents_mm": [
+          551.035,
+          391.0,
+          151.236
+        ],
+        "bounds_mm": [
+          [
+            39.482,
+            2.0,
+            8.786
+          ],
+          [
+            590.518,
+            393.0,
+            160.022
+          ]
+        ],
+        "watertight": true,
+        "is_volume": true,
+        "components": 1,
+        "euler_number": -6,
+        "boundary_edges": 0,
+        "overused_edges": 0,
+        "volume_cm3": 890.325
+      }
+    },
+    {
+      "filename": "A_VIEW_MID_can_1.stl",
+      "role": "can_1",
+      "state": "MID",
+      "color": "#2FBD79",
+      "mesh": {
+        "file": "A_VIEW_MID_can_1.stl",
+        "extents_mm": [
+          48.0,
+          70.0,
+          48.0
+        ],
+        "bounds_mm": [
+          [
+            88.122,
+            164.7,
+            32.96
+          ],
+          [
+            136.122,
+            234.7,
+            80.96
+          ]
+        ],
+        "watertight": true,
+        "is_volume": true,
+        "components": 1,
+        "euler_number": 2,
+        "boundary_edges": 0,
+        "overused_edges": 0,
+        "volume_cm3": 126.508
+      }
+    },
+    {
+      "filename": "A_VIEW_MID_can_2.stl",
+      "role": "can_2",
+      "state": "MID",
+      "color": "#35C984",
+      "mesh": {
+        "file": "A_VIEW_MID_can_2.stl",
+        "extents_mm": [
+          48.0,
+          70.0,
+          48.0
+        ],
+        "bounds_mm": [
+          [
+            134.486,
+            164.7,
+            45.383
+          ],
+          [
+            182.486,
+            234.7,
+            93.383
+          ]
+        ],
+        "watertight": true,
+        "is_volume": true,
+        "components": 1,
+        "euler_number": 2,
+        "boundary_edges": 0,
+        "overused_edges": 0,
+        "volume_cm3": 126.508
+      }
+    },
+    {
+      "filename": "A_VIEW_MID_can_3.stl",
+      "role": "can_3",
+      "state": "MID",
+      "color": "#45D994",
+      "mesh": {
+        "file": "A_VIEW_MID_can_3.stl",
+        "extents_mm": [
+          48.0,
+          70.0,
+          48.0
+        ],
+        "bounds_mm": [
+          [
+            180.851,
+            164.7,
+            57.807
+          ],
+          [
+            228.851,
+            234.7,
+            105.807
+          ]
+        ],
+        "watertight": true,
+        "is_volume": true,
+        "components": 1,
+        "euler_number": 2,
+        "boundary_edges": 0,
+        "overused_edges": 0,
+        "volume_cm3": 126.508
+      }
+    },
+    {
+      "filename": "A_VIEW_EJECT_frame.stl",
+      "role": "frame",
+      "state": "EJECT",
+      "color": "#4F83CC",
+      "mesh": {
+        "file": "A_VIEW_EJECT_frame.stl",
+        "extents_mm": [
+          95.798,
+          68.0,
+          121.151
+        ],
+        "bounds_mm": [
+          [
+            26.495,
+            162.5,
+            3.149
+          ],
+          [
+            122.293,
+            230.5,
+            124.3
+          ]
+        ],
+        "watertight": true,
+        "is_volume": true,
+        "components": 1,
+        "euler_number": -14,
+        "boundary_edges": 0,
+        "overused_edges": 0,
+        "volume_cm3": 14.681
+      }
+    },
+    {
+      "filename": "A_VIEW_EJECT_clamp.stl",
+      "role": "clamp",
+      "state": "EJECT",
+      "color": "#5BA0DF",
+      "mesh": {
+        "file": "A_VIEW_EJECT_clamp.stl",
+        "extents_mm": [
+          20.354,
+          64.0,
+          9.813
+        ],
+        "bounds_mm": [
+          [
+            29.185,
+            165.5,
+            0.851
+          ],
+          [
+            49.539,
+            229.5,
+            10.663
+          ]
+        ],
+        "watertight": true,
+        "is_volume": true,
+        "components": 1,
+        "euler_number": -2,
+        "boundary_edges": 0,
+        "overused_edges": 0,
+        "volume_cm3": 5.101
+      }
+    },
+    {
+      "filename": "A_VIEW_EJECT_rocker.stl",
+      "role": "rocker",
+      "state": "EJECT",
+      "color": "#FF8A2B",
+      "mesh": {
+        "file": "A_VIEW_EJECT_rocker.stl",
+        "extents_mm": [
+          55.755,
+          23.6,
+          37.433
+        ],
+        "bounds_mm": [
+          [
+            78.294,
+            160.25,
+            56.561
+          ],
+          [
+            134.049,
+            183.85,
+            93.994
+          ]
+        ],
+        "watertight": true,
+        "is_volume": true,
+        "components": 1,
+        "euler_number": 0,
+        "boundary_edges": 0,
+        "overused_edges": 0,
+        "volume_cm3": 2.069
+      }
+    },
+    {
+      "filename": "A_VIEW_EJECT_link.stl",
+      "role": "link",
+      "state": "EJECT",
+      "color": "#E8CF42",
+      "mesh": {
+        "file": "A_VIEW_EJECT_link.stl",
+        "extents_mm": [
+          8.783,
+          2.0,
+          17.778
+        ],
+        "bounds_mm": [
+          [
+            104.973,
+            166.6,
+            86.695
+          ],
+          [
+            113.756,
+            168.6,
+            104.473
+          ]
+        ],
+        "watertight": true,
+        "is_volume": true,
+        "components": 1,
+        "euler_number": -2,
+        "boundary_edges": 0,
+        "overused_edges": 0,
+        "volume_cm3": 0.178
+      }
+    },
+    {
+      "filename": "A_VIEW_EJECT_servo.stl",
+      "role": "servo",
+      "state": "EJECT",
+      "color": "#325A96",
+      "mesh": {
+        "file": "A_VIEW_EJECT_servo.stl",
+        "extents_mm": [
+          32.891,
+          17.6,
+          30.734
+        ],
+        "bounds_mm": [
+          [
+            76.076,
+            161.3,
+            90.374
+          ],
+          [
+            108.967,
+            178.9,
+            121.109
+          ]
+        ],
+        "watertight": true,
+        "is_volume": true,
+        "components": 1,
+        "euler_number": 2,
+        "boundary_edges": 0,
+        "overused_edges": 0,
+        "volume_cm3": 7.214
+      }
+    },
+    {
+      "filename": "A_VIEW_EJECT_horn.stl",
+      "role": "horn",
+      "state": "EJECT",
+      "color": "#D8DCE3",
+      "mesh": {
+        "file": "A_VIEW_EJECT_horn.stl",
+        "extents_mm": [
+          32.209,
+          1.5,
+          18.4
+        ],
+        "bounds_mm": [
+          [
+            86.407,
+            164.8,
+            88.037
+          ],
+          [
+            118.616,
+            166.3,
+            106.438
+          ]
+        ],
+        "watertight": true,
+        "is_volume": true,
+        "components": 1,
+        "euler_number": -2,
+        "boundary_edges": 0,
+        "overused_edges": 0,
+        "volume_cm3": 0.241
+      }
+    },
+    {
+      "filename": "A_VIEW_EJECT_lower_sheet.stl",
+      "role": "lower_sheet",
+      "state": "EJECT",
+      "color": "#B48750",
+      "mesh": {
+        "file": "A_VIEW_EJECT_lower_sheet.stl",
+        "extents_mm": [
+          551.035,
+          391.0,
+          151.236
+        ],
+        "bounds_mm": [
+          [
+            39.482,
+            2.0,
+            8.786
+          ],
+          [
+            590.518,
+            393.0,
+            160.022
+          ]
+        ],
+        "watertight": true,
+        "is_volume": true,
+        "components": 1,
+        "euler_number": -6,
+        "boundary_edges": 0,
+        "overused_edges": 0,
+        "volume_cm3": 890.325
+      }
+    },
+    {
+      "filename": "A_VIEW_EJECT_can_1.stl",
+      "role": "can_1",
+      "state": "EJECT",
+      "color": "#2FBD79",
+      "mesh": {
+        "file": "A_VIEW_EJECT_can_1.stl",
+        "extents_mm": [
+          48.0,
+          70.0,
+          48.0
+        ],
+        "bounds_mm": [
+          [
+            -13.149,
+            164.7,
+            -39.727
+          ],
+          [
+            34.851,
+            234.7,
+            8.273
+          ]
+        ],
+        "watertight": true,
+        "is_volume": true,
+        "components": 1,
+        "euler_number": 2,
+        "boundary_edges": 0,
+        "overused_edges": 0,
+        "volume_cm3": 126.508
+      }
+    },
+    {
+      "filename": "A_VIEW_EJECT_can_2.stl",
+      "role": "can_2",
+      "state": "EJECT",
+      "color": "#35C984",
+      "mesh": {
+        "file": "A_VIEW_EJECT_can_2.stl",
+        "extents_mm": [
+          48.0,
+          70.0,
+          48.0
+        ],
+        "bounds_mm": [
+          [
+            131.437,
+            164.7,
+            44.567
+          ],
+          [
+            179.437,
+            234.7,
+            92.567
+          ]
+        ],
+        "watertight": true,
+        "is_volume": true,
+        "components": 1,
+        "euler_number": 2,
+        "boundary_edges": 0,
+        "overused_edges": 0,
+        "volume_cm3": 126.508
+      }
+    },
+    {
+      "filename": "A_VIEW_EJECT_can_3.stl",
+      "role": "can_3",
+      "state": "EJECT",
+      "color": "#45D994",
+      "mesh": {
+        "file": "A_VIEW_EJECT_can_3.stl",
+        "extents_mm": [
+          48.0,
+          70.0,
+          48.0
+        ],
+        "bounds_mm": [
+          [
+            177.802,
+            164.7,
+            56.99
+          ],
+          [
+            225.802,
+            234.7,
+            104.99
+          ]
+        ],
+        "watertight": true,
+        "is_volume": true,
+        "components": 1,
+        "euler_number": 2,
+        "boundary_edges": 0,
+        "overused_edges": 0,
+        "volume_cm3": 126.508
+      }
+    }
+  ],
+  "actual_stl_counts": {
+    "print_folder": 4,
+    "assembly_folder": 35
+  },
+  "exact_common_cassette_validation": {
+    "sources": [
+      {
+        "path": "../00_ОБЩАЯ_КОМПОНОВКА/STL_КАССЕТА_СБОРКА/cassette_lower_sheet.stl",
+        "sha256": "a139d99fce96895ee93f2346b14e14aa747d6b0896e7c75c78ecf0cb2931f404"
+      },
+      {
+        "path": "../00_ОБЩАЯ_КОМПОНОВКА/STL_КАССЕТА_СБОРКА/cassette_divider.stl",
+        "sha256": "cc19fa4ecf79f44e2ce96d72fd6fa4d5c24bcc6e6716a20a8d811255f44167cf"
+      }
+    ],
+    "pair_count": 450,
+    "states": [
+      "HOME",
+      "MID",
+      "EJECT"
+    ],
+    "lanes": 5,
+    "maximum_intersection_by_lane_mm3": {
+      "lane_1": 0.0,
+      "lane_2": 0.0,
+      "lane_3": 0.0,
+      "lane_4": 0.0,
+      "lane_5": 0.0
+    },
+    "pass": true
+  },
+  "moving_can_handoff_validation": {
+    "model": "can 1 follows front upstream boundary; packed can 2 transfers to rear upstream boundary; no friction/timing assumption",
+    "rear_contacts_packed_can2": {
+      "servo_deg": 51.830002,
+      "rocker_deg": 0.803088
+    },
+    "front_releases_can1": {
+      "servo_deg": 81.962157,
+      "rocker_deg": 17.818819
+    },
+    "positive_handoff_overlap_servo_deg": 30.132155,
+    "minimum_can1_centre_corridor_between_gates_mm": 11.439608,
+    "minimum_can1_can2_centre_spacing_after_transfer_mm": 48.0,
+    "required_can1_can2_centre_spacing_mm": 48.0,
+    "can1_downstream_of_rear_barrier_at_release_mm": 21.732018,
+    "retained_can2_centre_u_at_EJECT_mm": -46.476364,
+    "pass": true
+  },
+  "plate_3mf": "A_ПЛИТА_220x220_1_канал.3mf",
+  "validation_report": "ПРОТОТИП_ОТЧЕТ_ПРОВЕРКИ.json",
+  "force_validation": {
+    "full_22x200g_pass": false,
+    "full_22x100g_pass": true,
+    "11x200g_pass": true,
+    "strict_quasistatic_max_cans_200g": 12,
+    "recommended_initial_max_cans_200g": 8,
+    "strict_load_table": [
+      {
+        "mass_each_g": 50,
+        "strict_quasistatic_max_cans_at_0_06Nm": 22,
+        "peak_at_max_Nm": 0.026135,
+        "next_count": null,
+        "next_count_peak_Nm": null,
+        "physical_channel_capacity_cap": 22
+      },
+      {
+        "mass_each_g": 100,
+        "strict_quasistatic_max_cans_at_0_06Nm": 22,
+        "peak_at_max_Nm": 0.052271,
+        "next_count": null,
+        "next_count_peak_Nm": null,
+        "physical_channel_capacity_cap": 22
+      },
+      {
+        "mass_each_g": 200,
+        "strict_quasistatic_max_cans_at_0_06Nm": 12,
+        "peak_at_max_Nm": 0.057023,
+        "next_count": 13,
+        "next_count_peak_Nm": 0.061775,
+        "physical_channel_capacity_cap": 22
+      }
+    ],
+    "power_off_self_hold": false,
+    "report": "ПРОТОТИП_ОТЧЕТ_ПРОВЕРКИ.json"
+  },
+  "power_safety": {
+    "external_signal_pulldown": "10 kΩ from each servo signal to GND",
+    "hold_pwm_required": true,
+    "continuous_pwm_requirement": "while any can remains in the channel, valid calibrated 50 Hz PWM must remain continuously present in HOME, EJECT and during motion; servo power alone is not a holding command",
+    "startup": [
+      "servo 5 V OFF",
+      "boot ESP32 and hold all servo signal pins LOW",
+      "start valid 50 Hz PWM and command calibrated HOME",
+      "enable servo 5 V",
+      "load cans"
+    ],
+    "shutdown": [
+      "stop dispensing",
+      "command HOME",
+      "fully unload every can from the channel",
+      "disable servo 5 V",
+      "stop PWM only after servo 5 V is absent",
+      "power down controller"
+    ],
+    "loaded_power_loss_safe": false,
+    "loaded_signal_loss_safe": false
+  },
+  "critical_note": "Prototype comparison geometry; print/test one lane with the stated load limit before multiplying by five."
+}

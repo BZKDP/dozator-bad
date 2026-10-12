@@ -1,0 +1,286 @@
+<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ДОЗАТОР V14 — полный 3D: док + головы + кассета</title>
+<style>
+ html,body{margin:0;height:100%;background:#0f1216;color:#e6e6e6;font-family:Segoe UI,Arial,sans-serif;overflow:hidden}
+ #ui{position:fixed;top:12px;left:12px;z-index:10;background:rgba(20,24,30,.93);padding:13px 15px;border-radius:14px;width:352px}
+ #ui h1{font-size:15px;margin:0 0 5px;color:#7fd1ff}
+ #ui p{font-size:12px;color:#c7d2dd;line-height:1.45;margin:5px 0}
+ .btns{display:flex;gap:7px;flex-wrap:wrap;margin-top:7px}
+ .btns button{padding:9px 11px;border:1px solid #3a4655;background:#1b2330;color:#dfe7ef;border-radius:9px;cursor:pointer;font-size:12.5px;font-weight:600}
+ .btns button.primary{background:#2f6ea5;border-color:#4aa3e0;color:#fff}
+ .btns button.go{background:#2f8f4e;border-color:#49c979;color:#fff}
+ .btns button:disabled{opacity:.45;cursor:default}
+ #card{position:fixed;top:12px;right:12px;z-index:11;width:300px;background:rgba(24,30,40,.96);border:1px solid #3a5570;border-radius:12px;padding:13px 15px;display:none}
+ #card h2{font-size:13.5px;margin:0 22px 6px 0;color:#7fd1ff}
+ #card .d{font-size:12.3px;line-height:1.5;color:#dfe7ef}
+ #card .close{position:absolute;top:7px;right:10px;cursor:pointer;color:#8aa;font-size:16px}
+ #help{position:fixed;bottom:10px;left:12px;z-index:10;background:rgba(20,24,30,.75);padding:7px 11px;border-radius:9px;font-size:11.5px;color:#9fb2c6}
+ #st{font-size:11.5px;color:#8fd08f;margin-top:5px;min-height:15px}
+</style></head><body>
+<div id="ui">
+ <h1>ДОЗАТОР V14 — док без винтов + кассета</h1>
+ <p>Полный новый комплект V2: 5 моноблоков со ВСТРОЕННЫМИ балками (ни дырок, ни болтов),
+ замки-салазки, коромысла с широкими валиками, держатели 996, кассета V14 из её STL.
+ <b>Кликни любую деталь</b> — карточка с объяснением.</p>
+ <div class="btns">
+  <button class="primary" id="bIns" onclick="toggleCas()">⏏ ВЫНУТЬ КАССЕТУ</button>
+  <button class="go" id="bCyc" onclick="startCycle()">⚙ ЦИКЛ ВЫДАЧИ</button>
+  <button id="bOp" onclick="toggleOp()">кассета: прозрачная</button>
+  <button id="bJar" onclick="toggleJars()">банки: вкл</button>
+ </div>
+ <div id="st"></div>
+</div>
+<div id="card"><span class="close" onclick="card.style.display='none'">✕</span><h2 id="ct"></h2><div class="d" id="cd"></div></div>
+<div id="help">🖱 вращать · колесо — зум · ПКМ/шифт+мышь — панорама · WASD/стрелки — полёт · R/F — вверх/вниз</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+const DATA=__DATA__;
+const C=DATA.C;
+let __err=false;
+function setSt(t){ if(!__err) document.getElementById('st').textContent=t; }
+addEventListener('error',e=>{__err=true;document.getElementById('st').textContent='ERR: '+e.message+' @'+e.lineno;});
+const zs=x=>C.zA0 - x*C.t15;              // верх плоскости качения
+let scene,camera,renderer,root,casGroup;
+const clickable=[], movers=[], casMeshes=[];
+// ---------- геометрия ----------
+function buildMesh(g,key){
+ const geo=new THREE.BufferGeometry();
+ geo.setAttribute('position',new THREE.Float32BufferAttribute(g.v,3));
+ geo.setIndex(g.f); geo.computeVertexNormals();
+ return geo;
+}
+const IDENT=new THREE.Matrix4();
+function Rym(deg,cx,cz){const a=deg*Math.PI/180;
+ return new THREE.Matrix4().makeTranslation(cx,0,cz)
+  .multiply(new THREE.Matrix4().makeRotationY(a))
+  .multiply(new THREE.Matrix4().makeTranslation(-cx,0,-cz));}
+function drive(q){const a=q*Math.PI/180;
+ const Qx=-17.5*Math.sin(a), Qz=58+17.5*Math.cos(a);
+ const dx=Qx+55, dz=Qz-82, dd=Math.hypot(dx,dz);
+ const co=(100+dd*dd-55.5*55.5)/(2*10*dd);
+ const b=Math.atan2(dz,dx)+Math.acos(Math.max(-1,Math.min(1,co)));
+ return {Qx,Qz,Hx:-55+10*Math.cos(b),Hz:82+10*Math.sin(b),B:b*180/Math.PI};}
+function pose(mo,q){const d=drive(q);
+ if(mo==='rocker')return Rym(-q,0,58);
+ if(mo==='horn')return Rym(-d.B,-55,82);
+ if(mo==='link'){const ang=Math.atan2(d.Qz-d.Hz,d.Qx-d.Hx)*180/Math.PI;
+  return new THREE.Matrix4().makeTranslation(d.Hx,0,d.Hz).multiply(Rym(-ang,0,0));}
+ if(mo==='pin_horn')return new THREE.Matrix4().makeTranslation(d.Hx,0,d.Hz);
+ if(mo==='pin_crank')return new THREE.Matrix4().makeTranslation(d.Qx,0,d.Qz);
+ return IDENT;}
+// ---------- сцена ----------
+let q=-28;                       // угол механизма (все каналы синхронно в 3D)
+function init(){
+ scene=new THREE.Scene(); scene.background=new THREE.Color(0x0f1216);
+ scene.fog=new THREE.Fog(0x0f1216,2000,4200);
+ camera=new THREE.PerspectiveCamera(45,innerWidth/innerHeight,1,7000);
+ renderer=new THREE.WebGLRenderer({antialias:true});
+ renderer.setPixelRatio(devicePixelRatio); renderer.setSize(innerWidth,innerHeight);
+ document.body.appendChild(renderer.domElement);
+ scene.add(new THREE.AmbientLight(0xffffff,.5));
+ const d1=new THREE.DirectionalLight(0xffffff,.85); d1.position.set(500,800,400); scene.add(d1);
+ const d2=new THREE.DirectionalLight(0x9db8ff,.32); d2.position.set(-500,400,-300); scene.add(d2);
+ root=new THREE.Group(); root.rotation.x=-Math.PI/2; scene.add(root);
+ const table=new THREE.Mesh(new THREE.BoxGeometry(1160,700,8),
+  new THREE.MeshStandardMaterial({color:0x1d242e,roughness:.9}));
+ table.position.set(-190,202.5,-4); root.add(table);
+ casGroup=new THREE.Group(); root.add(casGroup);
+ const geos={};
+ for(const k in DATA.meshes) geos[k]=buildMesh(DATA.meshes[k],k);
+ for(const it of DATA.inst){
+  const g=DATA.meshes[it.g];
+  const mat=new THREE.MeshStandardMaterial({color:g.c,roughness:.72,metalness:.05,flatShading:true});
+  if(it.mo==='cas'){mat.transparent=true; mat.opacity=0.55;}
+  const m=new THREE.Mesh(geos[it.g],mat);
+  m.matrixAutoUpdate=false;
+  m.userData={t:g.t,n:g.n};
+  const Mb=new THREE.Matrix4().fromArray(it.mb);
+  if(it.mo==='cas'){ m.matrix.copy(Mb); casGroup.add(m); casMeshes.push(m); }
+  else if(['rocker','horn','link','pin_horn','pin_crank'].includes(g.mo)){
+   movers.push({m,Mb,mo:g.mo}); root.add(m);
+  } else { m.matrix.copy(Mb); root.add(m); }
+  clickable.push(m);
+ }
+ updateMech();
+ buildJars();
+ setupCtl();
+ addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
+}
+function updateMech(){
+ for(const mv of movers) mv.m.matrix.copy(mv.Mb.clone().multiply(pose(mv.mo,q)));
+}
+// ---------- банки ----------
+let jars=[], jarsOn=true;
+function mkJar(){
+ const g=new THREE.Group();
+ const body=new THREE.Mesh(new THREE.CylinderGeometry(23.5,23.5,60,26),
+  new THREE.MeshStandardMaterial({color:0x4e93c8,roughness:.45,transparent:true,opacity:.92}));
+ const cap=new THREE.Mesh(new THREE.CylinderGeometry(23.7,23.7,7,26),
+  new THREE.MeshStandardMaterial({color:0xe8edf2,roughness:.6}));
+ cap.position.y=33.5-3.5; g.add(body,cap);
+ return g;
+}
+function buildJars(){
+ for(let ch=0;ch<5;ch++){
+  const yc=C.ycs[ch], n=(ch===2?8:5);
+  for(let k=0;k<n;k++){
+   const j=mkJar(); j.userData={ch,k,x:C.x1-k*C.dq,state:'queue'};
+   root.add(j); jars.push(j);
+  }
+ }
+ placeJars();
+}
+function placeJars(){
+ for(const j of jars){
+  const {ch,x,state}=j.userData, yc=C.ycs[ch];
+  let X=x, Z=zs(x)+24.33;
+  if(state==='fall'||state==='out'){ Z=j.userData.z; }
+  const inCas = x < -25;
+  const off = inCas? casOff : {x:0,z:0};
+  j.position.set(X+off.x, yc, Z+off.z);
+  j.rotation.set(0,-x*0.042,0);   // лежит осью поперёк канала, «катится» вокруг своей оси
+  j.visible = jarsOn && (!inCas || casT<0.02) && !(state==='gone');
+ }
+}
+// ---------- кассета: вставка ----------
+let casT=0, casDir=0, casOff={x:0,z:0};       // t=0 вставлена, 1 поднята
+function toggleCas(){
+ if(cycleOn) return;
+ casDir=(casT<0.5)?1:-1;
+ document.getElementById('bIns').textContent = casDir>0?'▶ ВСТАВИТЬ КАССЕТУ':'⏏ ВЫНУТЬ КАССЕТУ';
+ document.getElementById('bCyc').disabled = casDir>0;
+ setSt(casDir>0?'кассета снята':'кассета вставлена: стенки в щелях 5,6, поддон над язычками');
+}
+function casUpd(){
+ if(casDir!==0){
+  casT+=casDir*0.011;
+  if(casT>=1){casT=1;casDir=0;} if(casT<=0){casT=0;casDir=0;}
+ }
+ const zt=Math.min(1,casT*1.7), xt=Math.max(0,(casT-0.42)/0.58);
+ casOff={x:-xt*70, z:Math.pow(zt,1.25)*150};
+ casGroup.position.set(casOff.x,0,casOff.z);
+}
+// ---------- цикл выдачи ----------
+let cycleOn=false, phase=0, rel=null, delivered=null;
+function startCycle(){
+ if(cycleOn||casT>0.02) return;
+ if(delivered){ // прошлую выданную банку — в хвост очереди
+  const back=jars.filter(j=>j.userData.ch===2&&j.userData.state==='queue');
+  const maxk=Math.max(...back.map(j=>j.userData.k));
+  delivered.userData={ch:2,k:maxk+1,x:C.x1-(maxk+1)*C.dq,state:'queue'};
+  delivered=null;
+ }
+ cycleOn=true; phase=0;
+ document.getElementById('bCyc').disabled=true;
+ document.getElementById('bIns').disabled=true;
+}
+function cycleUpd(){
+ if(!cycleOn) return;
+ const sp=0.55;
+ if(phase===0){ q+=sp; if(q>=28){q=28;phase=1;}
+  if(q>10 && !rel){ rel=jars.find(j=>j.userData.ch===2 && j.userData.k===0);
+   if(rel){rel.userData.state='fall'; rel.userData.v=0.4; rel.userData.z=zs(rel.userData.x)+24.33;} }
+ } else if(phase===1){ q-=sp; if(q<=-28){q=-28;phase=2;} }
+ else if(phase===2){ // подача очереди
+  let done=true;
+  for(const j of jars) if(j.userData.ch===2 && j.userData.state==='queue'){
+   const tgt=C.x1-(j.userData.k-1)*C.dq;
+   if(j.userData.x<tgt-0.6){ j.userData.x+=2.2; done=false; } else j.userData.x=tgt;
+  }
+  if(done){
+   for(const j of jars) if(j.userData.ch===2 && j.userData.state==='queue') j.userData.k-=1;
+   if(rel){ delivered=rel; rel=null; }   // выданная лежит в приёмной зоне до след. цикла
+   cycleOn=false; phase=0;
+   document.getElementById('bCyc').disabled=false;
+   document.getElementById('bIns').disabled=false;
+   setSt('банка выдана, очередь подана — можно повторить');
+  }
+ }
+ updateMech();
+}
+function jarPhys(){
+ for(const j of jars){
+  if(j.userData.state!=='fall') continue;
+  const u=j.userData;
+  u.x+=u.v;
+  if(u.x<=C.edge){ u.v=Math.min(u.v+0.09,4.2); u.z=zs(u.x)+24.33; }
+  else if(u.x<=C.bend){                       // прокат между столбами по основанию
+   u.vz=(u.vz||0)+0.5; const fl=23.5+Math.max(0,6.0-(u.x-107)*0.073);
+   u.z=Math.max(fl,u.z-u.vz); if(u.z<=fl+0.01)u.vz=0;
+  } else {                                    // ВЫКАТ из дозатора: срез основания -> стол
+   u.vz=(u.vz||0)+0.5; u.z=Math.max(23.5,u.z-u.vz);
+   if(u.z<=23.5){ u.z=23.5; u.vz=0; u.v=Math.max(0,u.v-0.07);
+    if(u.v<=0.01||u.x>=C.out){ u.state='out';
+     setSt('банка ВЫКАТИЛАСЬ из дозатора — тут её ловит твой лоток'); }
+   }
+  }
+ }
+}
+// ---------- прозрачность / банки ----------
+let opOn=true;
+function toggleOp(){ opOn=!opOn;
+ for(const m of casMeshes){ m.material.opacity=opOn?0.55:1.0; m.material.transparent=opOn; }
+ document.getElementById('bOp').textContent='кассета: '+(opOn?'прозрачная':'плотная');
+}
+function toggleJars(){ jarsOn=!jarsOn;
+ document.getElementById('bJar').textContent='банки: '+(jarsOn?'вкл':'выкл'); }
+// ---------- управление/клик ----------
+const ray=new THREE.Raycaster(), ndc=new THREE.Vector2();
+function pick(x,y){ ndc.x=x/innerWidth*2-1; ndc.y=-(y/innerHeight)*2+1;
+ ray.setFromCamera(ndc,camera);
+ const h=ray.intersectObjects(clickable,false).filter(i=>i.object.visible!==false);
+ if(h.length){ const u=h[0].object.userData;
+  if(!u.t) return;
+  document.getElementById('ct').textContent=u.t;
+  document.getElementById('cd').textContent=u.n;
+  card.style.display='block'; } }
+let tgt=new THREE.Vector3(30,170,-202), radius=1150, theta=0.62, phi=1.13; const keys={};
+function setupCtl(){
+ const el=renderer.domElement; let drag=false,pan=false,px=0,py=0,mv=0;
+ el.addEventListener('contextmenu',e=>e.preventDefault());
+ el.addEventListener('pointerdown',e=>{drag=true;pan=(e.button===2||e.shiftKey);px=e.clientX;py=e.clientY;mv=0;});
+ addEventListener('pointerup',e=>{if(drag&&mv<6)pick(e.clientX,e.clientY);drag=false;});
+ addEventListener('pointermove',e=>{ if(!drag)return;
+  const dx=e.clientX-px,dy=e.clientY-py; mv+=Math.abs(dx)+Math.abs(dy);
+  if(pan){ const f=new THREE.Vector3().subVectors(tgt,camera.position).normalize();
+   const r=new THREE.Vector3().crossVectors(f,camera.up).normalize();
+   const up=new THREE.Vector3().crossVectors(r,f);
+   tgt.addScaledVector(r,-dx*radius*0.0011); tgt.addScaledVector(up,dy*radius*0.0011);
+  } else { theta-=dx*.005; phi-=dy*.005; phi=Math.max(.1,Math.min(Math.PI-.1,phi)); }
+  px=e.clientX;py=e.clientY;});
+ el.addEventListener('wheel',e=>{e.preventDefault();radius*=(1+Math.sign(e.deltaY)*.08);radius=Math.max(120,Math.min(4500,radius));},{passive:false});
+ addEventListener('keydown',e=>{keys[e.code]=true;if(e.code.startsWith('Arrow'))e.preventDefault();});
+ addEventListener('keyup',e=>{keys[e.code]=false;});
+}
+function fly(){ const st=13;
+ const f=new THREE.Vector3().subVectors(tgt,camera.position); f.y=0; f.normalize();
+ const r=new THREE.Vector3().crossVectors(f,new THREE.Vector3(0,1,0)).normalize();
+ if(keys.KeyW||keys.ArrowUp)tgt.addScaledVector(f,st);
+ if(keys.KeyS||keys.ArrowDown)tgt.addScaledVector(f,-st);
+ if(keys.KeyD||keys.ArrowRight)tgt.addScaledVector(r,st);
+ if(keys.KeyA||keys.ArrowLeft)tgt.addScaledVector(r,-st);
+ if(keys.KeyR||keys.PageUp)tgt.y+=st; if(keys.KeyF||keys.PageDown)tgt.y-=st;}
+function tick(){ fly(); casUpd(); cycleUpd(); jarPhys(); placeJars(); }
+function anim(){ requestAnimationFrame(anim);
+ tick();
+ camera.position.set(tgt.x+radius*Math.sin(phi)*Math.cos(theta),
+  tgt.y+radius*Math.cos(phi), tgt.z+radius*Math.sin(phi)*Math.sin(theta));
+ camera.lookAt(tgt); renderer.render(scene,camera);
+}
+init(); requestAnimationFrame(anim);
+if(location.hash==='#out') setTimeout(toggleCas,500);        // авто-вынуть (проверка)
+if(location.hash==='#sim'){                                  // синхронный тест логики цикла
+ const hd=document.getElementById('help');
+ try{
+  let started=false, log=[];
+  for(let i=0;i<900;i++){
+   if(i===40){ startCycle(); started=cycleOn; }
+   tick();
+   if(i===140||i===300||i===500) log.push(`i${i}:q${q.toFixed(0)},ph${phase}`);
+  }
+  const dj=delivered?`x${delivered.userData.x.toFixed(0)},${delivered.userData.state}`:'нет';
+  hd.dataset.sim=`start:${started} end:cycleOn=${cycleOn},q=${q.toFixed(1)},ph=${phase} видача:${dj} | ${log.join(' ')}`;
+ }catch(e){ hd.dataset.sim='EXC: '+e.message; }
+}
+</script></body></html>

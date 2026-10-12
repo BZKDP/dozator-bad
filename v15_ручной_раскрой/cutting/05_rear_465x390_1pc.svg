@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="545mm" height="485mm" viewBox="0 0 545 485" role="img" aria-label="Задняя стенка: 465×390 мм · 1 шт.">
+<style>.outline{fill:#f4ead6;stroke:#c33432;stroke-width:.6;fill-rule:evenodd}.point{font:6px Arial,sans-serif;font-weight:700}.label{font:bold 8px Arial,sans-serif}.dimension{stroke:#343c46;stroke-width:.5}.fold{stroke:#1677aa;stroke-width:.5;stroke-dasharray:5 3}</style>
+<rect width="100%" height="100%" fill="white"/>
+<text x="40" y="15" class="label">Задняя стенка: 465×390 мм · 1 шт.</text>
+<g transform="translate(40,40)"><path d="M 0.000,390.000 L 0.000,0.000 L 465.000,0.000 L 465.000,390.000 L 356.000,390.000 L 356.000,195.000 L 349.000,195.000 L 349.000,390.000 L 276.000,390.000 L 276.000,195.000 L 269.000,195.000 L 269.000,390.000 L 196.000,390.000 L 196.000,195.000 L 189.000,195.000 L 189.000,390.000 L 116.000,390.000 L 116.000,195.000 L 109.000,195.000 L 109.000,390.000 L 0.000,390.000 Z" class="outline"/><line x1="30" y1="0" x2="30" y2="390" class="fold"/><text x="33" y="16" class="point" fill="#1677aa">Сгиб 30</text><line x1="435" y1="0" x2="435" y2="390" class="fold"/><text x="438" y="16" class="point" fill="#1677aa">Сгиб 435</text><text x="96" y="185" class="point">109–116</text><text x="176" y="185" class="point">189–196</text><text x="256" y="185" class="point">269–276</text><text x="336" y="185" class="point">349–356</text><text x="370" y="280" class="point">Глубина пазов 195</text>
+<line x1="0" y1="407" x2="465" y2="407" class="dimension"/>
+<line x1="0" y1="400" x2="0" y2="412" class="dimension"/><line x1="465" y1="400" x2="465" y2="412" class="dimension"/>
+<text x="217" y="420" class="label">465 мм</text>
+<line x1="-17" y1="0" x2="-17" y2="390" class="dimension"/>
+<text x="-22" y="195" class="label" transform="rotate(-90,-22,195)">390 мм</text>
+<circle cx="0" cy="390" r="2" fill="#c33432"/><text x="6" y="382" class="point">0: левый край / низ</text>
+</g><text x="40" y="476" class="point">Красная линия — рез. X от левого края заготовки; Z от низа. Все числа в миллиметрах.</text></svg>

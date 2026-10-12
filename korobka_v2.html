@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Коробка-накопитель 400×300×300 — 3 концепции</title>
+<style>
+  html,body{margin:0;height:100%;background:#0f1216;color:#e6e6e6;font-family:Segoe UI,Arial,sans-serif;overflow:hidden}
+  #ui{position:fixed;top:12px;left:12px;z-index:10;background:rgba(20,24,30,.85);padding:14px 16px;border-radius:12px;max-width:360px;box-shadow:0 6px 24px rgba(0,0,0,.4)}
+  #ui h1{font-size:15px;margin:0 0 8px}
+  .row{display:flex;gap:6px;margin:6px 0}
+  .row button{flex:1;padding:8px 4px;border:1px solid #3a4655;background:#1b2330;color:#dfe7ef;border-radius:8px;cursor:pointer;font-size:12px}
+  .row button.active{background:#2f6ea5;border-color:#4aa3e0;color:#fff}
+  #cap{font-size:13px;line-height:1.55;margin-top:8px}
+  #cap b{color:#7fd1ff}
+  #cap .plus{color:#8fd08f}
+  #cap .minus{color:#d09a8f}
+  #cap .dims{color:#9fb2c6;font-size:12px}
+  #help{position:fixed;bottom:12px;left:12px;z-index:10;background:rgba(20,24,30,.75);padding:8px 12px;border-radius:10px;font-size:12px;color:#9fb2c6}
+</style>
+</head>
+<body>
+<div id="ui">
+  <h1>Коробка-накопитель · 400×300×300 · банка Ø47×70</h1>
+  <div class="row">
+    <button id="cA">А · Змейка</button>
+    <button id="cB" class="active">Б · Орга́н</button>
+    <button id="cC">В · Навал</button>
+  </div>
+  <div class="row">
+    <button id="l3" class="active">3 канала (прокат 395)</button>
+    <button id="l5">5 каналов (прокат 295)</button>
+  </div>
+  <div id="cap"></div>
+</div>
+<div id="help">🖱 ЛКМ — вращать · колесо — зум · <b>стрелки/WASD</b> — лететь · <b>R/F</b> — вверх/вниз · цвет банок = разный товар</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// ===================== параметры =====================
+const IN = {w:395, h:295, d:295};        // внутренние размеры коробки
+const T = 2.5;                            // стенка коробки
+const JD=47, JR=23.5, JL=70;              // банка
+const LANE=74, PITCH=78, WALLC=4;         // канал, шаг каналов, картон перегородки
+const TILT=7*Math.PI/180, TAN=Math.tan(TILT);
+const GAP=55, CLR=55;                     // проём разворота и просвет под полкой
+const CARD=0xc8a16a, EXITC=0x54c079;
+const SKU=[0x4e93c8,0xd08a4e,0x9a5fd0,0x4ec9a0,0xc95f7b]; // цвета товаров
+
+let scene,camera,renderer,world;
+let concept='B', lanes=3;
+
+// ===================== примитивы =====================
+const matCard = new THREE.MeshStandardMaterial({color:CARD,roughness:.9});
+function makeJar(color){
+  const g=new THREE.Group();
+  const b=new THREE.Mesh(new THREE.CylinderGeometry(JR,JR,JL-6,20),
+    new THREE.MeshStandardMaterial({color:color,roughness:.5}));
+  b.rotation.x=Math.PI/2; g.add(b);
+  const c=new THREE.Mesh(new THREE.CylinderGeometry(JR*.68,JR*.68,6,16),
+    new THREE.MeshStandardMaterial({color:0xe8ecef,roughness:.6}));
+  c.rotation.x=Math.PI/2; c.position.z=JL/2-3; g.add(c);
+  return g;
+}
+function boxMesh(w,h,d,mat){ return new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat); }
+function label(txt,x,y,z,sc){
+  const cv=document.createElement('canvas'); cv.width=256; cv.height=64;
+  const g=cv.getContext('2d'); g.font='bold 36px Segoe UI'; g.fillStyle='#a8e29a';
+  g.textAlign='center'; g.fillText(txt,128,44);
+  const s=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(cv),transparent:true,depthTest:false}));
+  s.position.set(x,y,z); s.scale.set(sc||70,(sc||70)/4,1); world.add(s);
+}
+
+// наклонная доска: поверхность = линия y(x)=yLow+|x-lowX|·tan
+function shelf(g,x0,x1,lowX,yLow){
+  const len=x1-x0, mid=(x0+x1)/2;
+  const m=boxMesh(len,3,LANE,matCard);
+  m.position.set(mid, yLow+len/2*TAN-1.5, 0);
+  m.rotation.z=(lowX===x0? 1:-1)*TILT;
+  g.add(m);
+}
+function shelfY(x,x0,x1,lowX,yLow){ return yLow+Math.abs(x-lowX)*TAN; }
+// очередь банок вплотную вдоль доски от нижнего конца
+function fillQueue(g,x0,x1,lowX,yLow,color){
+  const len=x1-x0; const dir=(lowX===x0)? 1:-1; let n=0;
+  for(let d=JR+2; d+JR<len; d+=JD){
+    const x=lowX+dir*d;
+    const j=makeJar(color);
+    j.position.set(x, shelfY(x,x0,x1,lowX,yLow)+1.5+JR, 0);
+    j.rotation.z=(lowX===x0? 1:-1)*TILT*0.0; g.add(j); n++;
+  }
+  return n;
+}
+
+// ===================== концепция А: змейка =====================
+function buildSerpentine(g,RL,color){
+  let count=0, yLow=6, j=0, lastHighX=RL;
+  while(j<7){
+    let x0,x1,lowX;
+    if(j===0){x0=0;x1=RL;lowX=0;}
+    else if(j%2===1){x0=0;x1=RL-GAP;lowX=RL-GAP;}
+    else {x0=GAP;x1=RL;lowX=GAP;}
+    const len=x1-x0;
+    if(yLow+len*TAN+JD+4>IN.h) break;
+    shelf(g,x0,x1,lowX,yLow);
+    count+=fillQueue(g,x0,x1,lowX,yLow,color);
+    lastHighX=(lowX===x0)? x1:x0;
+    const nlowX=((j+1)%2===1)? RL-GAP : GAP;
+    yLow=shelfY(nlowX,x0,x1,lowX,yLow)+CLR;
+    j++;
+  }
+  // загрузочная щель над высоким концом верхней полки
+  loadSlot(g, lastHighX===RL? RL-105:10, lastHighX===RL? RL-15:100);
+  return {count, levels:j};
+}
+
+// ===================== концепция Б: орга́н =====================
+function buildOrgan(g,RL,color){
+  let count=0;
+  shelf(g,0,RL,0,6);                       // наклонный пол
+  count+=fillQueue(g,0,RL,0,6,color);      // очередь по полу
+  const bounds=[];
+  for(let x=85; x<RL-30; x+=52){           // перегородки колонн
+    const fy=shelfY(x,0,RL,0,6)+CLR;
+    const m=boxMesh(3,IN.h-3-fy,LANE,matCard);
+    m.position.set(x,(fy+IN.h-3)/2,0); g.add(m);
+    bounds.push(x);
+  }
+  bounds.push(RL-4);
+  for(let i=0;i<bounds.length-1;i++){      // стопки в колоннах
+    const mid=(bounds[i]+bounds[i+1])/2;
+    let y=shelfY(mid,0,RL,0,6)+1.5+JR+JD;
+    while(y+JR<IN.h-6){
+      const j=makeJar(color); j.position.set(mid,y,0); g.add(j);
+      count++; y+=JD;
+    }
+  }
+  loadSlot(g,85,RL-10);
+  return {count, cols:bounds.length-1};
+}
+
+// ===================== концепция В: навал =====================
+function buildBulk(g,RL,color){
+  let count=0;
+  shelf(g,0,RL,0,6);
+  count+=fillQueue(g,0,RL,0,6,color);
+  for(let r=1;r<8;r++){
+    for(let i=0;;i++){
+      const x=25+JD*i+(r%2)*JR;
+      if(x>RL-24) break;
+      const y=shelfY(x,0,RL,0,6)+1.5+JR+41*r;
+      if(y+JR>IN.h-28) continue;
+      const j=makeJar(color); j.position.set(x,y,0); g.add(j); count++;
+    }
+  }
+  loadSlot(g,15,RL-15);
+  return {count};
+}
+
+// выход (локально x=0) и загрузочная щель в крышке
+function exitPort(g){
+  const fr=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(4,55,LANE)),
+    new THREE.LineBasicMaterial({color:EXITC}));
+  fr.position.set(-1,33,0); g.add(fr);
+  const gate=boxMesh(26,58,PITCH,new THREE.MeshStandardMaterial({color:EXITC,transparent:true,opacity:.45}));
+  gate.position.set(-16,32,0); g.add(gate);
+  const j=makeJar(0x5fd08a); j.position.set(-48,JR+4,0); g.add(j);
+}
+function loadSlot(g,xa,xb){
+  const fr=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(xb-xa,3,LANE-8)),
+    new THREE.LineBasicMaterial({color:EXITC}));
+  fr.position.set((xa+xb)/2,IN.h+2,0); g.add(fr);
+}
+
+// ===================== сборка сцены =====================
+function rebuild(){
+  while(world.children.length) world.remove(world.children[0]);
+  const RL=(lanes===3)? IN.w : IN.d;
+  let per=null, extra=null;
+  for(let k=0;k<lanes;k++){
+    const g=new THREE.Group();
+    const r=(concept==='A')? buildSerpentine(g,RL,SKU[k])
+          :(concept==='B')? buildOrgan(g,RL,SKU[k])
+          : buildBulk(g,RL,SKU[k]);
+    per=r; extra=r;
+    exitPort(g);
+    if(lanes===3){ g.position.set(T, T, T+37+PITCH*k); }
+    else { g.rotation.y=-Math.PI/2; g.position.set(T+37+PITCH*k, T, T); }
+    world.add(g);
+  }
+  // перегородки между каналами
+  for(let k=0;k<lanes-1+(lanes===3?1:0);k++){
+    let m;
+    if(lanes===3){ m=boxMesh(IN.w,IN.h,3,new THREE.MeshStandardMaterial({color:CARD,transparent:true,opacity:.30}));
+      m.position.set(T+IN.w/2, T+IN.h/2, T+76+PITCH*k); }
+    else { m=boxMesh(3,IN.h,IN.d,new THREE.MeshStandardMaterial({color:CARD,transparent:true,opacity:.30}));
+      m.position.set(T+76+PITCH*k, T+IN.h/2, T+IN.d/2); }
+    world.add(m);
+  }
+  // подписи
+  if(lanes===3){ label('шаг каналов 78', 200, 315, 120, 90); label('запас 57 мм', 200, 40, 268, 80); }
+  else label('5 выходов × 78 = 390', 200, 315, -20, 110);
+  label('∠7°', (lanes===3? 330:200), 20, (lanes===3? 120:330), 45);
+  panel(per,extra,RL);
+}
+
+const INFO={
+  A:{name:'А · Змейка (сквозной FIFO)',
+     plus:'строгий FIFO: первая заложенная — первая вышла; банки только катятся',
+     minus:'шаг ярусов 55+L·tan7°≈90 мм → всего 3 яруса; полки под точным углом',
+     dims:'полки ∠7° · проём разворота 55 · перепад ~40'},
+  B:{name:'Б · Орга́н (колонны + протяжка) — рекомендую',
+     plus:'ёмкость ×1.5 к змейке; стройка проще всех (пол + прямые перегородки); докладывать в любую колонну',
+     minus:'FIFO внутри колонны; колонны уходят по очереди (ближняя к выходу первой)',
+     dims:'пол ∠7° · шаг колонн 52 · низ перегородок = пол+55'},
+  C:{name:'В · Навал (одна банка глубиной)',
+     plus:'максимум ёмкости; загрузка «ссыпал сверху»; сборка тривиальная',
+     minus:'FIFO нет (для сроков годности плохо); изредка арка над выходом',
+     dims:'пол ∠7° · выходная щель 55 · слой = 1 банка'}
+};
+function panel(per,extra,RL){
+  const i=INFO[concept];
+  const det=(concept==='A')? ' · ярусов: '+extra.levels :(concept==='B')? ' · колонн: '+extra.cols : '';
+  document.getElementById('cap').innerHTML=
+    '<b>'+i.name+'</b><br>'+
+    'Каналов (товаров): <b>'+lanes+'</b> · банок/канал: <b>'+per.count+'</b> · всего: <b>'+(per.count*lanes)+'</b>'+det+'<br>'+
+    '<span class="plus">✚ '+i.plus+'</span><br>'+
+    '<span class="minus">✖ '+i.minus+'</span><br>'+
+    '<span class="dims">Канал 74 (банка 70+4) · шаг 78 = рама затвора · прокат '+RL+' · '+i.dims+
+    ' · выход 55×74 внизу, затвор gate12 снаружи · зелёное сверху — загрузочные щели</span>';
+}
+
+// ===================== каркас/свет/управление =====================
+function init(){
+  scene=new THREE.Scene(); scene.background=new THREE.Color(0x0f1216);
+  scene.fog=new THREE.Fog(0x0f1216,900,2200);
+  camera=new THREE.PerspectiveCamera(48,innerWidth/innerHeight,1,5000);
+  renderer=new THREE.WebGLRenderer({antialias:true});
+  renderer.setPixelRatio(devicePixelRatio); renderer.setSize(innerWidth,innerHeight);
+  document.body.appendChild(renderer.domElement);
+  scene.add(new THREE.AmbientLight(0xffffff,.55));
+  const d1=new THREE.DirectionalLight(0xffffff,.85); d1.position.set(300,600,500); scene.add(d1);
+  const d2=new THREE.DirectionalLight(0x88aaff,.3); d2.position.set(-400,200,-300); scene.add(d2);
+  const fl=new THREE.Mesh(new THREE.PlaneGeometry(3000,3000),
+    new THREE.MeshStandardMaterial({color:0x161b22,roughness:1}));
+  fl.rotation.x=-Math.PI/2; fl.position.y=-2; scene.add(fl);
+  const bx=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(400,300,300)),
+    new THREE.LineBasicMaterial({color:0x3a5570}));
+  bx.position.set(200,150,150); scene.add(bx);
+  world=new THREE.Group(); scene.add(world);
+  setupControls();
+  addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
+  document.getElementById('cA').onclick=()=>{concept='A';ui();};
+  document.getElementById('cB').onclick=()=>{concept='B';ui();};
+  document.getElementById('cC').onclick=()=>{concept='C';ui();};
+  document.getElementById('l3').onclick=()=>{lanes=3;ui();};
+  document.getElementById('l5').onclick=()=>{lanes=5;ui();};
+}
+function ui(){
+  for(const [id,on] of [['cA',concept==='A'],['cB',concept==='B'],['cC',concept==='C'],['l3',lanes===3],['l5',lanes===5]])
+    document.getElementById(id).classList.toggle('active',on);
+  rebuild();
+}
+
+let tgt=new THREE.Vector3(200,140,150), radius=780, theta=-0.9, phi=1.05;
+const keys={};
+function setupControls(){
+  const el=renderer.domElement; let drag=false,px=0,py=0;
+  el.addEventListener('mousedown',e=>{drag=true;px=e.clientX;py=e.clientY;});
+  addEventListener('mouseup',()=>drag=false);
+  addEventListener('mousemove',e=>{
+    if(!drag)return;
+    theta-=(e.clientX-px)*0.006; phi-=(e.clientY-py)*0.006;
+    phi=Math.max(0.15,Math.min(Math.PI-0.15,phi)); px=e.clientX; py=e.clientY;
+  });
+  el.addEventListener('wheel',e=>{e.preventDefault();
+    radius*=(1+Math.sign(e.deltaY)*0.08); radius=Math.max(150,Math.min(2600,radius));},{passive:false});
+  addEventListener('keydown',e=>{keys[e.code]=true; if(e.code.startsWith('Arrow'))e.preventDefault();});
+  addEventListener('keyup',e=>{keys[e.code]=false;});
+}
+function flyStep(){
+  const st=14;
+  const fwd=new THREE.Vector3().subVectors(tgt,camera.position); fwd.y=0; fwd.normalize();
+  const rt=new THREE.Vector3().crossVectors(fwd,new THREE.Vector3(0,1,0)).normalize();
+  if(keys.KeyW||keys.ArrowUp)tgt.addScaledVector(fwd,st);
+  if(keys.KeyS||keys.ArrowDown)tgt.addScaledVector(fwd,-st);
+  if(keys.KeyD||keys.ArrowRight)tgt.addScaledVector(rt,st);
+  if(keys.KeyA||keys.ArrowLeft)tgt.addScaledVector(rt,-st);
+  if(keys.KeyR||keys.PageUp)tgt.y+=st;
+  if(keys.KeyF||keys.PageDown)tgt.y-=st;
+}
+function animate(){
+  requestAnimationFrame(animate);
+  flyStep();
+  camera.position.set(
+    tgt.x+radius*Math.sin(phi)*Math.cos(theta),
+    tgt.y+radius*Math.cos(phi),
+    tgt.z+radius*Math.sin(phi)*Math.sin(theta));
+  camera.lookAt(tgt);
+  renderer.render(scene,camera);
+}
+
+// запуск строго в конце — все const/функции уже объявлены
+init();
+rebuild();
+animate();
+</script>
+</body>
+</html>

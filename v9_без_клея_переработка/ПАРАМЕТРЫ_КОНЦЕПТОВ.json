@@ -1,0 +1,121 @@
+{
+  "parameters_mm": {
+    "can_length": 70.0,
+    "can_diameter": 47.0,
+    "box_inside_depth": 595.0,
+    "box_inside_width": 395.0,
+    "box_inside_height": 395.0,
+    "cassette_depth": 590.0,
+    "cassette_width": 391.0,
+    "cassette_height": 390.0,
+    "divider_thickness": 4.0,
+    "lane_clear": 75.0,
+    "lane_pitch": 79.0,
+    "strip_clearance": 0.6,
+    "lower_angle_deg": 15.0,
+    "upper_angle_deg": 14.0,
+    "upper_run": 535.0,
+    "upper_front_height": 345.0,
+    "outside_nose_run": 240.0,
+    "gate_pitch": 52.0,
+    "gate_blade_width": 72.0,
+    "gate_blade_thickness": 4.0,
+    "gate_closed_gap": 12.0,
+    "gate_open_gap": 53.0,
+    "rocking_pocket_length": 57.0,
+    "rocking_eject_angle_deg": 32.0
+  },
+  "generated_meshes": [
+    {
+      "file": "КОНЦЕПТ_кассета_A_гребенки_и_полосы.stl",
+      "extents_mm": [
+        391.0,
+        591.04,
+        391.93
+      ],
+      "components": 69,
+      "watertight": true
+    },
+    {
+      "file": "КОНЦЕПТ_кассета_B_цельные_листы_CNC.stl",
+      "extents_mm": [
+        391.0,
+        591.55,
+        392.9
+      ],
+      "components": 8,
+      "watertight": true
+    },
+    {
+      "file": "КОНЦЕПТ_затвор_A_широкие_насадки_HOME.stl",
+      "extents_mm": [
+        79.0,
+        175.0,
+        120.0
+      ],
+      "components": 11,
+      "watertight": true
+    },
+    {
+      "file": "КОНЦЕПТ_затвор_B_вертикальный_шлюз_HOME.stl",
+      "extents_mm": [
+        79.0,
+        212.5,
+        176.0
+      ],
+      "components": 16,
+      "watertight": true
+    },
+    {
+      "file": "КОНЦЕПТ_затвор_B_вертикальный_шлюз_ВЫДАЧА.stl",
+      "extents_mm": [
+        79.0,
+        212.5,
+        176.0
+      ],
+      "components": 16,
+      "watertight": true
+    },
+    {
+      "file": "КОНЦЕПТ_затвор_C_роторный_шлюз_HOME.stl",
+      "extents_mm": [
+        78.0,
+        225.5,
+        186.0
+      ],
+      "components": 12,
+      "watertight": true
+    },
+    {
+      "file": "КОНЦЕПТ_затвор_C_роторный_шлюз_ВЫДАЧА.stl",
+      "extents_mm": [
+        78.0,
+        225.5,
+        186.0
+      ],
+      "components": 12,
+      "watertight": true
+    },
+    {
+      "file": "КОНЦЕПТ_затвор_D_две_независимые_гильотины.stl",
+      "extents_mm": [
+        79.0,
+        175.0,
+        119.5
+      ],
+      "components": 14,
+      "watertight": true
+    },
+    {
+      "file": "КОНЦЕПТ_система_5_каналов_вариант_B.stl",
+      "extents_mm": [
+        407.0,
+        841.52,
+        468.0
+      ],
+      "components": 159,
+      "watertight": true
+    }
+  ],
+  "warning": "CONCEPT ONLY — do not print before a one-lane fit test"
+}

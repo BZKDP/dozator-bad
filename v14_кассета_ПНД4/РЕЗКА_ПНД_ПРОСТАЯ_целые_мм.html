@@ -1,0 +1,87 @@
+<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Резка листа ПНД 4 мм — простые целые размеры</title>
+<style>
+ body{margin:0;background:#0f1216;color:#e6edf5;font-family:Segoe UI,Arial,sans-serif;padding:16px}
+ h1{font-size:20px;margin:0 0 4px} .sub{color:#8fa4b8;font-size:13px;margin-bottom:14px}
+ .wrap{display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start}
+ svg{background:#0a0e12;border-radius:10px;box-shadow:0 2px 12px #0008}
+ .card{background:#161d26;border:1px solid #28323f;border-radius:12px;padding:14px 16px;max-width:430px}
+ .card h2{font-size:15px;margin:0 0 8px;color:#7fd1ff}
+ ol{margin:6px 0;padding-left:22px} li{margin:7px 0;font-size:13.5px;line-height:1.5}
+ b.n{color:#ffd166;font-weight:700}
+ .leg{display:flex;align-items:center;gap:8px;margin:5px 0;font-size:13px}
+ .sw{width:16px;height:16px;border-radius:3px;display:inline-block}
+ table{border-collapse:collapse;margin-top:8px;font-size:13px} td,th{border:1px solid #28323f;padding:4px 9px;text-align:center}
+ th{background:#1d2732;color:#9fd} .note{background:#20303a;border-radius:8px;padding:8px 11px;font-size:12.5px;color:#cfe3f5;margin-top:10px}
+ @media print{body{background:#fff;color:#000}svg{background:#fff}.card{border-color:#999}}
+</style></head><body>
+<h1>Резка листа ПНД 1000 × 1000 × 4 мм → на 2 кассеты (4 поддона)</h1>
+<div class="sub">Все размеры — ЦЕЛЫЕ миллиметры, отмерять рулеткой ОТ КРАЯ листа. Угол листа (0,0) — нижний левый.</div>
+<div class="wrap">
+<svg id="svg" width="720" height="720" viewBox="0 0 720 720"></svg>
+<div class="card">
+ <h2>Что вырезаем (4 детали)</h2>
+ <div class="leg"><span class="sw" style="background:#2f6ea5"></span> 2 × НИЖНИЙ поддон — <b>559 × 405</b> мм (скат 15°)</div>
+ <div class="leg"><span class="sw" style="background:#49a06b"></span> 2 × ВЕРХНИЙ поддон — <b>517 × 405</b> мм (скат 10°)</div>
+ <div class="leg"><span class="sw" style="background:#3a4452"></span> отход (в мусор)</div>
+
+ <h2 style="margin-top:14px">Отметки от края (целые мм)</h2>
+ <table>
+  <tr><th>По ширине (снизу↔)<br>от ЛЕВОГО края</th><th>По высоте (слева↕)<br>от НИЖНЕГО края</th></tr>
+  <tr><td>405</td><td>405</td></tr>
+  <tr><td>559</td><td>447</td></tr>
+  <tr><td>964</td><td>517</td></tr>
+  <tr><td>—</td><td>559</td></tr>
+  <tr><td>—</td><td>964</td></tr>
+ </table>
+
+ <h2 style="margin-top:14px">Порядок резки — 8 резов</h2>
+ <ol>
+  <li>Сначала убери 2 кромки-поля (там неровный край листа):<br>
+      <b class="n">①</b> вертикально на <b class="n">964</b> от левого края (справа уйдёт полоса 36 мм в отход).<br>
+      <b class="n">②</b> горизонтально на <b class="n">964</b> от низа (сверху уйдёт полоса 36 мм).</li>
+  <li><b class="n">③</b> вертикально X=<b>405</b>, только снизу до высоты <b>517</b>.</li>
+  <li><b class="n">④</b> горизонтально Y=<b>517</b>, слева от 0 до <b>405</b> → <span style="color:#49a06b">верхний поддон №1 готов</span>.</li>
+  <li><b class="n">⑤</b> горизонтально Y=<b>405</b>, справа от 405 до <b>964</b> → <span style="color:#2f6ea5">нижний поддон №1 готов</span>.</li>
+  <li><b class="n">⑥</b> вертикально X=<b>559</b>, сверху от 405 до <b>964</b>.</li>
+  <li><b class="n">⑦</b> горизонтально Y=<b>559</b>, слева от 0 до <b>559</b> → <span style="color:#2f6ea5">нижний поддон №2 готов</span>.</li>
+  <li><b class="n">⑧</b> горизонтально Y=<b>447</b>, справа от 559 до <b>964</b> → <span style="color:#49a06b">верхний поддон №2 готов</span>.</li>
+ </ol>
+ <div class="note">• Нож режет с почти нулевой шириной — сначала ПРОЦАРАПАЙ по отметкам и не веди рез дальше указанных точек.<br>
+ • Перед резкой замерь штангелем реальную толщину листа. На размеры раскроя она не влияет (важны длины/ширины), но пригодится для подбора вкладышей дока.<br>
+ • Серые уголки между деталями — отход, не нужны.</div>
+</div>
+</div>
+<script>
+const S=document.getElementById('svg'); const M=40, SC=0.64; // 1000мм -> 640px, поле M
+function X(x){return M+x*SC;} function Y(y){return M+(1000-y)*SC;} // Y вверх
+function el(t,a){const e=document.createElementNS('http://www.w3.org/2000/svg',t);for(const k in a)e.setAttribute(k,a[k]);return e;}
+function rect(x0,y0,w,h,fill,label,dim){
+ S.appendChild(el('rect',{x:X(x0),y:Y(y0+h),width:w*SC,height:h*SC,fill:fill,stroke:'#0a0e12','stroke-width':1}));
+ if(label){const t=el('text',{x:X(x0+w/2),y:Y(y0+h/2)-4,fill:'#fff','font-size':14,'font-weight':700,'text-anchor':'middle'});t.textContent=label;S.appendChild(t);
+  const d=el('text',{x:X(x0+w/2),y:Y(y0+h/2)+13,fill:'#dfe',  'font-size':12,'text-anchor':'middle'});d.textContent=dim;S.appendChild(d);}
+}
+// лист (контур 1000х1000)
+S.appendChild(el('rect',{x:X(0),y:Y(1000),width:1000*SC,height:1000*SC,fill:'#0a0e12',stroke:'#394',  'stroke-width':1.5}));
+// отход — вся площадь серым (под деталями перекроется)
+rect(0,0,1000,1000,'#3a4452');
+// 4 детали
+rect(0,0,405,517,'#49a06b','ВЕРХНИЙ 1','517 × 405');
+rect(405,0,559,405,'#2f6ea5','НИЖНИЙ 1','559 × 405');
+rect(0,559,559,405,'#2f6ea5','НИЖНИЙ 2','559 × 405');
+rect(559,447,405,517,'#49a06b','ВЕРХНИЙ 2','517 × 405');
+// поля-кромки (отход по краям) штриховкой-подписью
+S.appendChild(el('rect',{x:X(964),y:Y(1000),width:36*SC,height:1000*SC,fill:'#2a1414',stroke:'#633','stroke-width':1}));
+S.appendChild(el('rect',{x:X(0),y:Y(1000),width:964*SC,height:36*SC,fill:'#2a1414',stroke:'#633','stroke-width':1}));
+// размерные отметки по краям
+function tick(x,y,txt,ax){const t=el('text',{x:x,y:y,fill:'#ffd166','font-size':13,'font-weight':700,'text-anchor':ax||'middle'});t.textContent=txt;S.appendChild(t);}
+// низ (X отметки)
+[['405',405],['559',559],['964',964]].forEach(([s,v])=>{tick(X(v),Y(0)+20,s); S.appendChild(el('line',{x1:X(v),y1:Y(0),x2:X(v),y2:Y(0)+8,stroke:'#ffd166','stroke-width':1}));});
+tick(X(0),Y(0)+20,'0');
+// лево (Y отметки)
+[['405',405],['447',447],['517',517],['559',559],['964',964]].forEach(([s,v])=>{tick(X(0)-10,Y(v)+4,s,'end'); S.appendChild(el('line',{x1:X(0)-8,y1:Y(v),x2:X(0),y2:Y(v),stroke:'#ffd166','stroke-width':1}));});
+tick(X(0)-10,Y(0)+4,'0','end');
+// подпись осей
+const a1=el('text',{x:X(500),y:Y(0)+36,fill:'#8fa4b8','font-size':12,'text-anchor':'middle'});a1.textContent='ширина, мм (от левого края) →';S.appendChild(a1);
+</script></body></html>

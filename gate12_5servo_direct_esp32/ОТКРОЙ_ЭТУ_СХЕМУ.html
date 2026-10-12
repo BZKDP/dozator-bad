@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Пять серв: WAGO + ESP32</title>
+  <style>
+    :root{--bg:#eef2f5;--ink:#17212b;--card:#fff;--red:#d82929;--brown:#70402e;--orange:#ed7203;--blue:#1169c9;--black:#232d35;--line:#d5dde4}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.45 "Segoe UI",Arial,sans-serif}main{max-width:1060px;margin:auto;padding:34px 22px 70px}
+    h1{margin:0 0 8px;font-size:38px;line-height:1.12}h2{font-size:27px;margin:34px 0 14px}.lead{font-size:20px;color:#506071}.print{float:right;border:0;border-radius:9px;background:#263238;color:white;padding:10px 15px;font-weight:800;cursor:pointer}
+    .answer{background:#e8f5e9;border:3px solid #2e7d32;border-radius:16px;padding:20px 22px;margin:24px 0}.answer>strong{font-size:22px}.three{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:15px}.color{background:white;border:3px solid;border-radius:13px;padding:17px}.color b{display:block;font-size:22px}.brown{border-color:var(--brown)}.red{border-color:var(--red)}.orange{border-color:var(--orange)}
+    .servo{display:grid;grid-template-columns:125px 1fr;gap:14px;align-items:center;background:var(--card);border:2px solid var(--line);border-radius:14px;padding:14px 16px;margin:11px 0}.num{font-size:22px;font-weight:900}.wires{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.wire{border-left:9px solid;border-radius:6px;background:#f7f9fa;padding:9px 10px}.br{border-color:var(--brown)}.rd{border-color:var(--red)}.or{border-color:var(--orange)}
+    .plug{background:white;border:2px solid var(--line);border-radius:14px;padding:20px;margin-top:16px}.holes{display:flex;gap:18px;align-items:center;justify-content:center;margin:20px 0}.hole{text-align:center;font-weight:800}.circle{width:76px;height:76px;border:10px solid;border-radius:50%;display:grid;place-items:center;background:#fafafa;margin:auto auto 7px;font-size:15px}.circle.br{border-color:var(--brown)}.circle.rd{border-color:var(--red)}.circle.or{border-color:var(--orange)}
+    table{width:100%;border-collapse:collapse;background:white;border-radius:13px;overflow:hidden}th,td{padding:13px 15px;border-bottom:1px solid var(--line);text-align:left}th{background:#263238;color:white}tr:last-child td{border-bottom:0}code{font:800 17px Consolas,monospace;background:#e7edf3;border-radius:5px;padding:2px 6px}
+    .gender{display:grid;grid-template-columns:1fr 60px 1fr;gap:14px;align-items:center}.box{background:white;border:2px solid var(--line);border-radius:14px;padding:18px}.arrow{text-align:center;font-size:40px;color:#657783}.warn{background:#fff0f0;border:3px solid var(--red);border-radius:15px;padding:18px 21px;margin:24px 0}.warn strong{font-size:21px;color:#b51212}
+    .steps{counter-reset:s;display:grid;gap:10px}.step{counter-increment:s;background:white;border-left:5px solid var(--blue);border-radius:8px;padding:12px 14px}.step:before{content:counter(s) ". ";font-weight:900;color:var(--blue)}
+    @media(max-width:800px){.three,.wires,.gender{grid-template-columns:1fr}.servo{grid-template-columns:1fr}.arrow{transform:rotate(90deg)}}@media print{body{background:white}.print{display:none}main{padding:0}.servo,.warn{break-inside:avoid}}
+  </style>
+</head>
+<body><main>
+  <button class="print" onclick="window.print()">Печать / PDF</button>
+  <h1>Три провода каждой сервы: куда подключать</h1>
+  <p class="lead">Понижайка и обе шины WAGO у тебя уже собраны. Ниже только соединение серв с готовыми шинами и ESP32.</p>
+
+  <section class="answer">
+    <strong>Для любой сервы правило одинаковое:</strong>
+    <div class="three">
+      <div class="color brown"><b>КОРИЧНЕВЫЙ</b>в свободную клемму минусового WAGO</div>
+      <div class="color red"><b>КРАСНЫЙ</b>в свободную клемму плюсового WAGO, где 5 В</div>
+      <div class="color orange"><b>ОРАНЖЕВЫЙ</b>в назначенный сигнальный D-порт ESP32</div>
+    </div>
+  </section>
+
+  <h2>Каждая серва целиком</h2>
+  <div class="servo"><div class="num">Дозатор 1</div><div class="wires"><div class="wire br">коричневый → WAGO −</div><div class="wire rd">красный → WAGO +5V</div><div class="wire or">оранжевый → D13</div></div></div>
+  <div class="servo"><div class="num">Дозатор 2</div><div class="wires"><div class="wire br">коричневый → WAGO −</div><div class="wire rd">красный → WAGO +5V</div><div class="wire or">оранжевый → D14</div></div></div>
+  <div class="servo"><div class="num">Дозатор 3</div><div class="wires"><div class="wire br">коричневый → WAGO −</div><div class="wire rd">красный → WAGO +5V</div><div class="wire or">оранжевый → D27</div></div></div>
+  <div class="servo"><div class="num">Дозатор 4</div><div class="wires"><div class="wire br">коричневый → WAGO −</div><div class="wire rd">красный → WAGO +5V</div><div class="wire or">оранжевый → D26</div></div></div>
+  <div class="servo"><div class="num">Дозатор 5</div><div class="wires"><div class="wire br">коричневый → WAGO −</div><div class="wire rd">красный → WAGO +5V</div><div class="wire or">оранжевый → D25</div></div></div>
+
+  <h2>Как выглядит разъём сервы</h2>
+  <section class="plug">
+    <p>В штатном трёхконтактном разъёме сервы это три отдельные электрические цепи:</p>
+    <div class="holes">
+      <div class="hole"><div class="circle br">GND</div>коричневый<br>минус</div>
+      <div class="hole"><div class="circle rd">+5V</div>красный<br>питание</div>
+      <div class="hole"><div class="circle or">SIGNAL</div>оранжевый<br>D-порт</div>
+    </div>
+    <p><b>Между собой эти три провода не соединять.</b> Каждый идёт только в указанное место.</p>
+  </section>
+
+  <h2>Какие именно провода-переходники</h2>
+  <div class="gender">
+    <section class="box"><b>Оранжевый SIGNAL</b><p>Разъём сервы обычно «мама». В него вставляется конец «папа». Конец «мама» надевается на штырь <code>D13</code>, <code>D14</code> и т. д. на ESP32.</p><p>То есть здесь подходит провод <b>мама–папа</b>.</p></section>
+    <div class="arrow">→</div>
+    <section class="box"><b>Красный и коричневый</b><p>Со стороны разъёма сервы также нужен конец «папа».</p><p>Со стороны WAGO должна быть <b>зачищенная медная жила</b>. Можно взять провод с «папой», отрезать второй наконечник и зачистить конец.</p></section>
+  </div>
+
+  <div class="warn"><strong>Не зажимай разъём Dupont «мама» в WAGO.</strong><br>WAGO должен зажимать голую зачищенную медную жилу. Пластиковый наконечник или металлическое гнездо «мама» не дают нормального силового контакта.</div>
+
+  <h2>Короткая таблица сигналов</h2>
+  <table><thead><tr><th>Дозатор</th><th>Оранжевый провод</th></tr></thead><tbody>
+    <tr><td>1</td><td><code>D13 / GPIO13</code></td></tr>
+    <tr><td>2</td><td><code>D14 / GPIO14</code></td></tr>
+    <tr><td>3</td><td><code>D27 / GPIO27</code></td></tr>
+    <tr><td>4</td><td><code>D26 / GPIO26</code></td></tr>
+    <tr><td>5</td><td><code>D25 / GPIO25</code></td></tr>
+  </tbody></table>
+
+  <h2>Что делать сейчас</h2>
+  <div class="steps">
+    <div class="step">Оставить понижайку выключенной.</div>
+    <div class="step">Подключить коричневый провод каждой сервы к WAGO −.</div>
+    <div class="step">Подключить красный провод каждой сервы к WAGO +5V.</div>
+    <div class="step">Подключить оранжевые провода к D13, D14, D27, D26 и D25 по таблице.</div>
+    <div class="step">На ESP32 ничего не подключать к VIN/5V и 3V3. Твой провод от минусового WAGO к GND оставить как есть.</div>
+    <div class="step">После этого сделать фото соединений. Питание серв включим уже после безопасной прошивки.</div>
+  </div>
+</main></body></html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Клипса-распорка — 3D</title>
+<style>
+ html,body{margin:0;height:100%;background:#0f1216;color:#e6edf5;font-family:Segoe UI,Arial,sans-serif;overflow:hidden}
+ #ui{position:fixed;top:12px;left:12px;z-index:10;background:rgba(18,23,30,.94);padding:13px 15px;border-radius:12px;width:330px}
+ #ui h1{font-size:16px;margin:0 0 6px;color:#ffb86b} #ui p{font-size:12.5px;color:#aebccb;line-height:1.5;margin:5px 0}
+ .btns{display:flex;gap:7px;margin-top:8px} .btns button{flex:1;padding:9px;border:1px solid #37414f;background:#1b2330;color:#dfe7ef;border-radius:9px;cursor:pointer;font-size:12.5px;font-weight:600}
+ .btns button.go{background:#b5822f;border-color:#e0b25a;color:#fff}
+ b.g{color:#ffd166}
+ #help{position:fixed;bottom:10px;left:12px;z-index:10;background:rgba(18,23,30,.75);padding:7px 11px;border-radius:9px;font-size:11.5px;color:#9fb2c6}
+</style></head><body>
+<div id="ui">
+ <h1>Клипса-распорка (шаг 80)</h1>
+ <p>Оранжевая клипса надевается СВЕРХУ на верхние кромки двух соседних перегородок.
+ Две вилки-паза (щель <b class="g">4,6 мм</b>) обхватывают картон, мостик держит зазор канала
+ ровно <b class="g">75 мм</b>. Ставишь цепочкой спереди и сзади — веер выпрямляется.</p>
+ <div class="btns"><button class="go" id="an" onclick="toggle()">▶ Надеть клипсу</button></div>
+</div>
+<div id="help">🖱 вращать · колесо — зум · ПКМ — панорама</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+let scene,camera,renderer,root,clip; let t=1,dir=0; // t=1 снята (сверху), 0 надета
+function bx(x0,x1,y0,y1,z0,z1,col,op){const m=new THREE.Mesh(new THREE.BoxGeometry(x1-x0,y1-y0,z1-z0),
+ new THREE.MeshStandardMaterial({color:col,roughness:.8,transparent:!!op,opacity:op||1}));
+ m.position.set((x0+x1)/2,(y0+y1)/2,(z0+z1)/2);return m;}
+function init(){
+ scene=new THREE.Scene();scene.background=new THREE.Color(0x0f1216);
+ camera=new THREE.PerspectiveCamera(45,innerWidth/innerHeight,1,5000);
+ renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(devicePixelRatio);
+ renderer.setSize(innerWidth,innerHeight);document.body.appendChild(renderer.domElement);
+ scene.add(new THREE.AmbientLight(0xffffff,.6));
+ const d1=new THREE.DirectionalLight(0xffffff,.85);d1.position.set(120,200,180);scene.add(d1);
+ root=new THREE.Group();root.rotation.x=-Math.PI/2;scene.add(root);
+ // 2 картонки (вертикальные, шаг 80), верх на z=0, вниз -120
+ root.add(bx(-45,45,-2,2,-120,0,0xb6ab92));
+ root.add(bx(-45,45,78,82,-120,0,0xb6ab92));
+ // метки банки-канала (просвет 75)
+ const can=new THREE.Mesh(new THREE.CylinderGeometry(23.5,23.5,67,24),new THREE.MeshStandardMaterial({color:0x4e93c8,roughness:.5,transparent:true,opacity:.5}));
+ can.rotation.z=Math.PI/2; can.position.set(0,40,-55); root.add(can);
+ // КЛИПСА (оранжевая): мостик + 4 ножки-паза
+ clip=new THREE.Group();
+ clip.add(bx(-5,5,-4,84,12,15,0xe8842a));          // мостик
+ [[-4,-2.3],[2.3,4],[76,77.7],[82.3,84]].forEach(([a,b])=>clip.add(bx(-5,5,a,b,0,12,0xe8842a))); // ножки
+ root.add(clip);
+ setup();addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
+}
+function toggle(){dir=(t>0.5)?-1:1;document.getElementById('an').textContent=dir<0?'▲ Снять клипсу':'▼ Надеть клипсу';}
+let tgt=new THREE.Vector3(0,40,-40),radius=330,theta=0.7,phi=1.05;
+function setup(){const el=renderer.domElement;let drag=false,pan=false,px=0,py=0;
+ el.addEventListener('contextmenu',e=>e.preventDefault());
+ el.addEventListener('pointerdown',e=>{drag=true;pan=(e.button===2||e.shiftKey);px=e.clientX;py=e.clientY;});
+ addEventListener('pointerup',()=>drag=false);
+ addEventListener('pointermove',e=>{if(!drag)return;const dx=e.clientX-px,dy=e.clientY-py;
+  if(pan){const f=new THREE.Vector3().subVectors(tgt,camera.position).normalize();const r=new THREE.Vector3().crossVectors(f,camera.up).normalize();const up=new THREE.Vector3().crossVectors(r,f);tgt.addScaledVector(r,-dx*radius*0.0015);tgt.addScaledVector(up,dy*radius*0.0015);}
+  else{theta-=dx*.006;phi-=dy*.006;phi=Math.max(.1,Math.min(Math.PI-.1,phi));}px=e.clientX;py=e.clientY;});
+ el.addEventListener('wheel',e=>{e.preventDefault();radius*=(1+Math.sign(e.deltaY)*.09);radius=Math.max(90,Math.min(1200,radius));},{passive:false});}
+function anim(){requestAnimationFrame(anim);
+ if(dir){t+=dir*0.02;if(t>=1){t=1;dir=0;}if(t<=0){t=0;dir=0;}}
+ clip.position.z=t*70; // t=1 поднята на 70 над кромками, t=0 надета
+ camera.position.set(tgt.x+radius*Math.sin(phi)*Math.cos(theta),tgt.y+radius*Math.cos(phi),tgt.z+radius*Math.sin(phi)*Math.sin(theta));
+ camera.lookAt(tgt);renderer.render(scene,camera);}
+init();requestAnimationFrame(anim);
+</script></body></html>

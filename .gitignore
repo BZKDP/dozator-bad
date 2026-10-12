@@ -1,0 +1,32 @@
+# Сборка / артефакты
+build/
+dist/
+__pycache__/
+*.pyc
+*.pyo
+
+# Слайсер и печать (генерируется из STL)
+*.gcode
+*.3mf
+output/
+gcode/
+gcode_output/
+renders/
+
+# Логи
+*.log
+
+# Секреты
+.env
+.env.*
+*.key
+*.pem
+
+# Мусор ОС / редакторов
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+
+# ВНИМАНИЕ: *.stl и *.step — это результат проекта, НЕ игнорируются.

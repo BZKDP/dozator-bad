@@ -1,0 +1,25 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ОТБРАКОВАНО · люльку не печатать</title>
+<style>
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0b1118;color:#e8f1f8;font:15px Segoe UI,Arial,sans-serif}canvas{display:block}
+#panel{position:absolute;top:16px;left:16px;width:330px;padding:18px;background:#111c27e8;border:1px solid #2d4355;border-radius:14px;box-shadow:0 16px 48px #0008}
+h1{font-size:21px;margin:0 0 8px}p{line-height:1.4;color:#bbcad6}.row{display:flex;gap:8px;flex-wrap:wrap}button{background:#203244;color:#fff;border:1px solid #48647b;border-radius:9px;padding:10px 13px;font-weight:700;cursor:pointer}button.on{background:#d86e2f;border-color:#ffad73}.ok{color:#77dda5}.warn{color:#f3ca78}
+#msg{position:absolute;left:16px;bottom:16px;padding:9px 12px;background:#111c27d9;border-radius:9px;color:#cbd8e2}#reject{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:center;pointer-events:none;padding:22px;font-size:24px;font-weight:900;color:#fff;background:linear-gradient(transparent 72%,#a51212dd);text-shadow:0 2px 5px #000}
+</style><script type="importmap">{"imports":{"three":"../../libs/three.module.js"}}</script></head><body><div id="panel"><h1>ОТБРАКОВАНО · люлька</h1><p>Не печатать: задний стоп удерживает следующую банку слишком низко, а исправление перегружает SG90.</p><div class="row"><button data-state="HOME" class="on">HOME</button><button data-state="TRANSFER">ПЕРЕКРЫТИЕ</button><button data-state="EJECT">ВЫДАЧА</button></div><p><span class="ok">Зелёное</span> — банки; <span class="warn">оранжевое</span> — отклонённая люлька.</p></div><div id="msg">Загрузка STL…</div><div id="reject">ОТБРАКОВАНО — НЕ ПЕЧАТАТЬ</div>
+<script type="module">
+import * as THREE from '../../libs/three.module.js';
+import {OrbitControls} from '../../libs/OrbitControls.js';
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x0b1118);
+const camera=new THREE.PerspectiveCamera(35,innerWidth/innerHeight,.1,3000);camera.up.set(0,0,1);camera.position.set(205,170,145);
+const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;document.body.appendChild(renderer.domElement);
+const controls=new OrbitControls(camera,renderer.domElement);controls.target.set(0,-25,-4);controls.enableDamping=true;
+scene.add(new THREE.HemisphereLight(0xd9ecff,0x17202a,1.5));const key=new THREE.DirectionalLight(0xffffff,2.2);key.position.set(150,120,250);key.castShadow=true;scene.add(key);const rim=new THREE.DirectionalLight(0x70b8ff,1.1);rim.position.set(-180,-100,80);scene.add(rim);
+const grid=new THREE.GridHelper(350,35,0x304354,0x1b2a36);grid.rotation.x=Math.PI/2;grid.position.z=-44;scene.add(grid);
+function parseSTL(buffer){const v=new DataView(buffer);let binary=false,count=0;if(buffer.byteLength>=84){count=v.getUint32(80,true);binary=84+count*50===buffer.byteLength}const a=[];if(binary){let o=84;for(let i=0;i<count;i++,o+=50)for(let j=0;j<3;j++){const q=o+12+j*12;a.push(v.getFloat32(q,true),v.getFloat32(q+4,true),v.getFloat32(q+8,true))}}else{const t=new TextDecoder().decode(buffer),re=/vertex\s+([-+\deE.]+)\s+([-+\deE.]+)\s+([-+\deE.]+)/g;let m;while((m=re.exec(t)))a.push(+m[1],+m[2],+m[3])}const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(a,3));g.computeVertexNormals();return g}
+const cache=new Map();async function geo(url){if(!cache.has(url)){const r=await fetch(url);if(!r.ok)throw Error(url);cache.set(url,parseSTL(await r.arrayBuffer()))}return cache.get(url)}
+const palette={frame:0x8795a1,cradle:0xe87832,servo:0x338bd1,stock_horn:0xf5f7fa,lower_sheet:0xb68a55,can_1:0x4ac887,can_2:0x3baf78,can_3:0x329469};let group=new THREE.Group();scene.add(group);
+const keys=['frame','cradle','servo','stock_horn','lower_sheet','can_1','can_2','can_3'];
+async function show(state){document.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.state===state));group.remove(...group.children);for(const k of keys){const u=`STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C_${state}_${k}.stl`;const m=new THREE.Mesh(await geo(u),new THREE.MeshStandardMaterial({color:palette[k],roughness:.58,metalness:k==='stock_horn'?.55:.05,side:THREE.DoubleSide}));m.castShadow=m.receiveShadow=true;group.add(m)}document.getElementById('msg').textContent=state==='HOME'?'HOME: первая банка в люльке':state==='TRANSFER'?'Задняя кромка уже поднимается, передний упор ещё держит':'EJECT: передний упор ушёл вниз, очередь перекрыта';}
+document.querySelectorAll('button').forEach(b=>b.onclick=()=>show(b.dataset.state));await show(new URLSearchParams(location.search).get('state')||'HOME');
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});(function loop(){controls.update();renderer.render(scene,camera);requestAnimationFrame(loop)})();
+</script></body></html>

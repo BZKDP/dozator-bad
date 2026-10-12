@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:,">
+<title>Дозатор БАД v2 — гравитационная полка (28 дорожек · печатная шестерня+рейки)</title>
+<style>
+  :root{--bg:#0e1117;--panel:#171b22;--panel2:#10141b;--line:#2d3442;--text:#eef2f7;--muted:#9aa5b8;--accent:#4aa8ff;--gate:#f0524f;--ok:#66d9a8}
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font-family:Inter,-apple-system,"Segoe UI",Arial,sans-serif}
+  #app{display:grid;grid-template-columns:minmax(560px,1fr) 560px;height:100vh;overflow:hidden}
+  #scene{position:relative;min-width:0;background:#0b0e14}
+  canvas{display:block}
+  #hud{position:absolute;left:14px;top:14px;max-width:520px;padding:10px 12px;border:1px solid rgba(255,255,255,.12);background:rgba(10,13,19,.72);backdrop-filter:blur(8px);border-radius:8px;color:var(--muted);font-size:12px;line-height:1.45}
+  #hud b{color:var(--text)}
+  #side{background:var(--panel);border-left:1px solid var(--line);overflow:auto}
+  .head{padding:20px 20px 14px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#1b2029,#171b22)}
+  h1{font-size:18px;line-height:1.15;margin:0 0 8px;font-weight:800}
+  .sub{margin:0;color:var(--muted);font-size:12px;line-height:1.5}
+  .section{padding:16px 20px;border-bottom:1px solid var(--line)}
+  h2{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:#cbd6e8;margin:0 0 12px}
+  .controls{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+  button{height:36px;border:1px solid var(--line);background:#202633;color:var(--text);border-radius:7px;font-weight:700;cursor:pointer}
+  button:hover{border-color:#455066;background:#262d3b}
+  button.primary{grid-column:1/-1;background:var(--accent);color:#06131f;border-color:transparent}
+  .toggle.on{border-color:var(--accent);color:#bfe1ff;background:#162435}
+  .row{display:flex;align-items:center;gap:10px;margin-top:12px}
+  input[type=range]{flex:1}
+  .facts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .fact{padding:10px 0;border-bottom:1px solid rgba(255,255,255,.07)}
+  .fact b{display:block;font-size:15px;color:#fff}
+  .fact span{display:block;margin-top:4px;color:var(--muted);font-size:11px;line-height:1.35}
+  table{width:100%;border-collapse:collapse;font-size:12px;line-height:1.35}
+  td{padding:7px 0;border-bottom:1px solid rgba(255,255,255,.07);vertical-align:top}
+  td:first-child{color:var(--muted);padding-right:12px;width:52%}
+  td:last-child{color:#eef2f7;text-align:right;font-weight:700}
+  .note{font-size:12px;color:var(--muted);line-height:1.55;margin:8px 0 0}
+  .note strong{color:#fff}
+  .steps{margin:0;padding-left:18px;color:#d9e2ef;font-size:12px;line-height:1.6}
+  #log{min-height:64px;max-height:130px;overflow:auto;white-space:pre-wrap;font-size:12px;line-height:1.45;color:var(--muted);background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:10px;margin-top:12px}
+  .warn{color:#ffcf6b}
+  @media (max-width:900px){#app{grid-template-columns:1fr;grid-template-rows:56vh 44vh}#side{border-left:none;border-top:1px solid var(--line)}}
+</style>
+</head>
+<body>
+<div id="app">
+  <main id="scene">
+    <div id="hud"><b>3D v2:</b> ЛКМ — поворот · колесо — зум · ПКМ — сдвиг<br><span id="state"></span></div>
+  </main>
+  <aside id="side">
+    <div class="head">
+      <h1>Дозатор БАД v2 — гравитационная полка</h1>
+      <p class="sub">28 наклонных дорожек, банки лежат на боку и скатываются вниз. Затвор каждой дорожки — ПЕЧАТНАЯ шестерня Ø48 + две рейки (вариант №12): одна крутилка SG90 двигает Г1 и Г2 в противофазе. Под выходами — V-жёлоб: банки с двух сторон (14+14) катятся к центру, в воронку/упаковку.</p>
+    </div>
+
+    <section class="section">
+      <h2>Демонстрация выдачи</h2>
+      <div class="row">
+        <span style="color:var(--muted);font-size:12px">Дорожка</span>
+        <input id="lane" type="range" min="1" max="28" value="14">
+        <b id="laneNum" style="width:28px;text-align:right">14</b>
+      </div>
+      <div class="controls">
+        <button id="run" class="primary">Выдать 1 банку (цикл Г1→Г2)</button>
+        <button id="meet" class="toggle" style="grid-column:1/-1">Демо: слева+справа навстречу (1 ↔ 28)</button>
+        <button id="g1" class="toggle" style="grid-column:1/-1">Провернуть все шестерни (Г1↓ · Г2↑)</button>
+        <button id="dims" class="toggle on">Размеры</button>
+        <button id="servo" class="toggle on">Сервоприводы</button>
+        <button id="solid" class="toggle">Картон сплошной</button>
+      </div>
+      <p class="note">Цикл: <strong>Г1 вверх</strong> → одна банка закатывается в карман между Г1 и Г2 → <strong>Г1 вниз</strong> (отсекает стопку) → <strong>Г2 вверх</strong> → банка падает на нижний скат → Г2 вниз.</p>
+      <div id="log">Готово. Выбери дорожку и нажми «Выдать».\n</div>
+    </section>
+
+    <section class="section">
+      <h2>Ключевые размеры</h2>
+      <div class="facts">
+          <div class="fact"><b>28 дорожек</b><span>шаг 78 мм, общая ширина ≈ 2187 мм</span></div>
+        <div class="fact"><b>800 мм</b><span>длина дорожки (скат), 15 банок</span></div>
+        <div class="fact"><b>≈10,6°</b><span>наклон: 150 мм → 0 на 800 мм</span></div>
+        <div class="fact"><b>Банка 70×Ø47</b><span>лежит поперёк, катится по Ø47</span></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Размерная ведомость</h2>
+      <table>
+        <tr><td>Банка (длина × диаметр)</td><td>70 × Ø47 мм</td></tr>
+        <tr><td>Внутренняя ширина дорожки</td><td>75 мм (банка 70 + запас 5)</td></tr>
+          <tr><td>Стенка (общая для соседних)</td><td>3 мм</td></tr>
+          <tr><td>Шаг дорожки / всего дорожек</td><td>78 мм / 28</td></tr>
+          <tr><td>Общая ширина полки</td><td>≈ 2187 мм</td></tr>
+        <tr><td>Длина дорожки (скат)</td><td>800 мм</td></tr>
+        <tr><td>Банок в дорожке</td><td>15 шт</td></tr>
+        <tr><td>Картон</td><td>5 мм</td></tr>
+        <tr><td>Подъём высокого края / угол</td><td>150 мм / ≈10,6°</td></tr>
+        <tr><td>Гусеты наклона</td><td>3 шт (150 / 75 / 0 мм)</td></tr>
+        <tr><td>Затвор (вариант №12)</td><td>печатная шестерня m2 Ø48 + 2 рейки</td></tr>
+        <tr><td>Ход реек / поворот серво</td><td>36 мм / ≈86°</td></tr>
+        <tr><td>Приводов на затвор</td><td>28 × 1 SG90/MG90S (PCA9685 ×2)</td></tr>
+      </table>
+      <p class="note warn">Открытый вопрос: на ≈10,6° одиночная банка в видео застревает. Наклон/трение решаем отдельно — модель под текущий угол.</p>
+    </section>
+
+    <section class="section">
+      <h2>Затвор №12 — печатная шестерня + рейки (Ender 3)</h2>
+      <ol class="steps">
+        <li>Шестерня m=2, z=24 (Ø48) крутит ДВЕ рейки с противоположных сторон: одна вверх — вторая вниз. Открыть обе одновременно невозможно механически.</li>
+        <li>Г2 — передний стопор (нож 5 мм); Г1 — разделитель с коленом, нож 3 мм входит в V-щель между банками 1–2.</li>
+        <li>Качалка SG90 утапливается в карман шестерни, ступица на шлиц, винт насквозь. Серво в окне печатного шасси-мостика, шасси пазами садится на картонные стенки.</li>
+        <li>Один серво = одна дорожка (28 всего). Цикл: серво +86° → банка выпала; серво назад → стопка подъехала.</li>
+        <li>STL готовы: папка stl_gate12\ (plate_rest.stl + plate_gear.stl — печатать отдельно), README_печать.txt.</li>
+      </ol>
+    </section>
+  </aside>
+</div>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+}}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+const P = {
+  lanes:28, laneInner:75, wall:3, pitch:78,
+  rampLen:800, rise:150, deckThk:5, wallH:47,
+  jarLen:70, jarR:23.5, perLane:15,
+  standH:280, gateThk:3, bladeH:66, stroke:60
+};
+P.totalW = P.lanes*P.laneInner + (P.lanes+1)*P.wall;      // 2187
+P.angle  = THREE.MathUtils.radToDeg(Math.atan2(P.rise, P.rampLen));
+P.z2 = -20;                 // нижний нож Г2 (у переднего края)
+P.z1 = P.z2 - P.jarR*2;     // верхний нож Г1 (на 1 диаметр выше)
+const deckY = z => P.standH + P.rise * (-z / P.rampLen);   // z:[-rampLen..0]
+const laneX = i => -P.totalW/2 + P.wall + P.laneInner/2 + i*P.pitch;
+const wallX = j => -P.totalW/2 + P.wall/2 + j*P.pitch;
+// сборный V-жёлоб ПЕРЕД передним краем деки (z>0): концы высокие (±xEnd), середина низкая → банки с двух сторон катятся к ЦЕНТРУ
+const CH = { zc:70, xEnd:P.totalW/2+40, yEnd:P.standH-70, yMid:120 };
+const surfY = x => CH.yMid + (CH.yEnd - CH.yMid) * (Math.abs(x)/CH.xEnd);
+P.slope = Math.atan2(P.rise, P.rampLen);
+const seatY = z => deckY(z) + P.jarR*Math.cos(P.slope);   // центр банки заподлицо на наклоне
+
+// ---- сцена ----
+const host = document.getElementById('scene');
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x0b0e14);
+const camera = new THREE.PerspectiveCamera(45, host.clientWidth/host.clientHeight, 1, 12000);
+camera.position.set(1500, 1150, 1700);
+const renderer = new THREE.WebGLRenderer({antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.setSize(host.clientWidth, host.clientHeight);
+renderer.shadowMap.enabled = true;
+host.appendChild(renderer.domElement);
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.target.set(0, P.standH, -P.rampLen/2);
+controls.enableDamping = true;
+controls.maxDistance = 6000;
+
+scene.add(new THREE.HemisphereLight(0xcfdcff, 0x24212a, 1.15));
+const sun = new THREE.DirectionalLight(0xffffff, 1.1);
+sun.position.set(900, 1600, 1200); sun.castShadow = true;
+sun.shadow.mapSize.set(2048,2048);
+Object.assign(sun.shadow.camera,{left:-1600,right:1600,top:1600,bottom:-1600,near:1,far:5000});
+scene.add(sun);
+
+const floor = new THREE.Mesh(new THREE.PlaneGeometry(6000,6000), new THREE.MeshStandardMaterial({color:0x0f131b,roughness:1}));
+floor.rotation.x = -Math.PI/2; floor.receiveShadow = true; scene.add(floor);
+const grid = new THREE.GridHelper(6000,60,0x273246,0x1a2130); grid.position.y = 0.3; scene.add(grid);
+
+// ---- материалы ----
+const cardMat  = new THREE.MeshStandardMaterial({color:0xd8c096, roughness:.95, transparent:true, opacity:.32, side:THREE.DoubleSide});
+const wallMat  = new THREE.MeshStandardMaterial({color:0xd8c096, roughness:.95, transparent:true, opacity:.5,  side:THREE.DoubleSide});
+const standMat = new THREE.MeshStandardMaterial({color:0x2a3140, roughness:.9});
+const bladeMat = new THREE.MeshStandardMaterial({color:0xf0524f, roughness:.5});
+const servoMat = new THREE.MeshStandardMaterial({color:0x1d2530, roughness:.7, metalness:.1});
+const chuteMat = new THREE.MeshStandardMaterial({color:0x2f6dab, roughness:.7, transparent:true, opacity:.5, side:THREE.DoubleSide});
+const edgeMat  = new THREE.LineBasicMaterial({color:0xc9a76d});
+const dimMat   = new THREE.LineBasicMaterial({color:0x4aa8ff});
+
+const solids = [];   // для тумблера «сплошной картон»
+function box(dx,dy,dz,mat,edges=true){
+  const g = new THREE.BoxGeometry(dx,dy,dz);
+  const m = new THREE.Mesh(g,mat); m.castShadow=true; m.receiveShadow=true;
+  if(edges) m.add(new THREE.LineSegments(new THREE.EdgesGeometry(g), edgeMat));
+  return m;
+}
+function quad(p, mat){
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.BufferAttribute(new Float32Array([
+    p[0].x,p[0].y,p[0].z, p[1].x,p[1].y,p[1].z, p[2].x,p[2].y,p[2].z,
+    p[0].x,p[0].y,p[0].z, p[2].x,p[2].y,p[2].z, p[3].x,p[3].y,p[3].z]),3));
+  g.computeVertexNormals();
+  const m = new THREE.Mesh(g,mat); m.castShadow=true; m.receiveShadow=true;
+  m.add(new THREE.LineSegments(new THREE.EdgesGeometry(g), edgeMat));
+  scene.add(m); return m;
+}
+function tri(p, mat){
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.BufferAttribute(new Float32Array([
+    p[0].x,p[0].y,p[0].z, p[1].x,p[1].y,p[1].z, p[2].x,p[2].y,p[2].z]),3));
+  g.computeVertexNormals();
+  const m = new THREE.Mesh(g,mat); m.castShadow=true; m.receiveShadow=true; scene.add(m); return m;
+}
+const V = (x,y,z)=>new THREE.Vector3(x,y,z);
+
+// ---- опора / стенд ----
+function buildStand(){
+  const plat = box(P.totalW+40, 26, P.rampLen, standMat);   // не выступает за передний край (z=0)
+  plat.position.set(0, P.standH-13, -P.rampLen/2); scene.add(plat); solids.push(plat);
+  const legH = P.standH-26;
+  for(const sx of [-1,1]) for(const sz of [-1,1]){
+    const leg = box(70,legH,70, standMat);
+    leg.position.set(sx*(P.totalW/2-40), legH/2, -P.rampLen/2 + sz*(P.rampLen/2-40));
+    scene.add(leg); solids.push(leg);
+  }
+  // 3 треугольных гусета наклона (150 / 75 / 0)
+  for(const gx of [-P.totalW/2+60, 0, P.totalW/2-60]){
+    const g = tri([ V(gx, P.standH, 0), V(gx, P.standH, -P.rampLen), V(gx, P.standH+P.rise, -P.rampLen) ], standMat);
+    solids.push(g);
+  }
+}
+
+// ---- дека + стенки дорожек ----
+function buildDeck(){
+  quad([ V(-P.totalW/2, deckY(0), 0), V(P.totalW/2, deckY(0), 0),
+         V(P.totalW/2, deckY(-P.rampLen), -P.rampLen), V(-P.totalW/2, deckY(-P.rampLen), -P.rampLen) ], cardMat);
+  for(let j=0;j<=P.lanes;j++){
+    const x = wallX(j);
+    const w = quad([ V(x, deckY(0), 0), V(x, deckY(-P.rampLen), -P.rampLen),
+                     V(x, deckY(-P.rampLen)+P.wallH, -P.rampLen), V(x, deckY(0)+P.wallH, 0) ], wallMat);
+    solids.push(w);
+  }
+}
+
+// ---- банки ----
+const jarGeo = new THREE.CylinderGeometry(P.jarR, P.jarR, P.jarLen, 26);
+const lanesJars = [];
+function buildJars(){
+  for(let i=0;i<P.lanes;i++){
+    const hue = i/P.lanes;
+    const col = new THREE.Color().setHSL(hue,0.55,0.6);
+    const mat = new THREE.MeshStandardMaterial({color:col, roughness:.45, metalness:.05});
+    const arr = [];
+    const leadZ = P.z1 - P.jarR - 2;
+    for(let k=0;k<P.perLane;k++){
+      // покой затвора №12: Г1 открыт, Г2 закрыт — банка №1 уже В КАРМАНЕ на Г2
+      const zc = k===0 ? (P.z1+P.z2)/2 : leadZ - (k-1)*(P.jarR*2);
+      const jar = new THREE.Mesh(jarGeo, mat);
+      jar.rotation.z = Math.PI/2;                 // ось вдоль X (поперёк дорожки)
+      jar.position.set(laneX(i), seatY(zc), zc);
+      jar.castShadow = true; jar.receiveShadow = true;
+      jar.userData.home = jar.position.clone();
+      scene.add(jar); arr.push(jar);
+    }
+    lanesJars.push(arr);
+  }
+}
+
+// ---- затвор №12: печатная шестерня Ø48 + две рейки, противофаза (1 серво) ----
+const printMat = new THREE.MeshStandardMaterial({color:0xe07840, roughness:.6});
+const gates = [];      // {r1,r2,gear, y1o,y2c, t,cur}
+const servoGroup = new THREE.Group(); scene.add(servoGroup);
+const zMid = (P.z1+P.z2)/2, RSTROKE = 36;
+function buildGates(){
+  const slotMat = new THREE.MeshStandardMaterial({color:0x101318, roughness:1});
+  for(let i=0;i<P.lanes;i++){
+    const x = laneX(i), xg = x-8;              // плоскость шестерни/реек
+    const plY = deckY(zMid)+P.wallH+6;
+    const gearY = deckY(zMid)+P.wallH+49;
+    // печатное шасси-мостик на гребнях стенок + тёмные прорези под рейки
+    const pl = box(78, 8, 84, printMat); pl.position.set(x, plY, zMid); scene.add(pl);
+    for(const zg of [P.z1, P.z2]){
+      const sl = box(14, 1.5, 8, slotMat); sl.position.set(xg, plY+4.4, zg); scene.add(sl);
+    }
+    // рейки: тело отодвинуто от делительной плоскости, к шестерне смотрят ЗУБЬЯ
+    const mkRack = (zg, len, yc, inward)=>{
+      const r = box(12, len, 4, printMat); r.position.set(xg, yc, zg - inward*1.5);
+      for(let k=0;k<Math.floor(len/7)-2;k++){
+        const th = box(10, 3, 3, printMat); th.position.set(0, -len/2+12+k*7, inward*3.2);
+        r.add(th);
+      }
+      scene.add(r); return r;
+    };
+    const y2c = deckY(P.z2)+13+50;
+    const y1o = deckY(P.z1)+32+40+RSTROKE;
+    const r2 = mkRack(P.z2, 100, y2c, -1);     // зубья к центру (к шестерне)
+    const r1 = mkRack(P.z1,  80, y1o, +1);
+    // щёки-направляющие над плитой
+    for(const zg of [P.z1, P.z2]){
+      for(const sx of [-8, 8]){
+        const ch = box(4, 26, 16, printMat); ch.position.set(xg+sx, plY+17, zg); scene.add(ch);
+      }
+    }
+    // шестерня: диск Ø42 + 14 зубьев до Ø54 — тела реек диск не задевают
+    const gear = new THREE.Group();
+    gear.position.set(xg, gearY, zMid); scene.add(gear);
+    const disc = new THREE.Mesh(new THREE.CylinderGeometry(21,21,8,28), printMat);
+    disc.rotation.z = Math.PI/2; disc.castShadow = true; gear.add(disc);
+    for(let k=0;k<14;k++){
+      const a = k/14*Math.PI*2;
+      const th = box(8, 9, 4, printMat); th.position.set(0, 22.5*Math.cos(a), 22.5*Math.sin(a));
+      th.rotation.x = a; gear.add(th);
+    }
+    // серво в окне печатной стенки (за шестернёй, в габарите дорожки)
+    const wall = box(5, 42, 26, printMat); wall.position.set(x+2, plY+25, zMid); servoGroup.add(wall);
+    const s = box(24, 23, 13, servoMat); s.position.set(x+15, gearY, zMid); servoGroup.add(s);
+    gates.push({r1, r2, gear, y1o, y2c, t:0, cur:0});
+  }
+}
+function setGate(gt, t){
+  gt.r1.position.y = gt.y1o - t*RSTROKE;          // t=1 → Г1 врезался
+  gt.r2.position.y = gt.y2c + t*RSTROKE;          // t=1 → Г2 открыт
+  gt.gear.rotation.x = t*(RSTROKE/24);
+}
+
+// ---- сборный V-жёлоб: две половины сходятся к центру, в воронку ----
+function buildChute(){
+  const {zc,xEnd,yEnd,yMid} = CH, chW = 120, wallH2 = 55;
+  for(const s of [-1,1]){
+    const xo = s*xEnd;
+    // дно половины (наклон вниз к центру)
+    quad([ V(xo,yEnd,zc-chW/2), V(xo,yEnd,zc+chW/2), V(0,yMid,zc+chW/2), V(0,yMid,zc-chW/2) ], chuteMat);
+    // бортики (спереди/сзади)
+    for(const w of [-1,1])
+      quad([ V(xo,yEnd,zc+w*chW/2), V(0,yMid,zc+w*chW/2), V(0,yMid+wallH2,zc+w*chW/2), V(xo,yEnd+wallH2,zc+w*chW/2) ], chuteMat);
+    // подпорка под высоким концом
+    const prop = box(70, yEnd, 70, new THREE.MeshStandardMaterial({color:0x12161d,roughness:.95}));
+    prop.position.set(xo - s*45, yEnd/2, zc); scene.add(prop); solids.push(prop);
+  }
+  // центральная воронка (демонстрационно) + приёмный лоток под ней
+  const fun = new THREE.Mesh(new THREE.CylinderGeometry(95,30,90,24,1,true),
+    new THREE.MeshStandardMaterial({color:0x2f6dab, roughness:.7, transparent:true, opacity:.55, side:THREE.DoubleSide}));
+  fun.position.set(0, yMid-25, zc); scene.add(fun);
+  const bin = box(190,90,chW+40, standMat);
+  bin.position.set(0, 45, zc); scene.add(bin); solids.push(bin);
+  addLabel('V-ЖЁЛОБ — с двух сторон к ЦЕНТРУ', V(0, yEnd+150, zc), 360, '#f0524f');
+  addLabel('ВОРОНКА / УПАКОВКА', V(0, yMid-130, zc), 250, '#66d9a8');
+}
+
+// ---- подписи / размеры ----
+const dimGroup = new THREE.Group(); scene.add(dimGroup);
+function addLabel(text,pos,sw=200,border='#4aa8ff',target=dimGroup){
+  const c=document.createElement('canvas'); c.width=512; c.height=96; const x=c.getContext('2d');
+  x.fillStyle='rgba(10,14,21,.8)'; x.fillRect(0,0,512,96);
+  x.strokeStyle=border; x.lineWidth=5; x.strokeRect(3,3,506,90);
+  x.fillStyle='#eef5ff'; x.font='800 34px Segoe UI,Arial'; x.textAlign='center'; x.textBaseline='middle';
+  x.fillText(text,256,48);
+  const s=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),transparent:true,depthTest:false}));
+  s.scale.set(sw, sw*96/512, 1); s.position.copy(pos); target.add(s); return s;
+}
+function dimLine(a,b,label,off=V(0,0,0)){
+  dimGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([a,b]), dimMat));
+  addLabel(label, a.clone().add(b).multiplyScalar(.5).add(off), 170);
+}
+function buildDims(){
+  addLabel('ВЫСОКИЙ КРАЙ 150 мм', V(P.totalW/2+230, deckY(-P.rampLen)+40, -P.rampLen), 240, '#66d9a8');
+  addLabel('ВЫХОД + ГИЛЬОТИНЫ', V(P.totalW/2+230, deckY(0)+120, 0), 240, '#f0524f');
+  addLabel('28 ДОРОЖЕК · ширина ≈2187 мм', V(0, deckY(-P.rampLen)+P.wallH+130, -P.rampLen), 300);
+  dimLine(V(-P.totalW/2, deckY(0)+P.wallH+40, 0), V(P.totalW/2, deckY(0)+P.wallH+40, 0), '≈2187 мм', V(0,40,0));
+  dimLine(V(-P.totalW/2-60, deckY(0), 0), V(-P.totalW/2-60, deckY(-P.rampLen), -P.rampLen), 'скат 800 мм / ≈10,6°', V(-140,0,0));
+}
+
+buildStand(); buildDeck(); buildJars(); buildGates(); buildChute(); buildDims();
+
+// ---- анимация выдачи (несколько дорожек одновременно) ----
+const anims = [];
+const CYCLE = 3.6; // сек
+const pocketZ = (P.z1+P.z2)/2;
+function startDispense(lane){
+  if(anims.some(a=>a.lane===lane)) return;
+  const j = lanesJars[lane][0];
+  anims.push({lane, jar:j, from:j.userData.home.clone(), start:performance.now()/1000});
+  log(`Дорожка ${lane+1}: шестерня +86° → Г1 отсёк, Г2 открыл → банка в жёлоб → назад`);
+}
+function stepAnim(a, now){
+  const t = now - a.start, gt = gates[a.lane], jar = a.jar, home = a.from, laneXc = laneX(a.lane);
+  if(t < 0.7){                                   // шестерня вперёд: Г1 врезается, Г2 открывается
+    gt.t = t/0.7;
+    jar.position.set(laneXc, seatY(pocketZ), pocketZ);
+  } else if(t < 1.4){                            // банка выпадает за край в жёлоб
+    gt.t = 1;
+    const u = (t-0.7)/0.7; jar.position.x = laneXc;
+    jar.position.z = THREE.MathUtils.lerp(pocketZ, CH.zc, u);
+    jar.position.y = THREE.MathUtils.lerp(seatY(pocketZ), surfY(laneXc)+P.jarR, u);
+  } else if(t < CYCLE-0.5){                      // шестерня назад (Г2 закрыт, стопка подъезжает); банка к центру
+    gt.t = Math.max(0, 1-(t-1.4)/0.7);
+    const u = (t-1.4)/(CYCLE-0.5-1.4);
+    jar.position.x = THREE.MathUtils.lerp(laneXc, 0, u); jar.position.z = CH.zc;
+    jar.position.y = surfY(jar.position.x)+P.jarR;
+  } else if(t < CYCLE){                          // падает в центральную воронку
+    gt.t = 0;
+    const u = (t-(CYCLE-0.5))/0.5;
+    jar.position.set(0, THREE.MathUtils.lerp(surfY(0)+P.jarR, 70, u), CH.zc);
+  } else {                                       // сброс демо
+    jar.position.copy(home);
+    log(`Дорожка ${a.lane+1}: банка → центр → воронка.`); return true;
+  }
+  return false;
+}
+function updateAnim(now){
+  for(const gt of gates) gt.t = forceT ? 1 : 0;
+  for(let i=anims.length-1;i>=0;i--){ if(stepAnim(anims[i], now)) anims.splice(i,1); }
+  for(const gt of gates){ gt.cur += (gt.t - gt.cur)*0.25; setGate(gt, gt.cur); }
+}
+
+// ---- UI ----
+let forceT=false;
+const $=id=>document.getElementById(id);
+function log(m){ const l=$('log'); l.textContent += m+'\n'; l.scrollTop=l.scrollHeight; }
+$('lane').addEventListener('input', e=>$('laneNum').textContent=e.target.value);
+$('run').onclick = ()=> startDispense(parseInt($('lane').value,10)-1);
+$('meet').onclick = ()=> { startDispense(0); startDispense(27); };
+$('g1').onclick = e=>{ forceT=!forceT; e.target.classList.toggle('on',forceT); };
+$('dims').onclick = e=>{ dimGroup.visible=!dimGroup.visible; e.target.classList.toggle('on',dimGroup.visible); };
+$('servo').onclick = e=>{ servoGroup.visible=!servoGroup.visible; e.target.classList.toggle('on',servoGroup.visible); };
+$('solid').onclick = e=>{ const on=!(cardMat.opacity>0.9); cardMat.opacity=wallMat.opacity= on?1:0.32; e.target.classList.toggle('on',on); };
+
+$('state').textContent = `28 дорожек · банка 70×Ø47 · скат 800 мм · наклон ≈${P.angle.toFixed(1)}°`;
+
+addEventListener('resize', ()=>{ camera.aspect=host.clientWidth/host.clientHeight; camera.updateProjectionMatrix(); renderer.setSize(host.clientWidth,host.clientHeight); });
+function loop(){
+  requestAnimationFrame(loop);
+  updateAnim(performance.now()/1000);
+  controls.update();
+  renderer.render(scene,camera);
+}
+loop();
+</script>
+</body>
+</html>

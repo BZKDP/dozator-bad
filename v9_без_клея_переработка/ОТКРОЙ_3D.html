@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>V9 · съёмная кассета и три затвора</title>
+  <style>
+    :root{--bg:#0d1218;--panel:#151d26;--line:#2b3947;--text:#edf4fa;--muted:#a8bac9;--blue:#55aef0;--green:#52ce8b;--amber:#f4b95f;--red:#ef6b6b}
+    *{box-sizing:border-box}html,body{height:100%;margin:0;background:var(--bg);color:var(--text);font-family:Segoe UI,Arial,sans-serif;overflow:hidden}
+    #app{display:grid;grid-template-columns:minmax(0,1fr) 390px;height:100%}#view{position:relative;min-width:0}canvas{display:block;width:100%;height:100%}
+    #side{background:linear-gradient(180deg,#18222d,#111820);border-left:1px solid var(--line);padding:18px;overflow:auto}
+    h1{font-size:21px;line-height:1.15;margin:0 0 8px}.lead{font-size:13px;line-height:1.45;color:var(--muted);margin:0 0 14px}
+    .label{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#84a9c6;font-weight:800;margin:16px 0 7px}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}.grid.one{grid-template-columns:1fr}
+    button{border:1px solid var(--line);background:#202c38;color:var(--text);border-radius:7px;padding:9px 8px;font:700 12px Segoe UI;cursor:pointer;text-align:left}
+    button:hover{border-color:#5c748b}button.active{background:#19466a;border-color:#55aef0}.good{border-color:#2d7a54!important}.warn{border-color:#986928!important}
+    #card{margin-top:14px;border:1px solid var(--line);border-radius:9px;background:#0e151d;padding:13px;font-size:13px;line-height:1.45}
+    #card h2{font-size:16px;margin:0 0 7px}#card p{margin:6px 0;color:var(--muted)}#card b{color:var(--text)}
+    .verdict{margin:9px 0 0;padding:9px;border-radius:6px;border-left:4px solid var(--amber);background:#1b2023}.verdict.ok{border-color:var(--green)}.verdict.bad{border-color:var(--red)}
+    .facts{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:9px}.fact{border:1px solid #24313d;padding:7px;border-radius:6px;color:var(--muted);font-size:11px}.fact strong{display:block;color:white;font-size:14px}
+    #hud{position:absolute;left:14px;top:14px;padding:9px 11px;border:1px solid rgba(255,255,255,.16);border-radius:7px;background:rgba(9,14,19,.78);font-size:12px;color:#c9d8e4;backdrop-filter:blur(7px);max-width:520px}
+    #state{position:absolute;left:14px;bottom:14px;padding:8px 11px;border-radius:7px;background:rgba(9,14,19,.85);font:700 12px Consolas,monospace;color:#f3c879;border:1px solid rgba(255,255,255,.12)}
+    .legend{display:flex;gap:11px;flex-wrap:wrap;margin-top:11px;font-size:11px;color:var(--muted)}.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:4px}
+    @media(max-width:900px){#app{grid-template-columns:1fr}#side{position:absolute;right:0;top:0;width:min(390px,92vw);height:100%;background:rgba(21,29,38,.95)}}
+  </style>
+  <script type="importmap">{"imports":{"three":"../libs/three.module.js"}}</script>
+</head>
+<body>
+<div id="app">
+  <div id="view"><div id="hud"><b>ЛКМ</b> вращать · колесо масштаб · <b>ПКМ</b> сдвиг. Все размеры в миллиметрах. Оранжевое — подвижная печатная механика.</div><div id="state">HOME</div></div>
+  <aside id="side">
+    <h1>V9 · без клея, одна банка</h1>
+    <p class="lead">Новая ветка не меняет старые файлы. Здесь две кассеты и четыре принципа отсечки — в реальном масштабе банки 70×Ø47.</p>
+    <div class="label">Вся установка / кассета</div>
+    <div class="grid">
+      <button data-view="system" class="active good">Вся система · вариант B</button>
+      <button data-view="cassetteA" class="good">Кассета A · ручной рез</button>
+      <button data-view="cassetteB">Кассета B · CNC</button>
+      <button id="explode">Разнести детали</button>
+    </div>
+    <div class="label">Затвор одного канала</div>
+    <div class="grid one">
+      <button data-view="gateA" class="warn">A · широкие насадки на старые рейки</button>
+      <button data-view="gateB" class="good">B · вертикальный шлюз (рекомендую)</button>
+      <button data-view="gateC" class="good">C · роторный шлюз</button>
+      <button data-view="gateD">D · две независимые гильотины</button>
+    </div>
+    <div class="label">Проверка движения</div>
+    <div class="grid">
+      <button id="home">HOME</button><button id="eject">ВЫДАЧА</button>
+      <button id="cycle" class="good">▶ Полный цикл</button><button id="stop">■ Стоп</button>
+    </div>
+    <div id="card"></div>
+    <div class="legend"><span><i class="dot" style="background:#d2a66e"></i>фанера</span><span><i class="dot" style="background:#e88742"></i>печать</span><span><i class="dot" style="background:#57c986"></i>банка</span><span><i class="dot" style="background:#ef6b6b"></i>стопор</span></div>
+  </aside>
+</div>
+<script type="module">
+import * as THREE from 'three';
+import {OrbitControls} from '../libs/OrbitControls.js';
+
+const P={canL:70,canD:47,boxW:395,boxD:595,boxH:395,cassW:391,cassD:590,cassH:390,lane:75,wall:4,pitch:79,lowA:15,upA:14,upRun:535,upFront:345,nose:240,gateGap:52};
+const C={wood:0xd2a66e,wood2:0xb88451,print:0xe88742,frame:0x788896,can:0x57c986,can2:0x6aa9e8,stop:0xef6b6b,box:0x54718b,dark:0x26323d,metal:0xbcc9d3,liner:0x58a7c8};
+const mats={
+ wood:new THREE.MeshStandardMaterial({color:C.wood,roughness:.82}),wood2:new THREE.MeshStandardMaterial({color:C.wood2,roughness:.86}),
+ print:new THREE.MeshStandardMaterial({color:C.print,roughness:.58}),frame:new THREE.MeshStandardMaterial({color:C.frame,roughness:.65}),
+ can:new THREE.MeshStandardMaterial({color:C.can,metalness:.35,roughness:.32}),can2:new THREE.MeshStandardMaterial({color:C.can2,metalness:.35,roughness:.32}),
+ stop:new THREE.MeshStandardMaterial({color:C.stop,roughness:.55}),metal:new THREE.MeshStandardMaterial({color:C.metal,metalness:.65,roughness:.25}),
+ liner:new THREE.MeshStandardMaterial({color:C.liner,roughness:.25,transparent:true,opacity:.72}),ghost:new THREE.MeshStandardMaterial({color:0x9ab0c2,transparent:true,opacity:.18,roughness:.8})};
+
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x0d1218);scene.fog=new THREE.Fog(0x0d1218,1000,2600);
+const camera=new THREE.PerspectiveCamera(40,1,1,5000);camera.position.set(690,520,-820);
+const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;document.getElementById('view').prepend(renderer.domElement);
+const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.target.set(0,180,210);controls.maxDistance=2600;controls.minDistance=100;
+scene.add(new THREE.HemisphereLight(0xcfe7ff,0x26301f,1.4));const sun=new THREE.DirectionalLight(0xffffff,2.1);sun.position.set(-500,900,-500);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);scene.add(sun);
+const floor=new THREE.Mesh(new THREE.PlaneGeometry(2800,2800),new THREE.MeshStandardMaterial({color:0x121a22,roughness:1}));floor.rotation.x=-Math.PI/2;floor.receiveShadow=true;scene.add(floor);scene.add(new THREE.GridHelper(2400,48,0x34495c,0x1b2732));
+let world=new THREE.Group();scene.add(world);let current='system',explode=false,phase=0,targetPhase=0,running=false,last=performance.now(),moving={};
+
+function mesh(g,m,parent=world){const x=new THREE.Mesh(g,m);x.castShadow=true;x.receiveShadow=true;parent.add(x);return x}
+function bx(w,h,d,m,parent=world){return mesh(new THREE.BoxGeometry(w,h,d),m,parent)}
+function cyl(r,len,m,parent=world,seg=32){const x=mesh(new THREE.CylinderGeometry(r,r,len,seg),m,parent);x.rotation.z=Math.PI/2;return x}
+function jar(x,y,z,color=mats.can,parent=world){const g=new THREE.Group();parent.add(g);const b=cyl(P.canD/2,P.canL-5,color,g,36);const cap=cyl(P.canD*.36,5,mats.metal,g,28);cap.position.x=P.canL/2-2.5;g.position.set(x,z,y);return g}
+function laneCenters(){const a=[];for(let i=0;i<5;i++)a.push(-P.cassW/2+P.lane/2+i*P.pitch);return a}
+function divCenters(){const a=[];for(let i=0;i<4;i++)a.push(-P.cassW/2+P.lane+P.wall/2+i*P.pitch);return a}
+function slab(w,run,t,frontZ,deg,x,parent=world,mat=mats.wood){const len=run/Math.cos(THREE.MathUtils.degToRad(deg));const s=bx(w,t,len,mat,parent);s.rotation.x=THREE.MathUtils.degToRad(deg);s.position.set(x,frontZ+run*Math.tan(THREE.MathUtils.degToRad(deg))/2,run/2);return s}
+function prismX(points,t,mat,parent=world){const n=points.length,v=[],idx=[];for(const x of[-t/2,t/2])for(const p of points)v.push(x,p[1],p[0]);for(let i=1;i<n-1;i++){idx.push(0,i,i+1,n,n+i+1,n+i)}for(let i=0;i<n;i++){const j=(i+1)%n;idx.push(i,j,n+j,i,n+j,n+i)}const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(v,3));g.setIndex(idx);g.computeVertexNormals();return mesh(g,mat,parent)}
+function boxReference(parent=world){const g=new THREE.BoxGeometry(P.boxW,P.boxH,P.boxD);const edges=new THREE.LineSegments(new THREE.EdgesGeometry(g),new THREE.LineBasicMaterial({color:0x6d8da7,transparent:true,opacity:.55}));edges.position.set(0,P.boxH/2,P.boxD/2);parent.add(edges);const sideMat=new THREE.MeshStandardMaterial({color:C.box,transparent:true,opacity:.055,side:THREE.DoubleSide});const s1=bx(5,P.boxH,P.boxD,sideMat,parent);s1.position.set(-P.boxW/2-3,P.boxH/2,P.boxD/2);const s2=s1.clone();s2.position.x=+P.boxW/2+3;parent.add(s2);const back=bx(P.boxW,P.boxH,5,sideMat,parent);back.position.set(0,P.boxH/2,P.boxD+3);}
+function support(y,z,h,parent){const b=bx(P.cassW,h,18,mats.wood2,parent);b.position.set(0,z-h/2-2,y);return b}
+
+function buildCassetteA(parent=world,withCans=true,ex=0){const low=Math.tan(THREE.MathUtils.degToRad(P.lowA)),up=Math.tan(THREE.MathUtils.degToRad(P.upA));const xs=laneCenters();
+  xs.forEach((x,i)=>{const dx=ex?(i-2)*18:0;const lo=slab(74.4,P.cassD,4,0,P.lowA,x+dx,parent);lo.position.y+=ex?22:0;const hi=slab(74.4,P.upRun,4,P.upFront,-P.upA,x+dx,parent);hi.position.y+=ex?50:0});
+  divCenters().forEach((x,i)=>{const d=prismX([[0,2],[P.cassD,P.cassD*low+2],[P.cassD,P.cassH],[0,P.cassH]],4,mats.wood,parent);d.position.x=x+(ex?(i-1.5)*24:0)});
+  [90,250,410,570].forEach(y=>support(y,y*low,Math.min(20,y*low-3),parent));[12,185,360,523].forEach(y=>support(y,P.upFront-y*up,20,parent));
+  for(const y of[24,566]){const b=bx(P.cassW,24,18,mats.wood2,parent);b.position.set(0,378+(ex?35:0),y)}
+  if(withCans)xs.forEach((x,i)=>{for(const y of[115,166,217,268,319])jar(x,y,y*low+P.canD/2+5,i%2?mats.can2:mats.can,parent);for(const y of[100,151,202,253])jar(x,y,P.upFront-y*up+P.canD/2+5,i%2?mats.can2:mats.can,parent)});
+  return parent}
+function buildCassetteB(parent=world,withCans=false){slab(P.cassW,P.cassD,6,0,P.lowA,0,parent);slab(P.cassW,P.upRun,6,P.upFront,-P.upA,0,parent);const low=Math.tan(THREE.MathUtils.degToRad(P.lowA));[-117.3,-39.1,39.1,117.3].forEach(x=>{const d=prismX([[0,3],[P.cassD,P.cassD*low+3],[P.cassD,P.cassH],[0,P.cassH]],6,mats.wood,parent);d.position.x=x});for(const y of[24,566]){const b=bx(P.cassW,28,20,mats.wood2,parent);b.position.set(0,375,y)}if(withCans)laneCenters().forEach(x=>jar(x,180,180*low+28,mats.can,parent));return parent}
+function nose(x,parent=world){const n=slab(74.4,P.nose,4,0,P.lowA,x,parent,mats.wood);n.rotation.y=Math.PI;n.position.z=-P.nose/2;return n}
+function frameBox(parent,w=79,l=170,h=90){for(const x of[-37,37])for(const z of[-l/2+4,l/2-4]){const p=bx(5,h,8,mats.frame,parent);p.position.set(x,h/2,z)}for(const z of[-l/2+4,l/2-4]){const top=bx(w,7,8,mats.frame,parent);top.position.set(0,h,z);const bot=bx(w,7,8,mats.frame,parent);bot.position.set(0,0,z)}return parent}
+function addGateCans(parent,count=3){for(let i=0;i<count;i++){const j=jar(0,55+i*49,26,mats.can,parent);j.userData.baseZ=55+i*49}return parent}
+
+function buildGateA(parent=world){frameBox(parent);const deck=bx(75,4,220,mats.wood,parent);deck.position.set(0,0,25);addGateCans(parent,3);const gear=cyl(26,7,mats.print,parent,28);gear.position.set(-8,64,0);gear.rotation.x=Math.PI/2;
+  const front=new THREE.Group(),rear=new THREE.Group();parent.add(front,rear);let p=bx(72,50,4,mats.stop,front);p.position.set(0,37,-12);p=bx(10,92,10,mats.print,front);p.position.set(-8,57,-12);p=bx(72,50,4,mats.stop,rear);p.position.set(0,78,40);p=bx(10,92,10,mats.print,rear);p.position.set(-8,98,40);moving={front,rear,gear,type:'A'};return parent}
+function buildGateB(parent=world){frameBox(parent,79,190,126);const inlet=bx(75,4,78,mats.wood,parent);inlet.position.set(0,55,92);const outlet=bx(75,4,78,mats.wood,parent);outlet.position.set(0,-1,-72);jar(0,95,80,mats.can2,parent);jar(0,144,80,mats.can2,parent);
+  const carriage=new THREE.Group();parent.add(carriage);let b=bx(72,20,60,mats.print,carriage);b.position.set(0,116,15);b=bx(72,18,60,mats.print,carriage);b.position.set(0,44,15);b=bx(6,110,60,mats.print,carriage);b.position.set(-33,80,15);const b2=b.clone();b2.position.x=33;carriage.add(b2);b=bx(72,4,52,mats.liner,carriage);b.position.set(0,54.5,15);b=bx(9,112,12,mats.print,carriage);b.position.set(-27,80,50);jar(0,15,80,mats.can,carriage);
+  const servo=bx(24,30,34,mats.dark,parent);servo.position.set(0,-28,34);const gear=cyl(18,8,mats.print,parent,28);gear.position.set(-27,-10,34);gear.rotation.x=Math.PI/2;moving={carriage,type:'B'};return parent}
+function buildGateC(parent=world){const shellMat=new THREE.MeshStandardMaterial({color:0x71889a,transparent:true,opacity:.22,roughness:.7});const shell=cyl(65,78,shellMat,parent,48);shell.position.set(0,65,0);const inlet=bx(72,4,75,mats.wood,parent);inlet.position.set(0,65,100);const outlet=bx(72,4,75,mats.wood,parent);outlet.position.set(0,4,-63);jar(0,100,89,mats.can2,parent);jar(0,149,89,mats.can2,parent);
+  const rotor=new THREE.Group();rotor.position.set(0,65,0);parent.add(rotor);let d=cyl(45,6,mats.print,rotor,40);d.position.x=-33;const d2=d.clone();d2.position.x=33;rotor.add(d2);let b=bx(72,5,52,mats.liner,rotor);b.position.z=38;b=bx(72,26,5,mats.stop,rotor);b.position.set(0,11,55);const br=b.clone();br.position.z=21;rotor.add(br);jar(0,38,0,mats.can,rotor);const axle=cyl(5,82,mats.metal,parent,24);axle.position.set(0,65,0);const servo=bx(24,30,34,mats.dark,parent);servo.position.set(0,20,0);moving={rotor,type:'C'};return parent}
+function buildGateD(parent=world){frameBox(parent,79,175,118);const deck=bx(75,4,220,mats.wood,parent);deck.position.set(0,0,25);addGateCans(parent,3);const front=new THREE.Group(),rear=new THREE.Group();parent.add(front,rear);for(const [g,z] of[[front,-12],[rear,40]]){let b=bx(72,55,4,mats.stop,g);b.position.set(0,39,z);b=bx(8,82,13,mats.print,g);b.position.set(-31,62,z);const b2=b.clone();b2.position.x=31;g.add(b2)}const s1=bx(23,32,29,mats.dark,parent);s1.position.set(-20,103,-32);const s2=bx(23,32,29,mats.dark,parent);s2.position.set(20,103,60);moving={front,rear,type:'D'};return parent}
+
+function buildSystem(){boxReference();buildCassetteA(world,true,explode?16:0);laneCenters().forEach((x,i)=>{nose(x);const g=new THREE.Group();world.add(g);g.position.set(x,-24,-125);g.scale.set(.92,.92,.92);buildGateB(g);if(i!==2)g.children.forEach(o=>{if(o.material&&o.material===mats.stop)o.material=mats.print})});const rail=bx(P.boxW,28,24,mats.wood2);rail.position.set(0,-25,-120);moving={type:'system'}}
+function clear(){scene.remove(world);world=new THREE.Group();scene.add(world);moving={};phase=targetPhase=0;document.getElementById('state').textContent='HOME'}
+const cards={system:{t:'Полная система · рекомендуемый путь',v:'ok',html:'<p><b>Кассета A</b> стоит внутри коробки без клея. Пять наружных носов и затворов снимаются первыми; после этого пустая кассета выходит вверх.</p><p>Коробка только ограждает запас. Вес затворов принимает общий мост на подиуме.</p>',f:[['391 мм','ширина кассеты'],['5×75 мм','чистые каналы'],['15°','нижний скат'],['240 мм','съёмный нос']]},cassetteA:{t:'A · гребёнки и пять полос',v:'ok',html:'<p>Реально собирается ручным инструментом: 4 цельные перегородки, 8 поперечных опор и по 5 полос из каждого купленного настила. Клинья/клипсы — съёмные.</p><div class="verdict ok"><b>Рекомендую для первой рабочей коробки.</b> Нет длинных сквозных пазов, можно заменить одну дорожку.</div>',f:[['590×391','габарит'],['≈1.8 м²','лист с запасом'],['74.4 мм','полоса'],['2 мм/бок','зазор']]},cassetteB:{t:'B · два цельных настила',v:'',html:'<p>Буквально ваша идея, но только на 6-мм фанере с <b>несквозными продольными пазами</b> от фрезера/CNC. Обычные сквозные пазы расколют сопрягаемые листы.</p><div class="verdict"><b>Красиво, но сложнее и хуже ремонтируется.</b></div>',f:[['6 мм','фанера'],['≈3 мм','глубина полупаза'],['CNC','обязателен'],['цельные','2 настила']]},gateA:{t:'A · старые рейки + широкие насадки',v:'bad',html:'<p>Контакт расширен с 10 до 72 мм — банка перестаёт коситься. Но жёсткая противофаза осталась: в середине хода нет гарантированной фазы «оба закрыты».</p><div class="verdict bad"><b>Только быстрый эксперимент.</b> Длиннее руки не решают геометрию и сильнее гнутся.</div>',f:[['72 мм','контакт'],['36 мм','старый ход'],['0 мс','безопасный dwell'],['средний','риск дубля']]},gateB:{t:'B · вертикальная каретка-шлюз',v:'ok',html:'<p>Внутри движется кассета с <b>одной ячейкой 72×49 мм</b>. В HOME она принимает одну банку. При ходе вниз сплошная перемычка сначала закрывает вход, и только потом ячейка совмещается с выходом.</p><div class="verdict ok"><b>Мой выбор:</b> сквозного пути для второй банки нет при любом промежуточном положении.</div>',f:[['72×49 мм','одна ячейка'],['56 мм','ход каретки'],['≈125 мм','высота модуля'],['1 серво','на канал']]},gateC:{t:'C · роторный шлюз с одной U-ячейкой',v:'ok',html:'<p>Банка входит в единственную U-ячейку ротора. Сплошной сектор закрывает очередь, затем ротор поворачивается на 105° к выходу. Вход и выход одновременно не соединяются.</p><div class="verdict ok"><b>Самая защищённая геометрия</b>, но корпус около Ø130 мм и больше печати.</div>',f:[['Ø49.5 мм','ячейка'],['105°','поворот'],['Ø126–130','корпус'],['1 серво','на канал']]},gateD:{t:'D · две независимые гильотины',v:'ok',html:'<p>Два полноширинных ножа и два серво. Алгоритм: задний закрыть → передний открыть → передний закрыть → задний открыть.</p><div class="verdict ok"><b>Максимум управляемости и диагностики</b>, но десять серв и больше электроники.</div>',f:[['52 мм','шаг ножей'],['72 мм','ширина ножа'],['41 мм','рабочий ход'],['2 серво','на канал']]}};
+function showCard(k){const c=cards[k];document.getElementById('card').innerHTML=`<h2>${c.t}</h2>${c.html}<div class="facts">${c.f.map(x=>`<div class="fact"><strong>${x[0]}</strong>${x[1]}</div>`).join('')}</div>`}
+function build(k){clear();current=k;if(k==='system')buildSystem();if(k==='cassetteA'){boxReference();buildCassetteA(world,true,explode?18:0)}if(k==='cassetteB'){boxReference();buildCassetteB(world,true)}if(k==='gateA')buildGateA();if(k==='gateB')buildGateB();if(k==='gateC')buildGateC();if(k==='gateD')buildGateD();document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===k));showCard(k);if(k.startsWith('gate')){camera.position.set(250,190,-330);controls.target.set(0,55,15)}else{camera.position.set(690,520,-820);controls.target.set(0,180,210)}controls.update()}
+function updateMotion(t){phase=t;document.getElementById('state').textContent=t<.02?'HOME':t>.98?'ВЫДАЧА':`ХОД ${Math.round(t*100)}%`;
+  if(moving.type==='A'){moving.front.position.y=t*41;moving.rear.position.y=(1-t)*41;moving.gear.rotation.x=Math.PI/2-t*1.5}
+  if(moving.type==='B')moving.carriage.position.y=-56*t;
+  if(moving.type==='C')moving.rotor.rotation.x=t*THREE.MathUtils.degToRad(105);
+  if(moving.type==='D'){let f=0,r=41;if(t<.35){f=0;r=41*(1-t/.35)}else if(t<.7){r=0;f=41*((t-.35)/.35)}else{r=0;f=41}moving.front.position.y=f;moving.rear.position.y=r}
+}
+document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>build(b.dataset.view));document.getElementById('explode').onclick=()=>{explode=!explode;document.getElementById('explode').classList.toggle('active',explode);build(current)};
+document.getElementById('home').onclick=()=>{running=false;targetPhase=0};document.getElementById('eject').onclick=()=>{running=false;targetPhase=1};document.getElementById('cycle').onclick=()=>{if(!current.startsWith('gate'))build('gateB');running=true};document.getElementById('stop').onclick=()=>running=false;
+function resize(){const v=document.getElementById('view'),w=v.clientWidth,h=v.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()}addEventListener('resize',resize);resize();
+function animate(now){requestAnimationFrame(animate);const dt=Math.min(.05,(now-last)/1000);last=now;if(running){targetPhase+=dt*.55;if(targetPhase>1){targetPhase=1;running=false;setTimeout(()=>{targetPhase=0;running=true},500)}}phase+=Math.sign(targetPhase-phase)*Math.min(Math.abs(targetPhase-phase),dt*1.5);updateMotion(phase);controls.update();renderer.render(scene,camera)}
+const initialParams=new URLSearchParams(location.search),initialView=initialParams.get('view');build(cards[initialView]?initialView:'system');if(initialParams.get('state')==='eject'){phase=targetPhase=1;updateMotion(1)}requestAnimationFrame(animate);
+</script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="820" viewBox="0 0 1200 820">
+<rect width="1200" height="820" fill="#111820"/>
+<style>text{font-family:Segoe UI,Arial;fill:#eaf1f7} .p{fill:#c9a36d;stroke:#ffe0a6;stroke-width:2} .r{fill:#73b7e8;stroke:#bfe6ff;stroke-width:2} .n{font-size:18px;font-weight:700} .s{font-size:14px;fill:#aebdca}</style>
+<text x="35" y="42" class="n">V9 — номинальный раскрой кассеты (НЕ резать до замера коробки и толщины листа)</text>
+<text x="35" y="68" class="s">База: внутри 595×395×395; кассета 590×391; банка 70×Ø47; 5×75; перегородка 4.</text>
+<g transform="translate(35,105)"><path class="p" d="M0 0 H590 V390 H0 Z"/><line x1="0" y1="390" x2="590" y2="232" stroke="#73b7e8" stroke-width="3"/><text x="18" y="32" class="n">Перегородка 590×390 — 4 шт</text><text x="18" y="58" class="s">голубая линия = низ по скату 15°; реальные окна гребёнок — по шаблону</text></g>
+<g transform="translate(660,105)"><rect class="p" width="74.4" height="610.8"/><text x="95" y="30" class="n">Низ 610.8×74.4 — 5 шт</text><rect x="0" y="635" class="r" width="74.4" height="551.4" transform="rotate(-90 0 635)"/><text x="95" y="665" class="n">Верх 551.4×74.4 — 5 шт</text></g>
+<g transform="translate(35,535)"><rect class="r" width="391" height="24"/><text x="0" y="55" class="n">Гребёнка 391×24 — 4+2 шт</text><rect x="0" y="85" class="r" width="391" height="20"/><text x="0" y="136" class="s">Ширина паза = фактическая толщина +0.2 CNC / +0.4 ручной рез</text></g>
+<g transform="translate(500,535)"><rect class="p" width="248.5" height="74.4"/><text x="0" y="105" class="n">Съёмный нос 248.5×74.4 — 5 шт</text><text x="0" y="132" class="s">Сначала снять носы/затворы, затем кассету поднять вверх.</text></g>
+<text x="35" y="785" class="s">Файл показывает габариты и объём материала, а не готовые траектории CNC. После выбора механизма будет финальный DXF/SVG.</text>
+</svg>

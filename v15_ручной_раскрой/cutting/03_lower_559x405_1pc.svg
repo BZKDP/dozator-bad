@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="639mm" height="500mm" viewBox="0 0 639 500" role="img" aria-label="Нижний поддон ПНД: 559×405×4 мм · 1 шт.">
+<style>.outline{fill:#f4ead6;stroke:#c33432;stroke-width:.6;fill-rule:evenodd}.point{font:6px Arial,sans-serif;font-weight:700}.label{font:bold 8px Arial,sans-serif}.dimension{stroke:#343c46;stroke-width:.5}.fold{stroke:#1677aa;stroke-width:.5;stroke-dasharray:5 3}</style>
+<rect width="100%" height="100%" fill="white"/>
+<text x="40" y="15" class="label">Нижний поддон ПНД: 559×405×4 мм · 1 шт.</text>
+<g transform="translate(40,40)"><path d="M 559.000,405.000 L 559.000,0.000 L 0.000,0.000 L 0.000,405.000 L 559.000,405.000 Z" class="outline"/>
+<line x1="0" y1="422" x2="559" y2="422" class="dimension"/>
+<line x1="0" y1="415" x2="0" y2="427" class="dimension"/><line x1="559" y1="415" x2="559" y2="427" class="dimension"/>
+<text x="264" y="435" class="label">559 мм</text>
+<line x1="-17" y1="0" x2="-17" y2="405" class="dimension"/>
+<text x="-22" y="202" class="label" transform="rotate(-90,-22,202)">405 мм</text>
+<circle cx="0" cy="405" r="2" fill="#c33432"/><text x="6" y="397" class="point">0: перед / низ</text>
+</g><text x="40" y="491" class="point">Красная линия — рез. X от переднего края; Z от низа. Все числа в миллиметрах.</text></svg>

@@ -1,0 +1,15 @@
+{
+  "port": "COM6",
+  "pos_us": 1270,
+  "zero_us": 1500,
+  "left_us": 1270,
+  "right_us": 1270,
+  "closed_us": 1270,
+  "eject_us": 1846,
+  "guard_min_us": 700,
+  "guard_max_us": 2300,
+  "speed_us_s": 1000,
+  "patrol_pause_s": 0.4,
+  "invert": false,
+  "hold_torque": false
+}

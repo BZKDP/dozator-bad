@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="icon" href="data:,">
+  <title>Вариант A · плавная кинематика дозатора</title>
+  <style>
+    :root{
+      --bg:#070c12;--panel:#111b25;--panel2:#182633;--line:#2b4050;
+      --text:#f3f7fa;--muted:#9bb0bf;--blue:#4facf1;--cyan:#42d2c2;
+      --green:#54d48c;--amber:#f0b55a;--orange:#ef9144;--red:#ee696e;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-serif;overflow:hidden}
+    button,input{font:inherit}
+    #app{height:100%;display:grid;grid-template-columns:minmax(0,1fr) 410px}
+    #viewport{position:relative;min-width:0;background:radial-gradient(circle at 42% 24%,#1c2d3b 0,#070c12 66%)}
+    canvas{display:block;width:100%;height:100%;outline:none}
+    #panel{overflow:auto;background:linear-gradient(180deg,#15232e,#0c141c 78%);border-left:1px solid var(--line);padding:20px 18px 28px}
+    h1{font-size:23px;line-height:1.13;margin:0 0 7px}
+    h2{font-size:15px;margin:0 0 7px}
+    p{margin:6px 0}
+    .subtitle{font-size:12px;line-height:1.48;color:var(--muted);margin:0 0 15px}
+    .eyebrow{font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:#75b1d9;font-weight:850;margin:18px 0 7px}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+    .grid.three{grid-template-columns:1fr 1fr 1fr}
+    button{border:1px solid var(--line);background:#1a2936;color:var(--text);border-radius:8px;padding:10px 11px;font-weight:780;font-size:12px;line-height:1.25;cursor:pointer;text-align:left;transition:.14s}
+    button:hover{background:#223746;border-color:#5d7d93}
+    button:focus-visible,input:focus-visible{outline:3px solid var(--cyan);outline-offset:2px}
+    button.primary{background:#17533f;border-color:#2c7b5c}
+    button.active{background:#17547e;border-color:var(--blue);box-shadow:inset 0 0 0 1px rgba(79,172,241,.22)}
+    button small{display:block;color:#a5b7c4;font-weight:500;margin-top:2px}
+    .readouts{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:8px 0}
+    .readout{border:1px solid var(--line);border-radius:8px;background:#0d171f;padding:8px 9px;color:var(--muted);font-size:10px}
+    .readout b{display:block;color:#f4f8fb;font:800 17px/1.1 Consolas,monospace;margin-bottom:2px}
+    .range{display:grid;grid-template-columns:74px 1fr 52px;gap:8px;align-items:center;margin:9px 0;font-size:11px;color:var(--muted)}
+    .range output{font:750 12px Consolas,monospace;color:#e3f0f7;text-align:right}
+    input[type=range]{width:100%;accent-color:var(--blue)}
+    #timeline{height:24px}
+    .phases{display:grid;grid-template-columns:45fr 100fr 75fr 35fr 90fr 28fr 18fr 50fr;gap:2px;margin:4px 0 10px}
+    .phases i{height:7px;border-radius:5px;background:#273846;transition:.16s}.phases i.active{background:var(--cyan);box-shadow:0 0 12px rgba(66,210,194,.55)}
+    #phaseCard{border:1px solid #31566a;border-radius:10px;background:#102330;padding:11px 12px;min-height:82px}
+    #phaseCard strong{display:block;font-size:15px;margin-bottom:4px;color:#fff}
+    #phaseCard span{font-size:11.5px;line-height:1.45;color:#b5c7d2}
+    .note{margin-top:12px;border-left:3px solid var(--amber);background:#1c211f;border-radius:5px;padding:9px 10px;font-size:11px;line-height:1.48;color:#ced8de}
+    .downloads{display:grid;gap:7px}.downloads a{display:block;border:1px solid #315b73;border-radius:8px;background:#142a39;color:#bce6ff;text-decoration:none;padding:9px 10px;font-size:11px;font-weight:800;transition:.14s}.downloads a:hover{background:#1a3a4e;border-color:var(--blue);color:#fff}.downloads a.primary-download{background:#174d3b;border-color:#338164;color:#eafff3;font-size:12px}.downloads a small{display:block;color:#9fb7c5;font-weight:500;margin-top:2px}
+    details{border:1px solid var(--line);border-radius:8px;background:#0d171f;margin-top:7px;overflow:hidden}summary{cursor:pointer;padding:9px 10px;font-size:11px;font-weight:800;color:#dceaf2}details .downloads{padding:0 8px 8px}
+    .spec{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-radius:8px;overflow:hidden;font-size:10.5px;color:#adc0cc}
+    .spec td{padding:7px 8px;border-bottom:1px solid #263946}.spec tr:last-child td{border-bottom:0}.spec td:first-child{color:#edf5f9;font-weight:750}
+    #hud{position:absolute;left:16px;top:16px;max-width:min(700px,calc(100% - 32px));background:rgba(7,12,17,.86);border:1px solid rgba(158,193,217,.22);border-radius:10px;padding:10px 12px;backdrop-filter:blur(9px);font-size:11px;line-height:1.45;color:#b3c5d1;pointer-events:none}
+    #hud b{color:#fff}
+    #stage{position:absolute;left:16px;bottom:16px;max-width:75%;background:rgba(7,12,17,.9);border:1px solid rgba(158,193,217,.23);border-radius:10px;padding:10px 12px;backdrop-filter:blur(9px);font-size:12px;font-weight:800;pointer-events:none}
+    #stage small{display:block;color:#9fb4c2;font-weight:500;margin-top:3px}
+    #load{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#070c12;z-index:10;transition:opacity .25s}
+    #load.hidden{display:none}
+    .loader{width:min(430px,78vw);text-align:center}.loader h2{font-size:18px;margin:0 0 7px}.loader p{font-size:12px;color:var(--muted)}
+    .bar{height:7px;border-radius:10px;background:#1b2b37;overflow:hidden;margin:14px 0}.bar i{display:block;height:100%;width:8%;background:linear-gradient(90deg,var(--blue),var(--cyan));transition:width .2s}
+    #error{position:absolute;z-index:12;left:16px;right:16px;top:16px;border:1px solid var(--red);border-radius:8px;background:#32171b;color:#ffd9db;padding:11px 13px;font-size:11px;white-space:pre-wrap}
+    #error:empty{display:none}
+    .camera-note{font-size:10.5px;line-height:1.45;color:#8fa6b5;margin-top:7px}
+    @media(max-width:920px){#app{grid-template-columns:1fr}#panel{position:absolute;right:0;top:0;width:min(410px,96vw);height:100%;z-index:5;background:rgba(17,27,37,.97)}#hud{max-width:calc(100% - 430px)}}
+  </style>
+  <script type="importmap">{"imports":{"three":"../libs/three.module.js"}}</script>
+</head>
+<body>
+<div id="app">
+  <main id="viewport" aria-label="Плавная трёхмерная анимация варианта A" aria-busy="true">
+    <div id="hud"><b>Камера не двигается сама.</b> ЛКМ — вращение, колесо — масштаб, ПКМ — сдвиг. Механика и банки рассчитываются непрерывно на каждом кадре.</div>
+    <div id="stage" aria-live="polite">HOME · передний палец держит банку<small>Один полный цикл выдаёт ровно одну банку</small></div>
+    <div id="load" role="status" aria-live="polite"><div class="loader"><h2>Вариант A · загружаю реальные STL один раз</h2><p id="loadText">Подготавливаю сцену…</p><div class="bar"><i id="loadFill"></i></div></div></div>
+    <div id="error" role="alert"></div>
+  </main>
+
+  <aside id="panel">
+    <h1>Вариант A · плавная кинематика</h1>
+    <p class="subtitle">Отдельная демонстрация верхнего V‑коромысла. Здесь нет смены HOME/MID/EJECT-файлов: рама загружается один раз, после чего серва, тяга, коромысло и банки движутся как жёсткие детали.</p>
+
+    <div class="eyebrow">Управление циклом</div>
+    <div class="grid">
+      <button id="once" class="primary">▶ Один цикл<small>выдать одну банку</small></button>
+      <button id="loop">↻ Повтор<small>непрерывная демонстрация</small></button>
+      <button id="pause">⏸ Пауза<small>без сброса положения</small></button>
+      <button id="home">↶ Вернуть в HOME<small>камера сохранится</small></button>
+    </div>
+
+    <div class="range"><label for="speed">Скорость</label><input id="speed" type="range" min="0.25" max="2" value="1" step="0.05"><output id="speedOut">1.00×</output></div>
+    <div class="range"><label for="timeline">Таймлайн</label><input id="timeline" type="range" min="0" max="1000" value="0" step="1"><output id="timeOut">0.00 c</output></div>
+    <div class="phases" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+
+    <div class="readouts">
+      <div class="readout"><b id="servoOut">0.0°</b>серва</div>
+      <div class="readout"><b id="rockerOut">−22.0°</b>коромысло</div>
+      <div class="readout"><b id="issuedOut">0</b>выдано</div>
+    </div>
+    <div id="phaseCard"><strong id="phaseTitle">HOME · удержание</strong><span id="phaseText">Передний палец находится внизу и удерживает первую банку. Задний поднят и не мешает очереди.</span></div>
+
+    <div class="eyebrow">Камера — только по твоей команде</div>
+    <div class="grid three">
+      <button data-camera="iso">Общий вид</button>
+      <button data-camera="side">Сбоку</button>
+      <button data-camera="gate">На пальцы</button>
+    </div>
+    <button id="resetCamera" style="width:100%;margin-top:7px">Сбросить камеру</button>
+    <p class="camera-note">Запуск, пауза, таймлайн и повтор не меняют ни позицию камеры, ни масштаб, ни выбранную точку обзора.</p>
+
+    <div class="eyebrow">Что показано</div>
+    <table class="spec">
+      <tr><td>Ход сервы</td><td>0…83,70°</td></tr>
+      <tr><td>Ход коромысла</td><td>−22…+22°, нелинейная четырёхзвенка</td></tr>
+      <tr><td>Перехват второй</td><td>51,83° сервы</td></tr>
+      <tr><td>Освобождение первой</td><td>81,96° сервы</td></tr>
+      <tr><td>Камера</td><td>кадрируется один раз после загрузки</td></tr>
+    </table>
+
+    <div class="eyebrow">Файлы для печати · один канал A</div>
+    <div class="downloads">
+      <a class="primary-download" href="A_верхнее_коромысло/A_ПЛИТА_220x220_1_канал.3mf" download>⬇ Готовая 3MF-плита 220 × 220<small>Все четыре детали одного канала уже разложены; для пяти каналов запустить эту плиту пять раз</small></a>
+      <a href="A_верхнее_коромысло/README_ВАРИАНТ_A.md" target="_blank" rel="noopener">Открыть инструкцию по сборке</a>
+    </div>
+    <details>
+      <summary>Скачать отдельные STL</summary>
+      <div class="downloads">
+        <a href="A_верхнее_коромысло/STL_ПЕЧАТЬ/A01_рама_верхнего_коромысла.stl" download>A01 · рама верхнего коромысла</a>
+        <a href="A_верхнее_коромысло/STL_ПЕЧАТЬ/A02_коромысло_с_2_пальцами.stl" download>A02 · коромысло с двумя пальцами</a>
+        <a href="A_верхнее_коромысло/STL_ПЕЧАТЬ/A03_короткая_тяга_12мм.stl" download>A03 · короткая тяга 12 мм</a>
+        <a href="A_верхнее_коромысло/STL_ПЕЧАТЬ/A04_нижний_прижим_ската.stl" download>A04 · нижний прижим ската</a>
+      </div>
+    </details>
+    <div class="note"><b>Профиль для Creality Hyper PLA:</b> сопло 215 °C, стол 55–60 °C, слой 0,20 мм, 100 мм/с, первый слой 25 мм/с, ретракт 0,8 мм при 25 мм/с, 5 стенок и 40% gyroid. Поддержки выключены, brim 4 мм.</div>
+    <div class="note">Это визуализация расчётной кинематики существующего прототипа A, а не подтверждение надёжности. Перед пятью каналами всё равно испытать один собранный канал минимум 300 циклов с реальными банками.</div>
+  </aside>
+</div>
+
+<script type="module">
+import * as THREE from 'three';
+import {OrbitControls} from '../libs/OrbitControls.js';
+
+const ASSET='A_верхнее_коромысло/STL_СБОРКА_НЕ_ПЕЧАТАТЬ/';
+const FILES={
+  frame:'A_VIEW_HOME_frame.stl',clamp:'A_VIEW_HOME_clamp.stl',rocker:'A_VIEW_HOME_rocker.stl',
+  link:'A_VIEW_HOME_link.stl',servo:'A_VIEW_HOME_servo.stl',horn:'A_VIEW_HOME_horn.stl',
+  sheet:'A_VIEW_HOME_lower_sheet.stl',can1:'A_VIEW_HOME_can_1.stl',
+  can2:'A_VIEW_HOME_can_2.stl',can3:'A_VIEW_HOME_can_3.stl'
+};
+
+const P={
+  canR:24, fingerR:2, pivotU:0, pivotN:41.516266235,
+  gateHalf:22.421828949, activeFingerN:33.868097522,
+  qHome:-22, qEject:22, servoMax:83.699615607,
+  servoU:-2.774081347,servoN:65.392355356,hornR:9,
+  servoHomeGeom:-107.941574178,servoDirection:-1,
+  crankR:16.578964743,crankAngle:90.491554673,linkL:11.625516263,
+  transferServo:51.830002,releaseServo:81.962157,rearStartServo:7.833859,
+  canY:2.2
+};
+const TIMES={home:.45,forward:1,release:.75,eject:.35,returnRear:.9,queue:.28,finish:.18,settle:.5};
+const BOUNDS=[];let totalTime=0;
+for(const value of Object.values(TIMES)){BOUNDS.push(totalTime);totalTime+=value}BOUNDS.push(totalTime);
+
+const deg=THREE.MathUtils.degToRad;
+const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
+const lerp=(a,b,t)=>a+(b-a)*t;
+const smooth=t=>{t=clamp(t);return t*t*(3-2*t)};
+const smoother=t=>{t=clamp(t);return t*t*t*(t*(t*6-15)+10)};
+const easeIn=t=>{t=clamp(t);return t*t};
+const v2=(u,n)=>new THREE.Vector2(u,n);
+const pivot2=v2(P.pivotU,P.pivotN),servo2=v2(P.servoU,P.servoN);
+
+const theta=deg(15),ct=Math.cos(theta),st=Math.sin(theta);
+const worldT=new THREE.Vector3(116.756428013,197.5,33.355342958);
+function toWorld(u,y,n){return new THREE.Vector3(worldT.x-ct*u-st*n,worldT.y+y,worldT.z-st*u+ct*n)}
+function rot2(vector,angleDeg){const a=deg(angleDeg),c=Math.cos(a),s=Math.sin(a);return v2(c*vector.x-s*vector.y,s*vector.x+c*vector.y)}
+function rockerPoint(local,q){return pivot2.clone().add(rot2(local.clone().sub(pivot2),q))}
+function fingerLocals(){
+  const frontHome=v2(P.gateHalf,P.activeFingerN),rearEject=v2(-P.gateHalf,P.activeFingerN);
+  return [pivot2.clone().add(rot2(frontHome.clone().sub(pivot2),-P.qHome)),pivot2.clone().add(rot2(rearEject.clone().sub(pivot2),-P.qEject))];
+}
+const fingerLocal=fingerLocals();
+function fingers(q){return [rockerPoint(fingerLocal[0],q),rockerPoint(fingerLocal[1],q)]}
+function crankPoint(q){const local=pivot2.clone().add(v2(Math.cos(deg(P.crankAngle)),Math.sin(deg(P.crankAngle))).multiplyScalar(P.crankR));return rockerPoint(local,q)}
+function hornPoint(sd){const beta=deg(P.servoHomeGeom+P.servoDirection*sd);return servo2.clone().add(v2(Math.cos(beta),Math.sin(beta)).multiplyScalar(P.hornR))}
+function angleDistance(a,b){return Math.atan2(Math.sin(a-b),Math.cos(a-b))}
+function rockerQ(sd){
+  const h=hornPoint(sd),dvec=h.clone().sub(pivot2),d=dvec.length();
+  const cosine=clamp((P.crankR*P.crankR+d*d-P.linkL*P.linkL)/(2*P.crankR*d),-1,1);
+  const gamma=Math.acos(cosine),phi=Math.atan2(dvec.y,dvec.x),alpha=deg(P.crankAngle);
+  const expected=deg(P.qHome+(P.qEject-P.qHome)*sd/P.servoMax);
+  const candidates=[phi-alpha+gamma,phi-alpha-gamma];
+  return THREE.MathUtils.radToDeg(candidates.reduce((best,value)=>Math.abs(angleDistance(value,expected))<Math.abs(angleDistance(best,expected))?value:best));
+}
+function gateLower(pin){
+  const dn=pin.y-P.canR,rr=P.canR+P.fingerR;
+  return pin.x-Math.sqrt(Math.max(0,rr*rr-dn*dn));
+}
+const homeFront=fingers(P.qHome)[0];
+const firstHome=gateLower(homeFront);
+const homeU=[firstHome,firstHome-48,firstHome-96,firstHome-144];
+const releaseQ=rockerQ(P.releaseServo),releaseU=gateLower(fingers(releaseQ)[0]);
+
+function parseSTL(buffer){
+  const view=new DataView(buffer);let binary=false,count=0;
+  if(buffer.byteLength>=84){count=view.getUint32(80,true);binary=84+count*50===buffer.byteLength}
+  const points=[];
+  if(binary){
+    let offset=84;
+    for(let face=0;face<count;face++,offset+=50){
+      for(let vertex=0;vertex<3;vertex++){
+        const p=offset+12+vertex*12;
+        points.push(view.getFloat32(p,true),view.getFloat32(p+4,true),view.getFloat32(p+8,true));
+      }
+    }
+  }else{
+    const text=new TextDecoder().decode(buffer),re=/vertex\s+([+\-\d.eE]+)\s+([+\-\d.eE]+)\s+([+\-\d.eE]+)/g;let match;
+    while((match=re.exec(text))!==null)points.push(Number(match[1]),Number(match[2]),Number(match[3]));
+  }
+  if(!points.length||points.length%9)throw new Error('Некорректный STL');
+  const geometry=new THREE.BufferGeometry();geometry.setAttribute('position',new THREE.Float32BufferAttribute(points,3));
+  geometry.computeVertexNormals();geometry.computeBoundingBox();geometry.computeBoundingSphere();return geometry;
+}
+async function loadGeometry(file){
+  const response=await fetch(ASSET+file);if(!response.ok)throw new Error(response.status+' · '+file);
+  return parseSTL(await response.arrayBuffer());
+}
+
+function mat(color,roughness=.52,metalness=0){return new THREE.MeshStandardMaterial({color,roughness,metalness})}
+const materials={
+  frame:mat(0x3a4854,.62),clamp:mat(0x3a4854,.62),rocker:mat(0xef9144,.44),
+  link:mat(0x45cfc2,.44),servo:mat(0x4178bd,.48),horn:mat(0xf2f3ef,.4),
+  sheet:mat(0xc8965d,.85),can1:mat(0x56cf91,.27,.2),can2:mat(0x56aee5,.27,.2),can3:mat(0xb985df,.27,.2)
+};
+
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x070c12);scene.fog=new THREE.Fog(0x070c12,1100,3500);
+const camera=new THREE.PerspectiveCamera(38,1,.5,5000);camera.up.set(0,0,1);
+const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.08;
+document.getElementById('viewport').prepend(renderer.domElement);
+const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.dampingFactor=.075;controls.minDistance=60;controls.maxDistance=1400;
+scene.add(new THREE.HemisphereLight(0xd9efff,0x263038,2.15));scene.add(new THREE.AmbientLight(0xffffff,.74));
+const key=new THREE.DirectionalLight(0xffffff,2.8);key.position.set(-450,-620,900);key.castShadow=true;key.shadow.mapSize.set(2048,2048);scene.add(key);
+const rim=new THREE.DirectionalLight(0x75caff,1.35);rim.position.set(650,500,520);scene.add(rim);
+const floor=new THREE.Mesh(new THREE.PlaneGeometry(2600,2600),mat(0x0c151c,1));floor.position.z=-55;floor.receiveShadow=true;scene.add(floor);
+const grid=new THREE.GridHelper(2200,55,0x2d4657,0x172730);grid.rotation.x=Math.PI/2;grid.position.z=-54.7;scene.add(grid);
+const world=new THREE.Group();scene.add(world);
+
+const meshes={},canEntries=[];let initialCanEntries=[];
+const pivotWorld=toWorld(P.pivotU,0,P.pivotN),servoWorld=toWorld(P.servoU,0,P.servoN);
+const qHome2=crankPoint(P.qHome),hHome2=hornPoint(0);
+const qHomeWorld=toWorld(qHome2.x,-29.9,qHome2.y),hHomeWorld=toWorld(hHome2.x,-29.9,hHome2.y);
+const linkHomeVector=hHomeWorld.clone().sub(qHomeWorld).normalize();
+const tempA=new THREE.Matrix4(),tempB=new THREE.Matrix4(),tempC=new THREE.Matrix4(),tempQ=new THREE.Quaternion();
+
+function pivotY(pivot,angle){
+  return tempA.makeTranslation(pivot.x,pivot.y,pivot.z)
+    .multiply(tempB.makeRotationY(angle))
+    .multiply(tempC.makeTranslation(-pivot.x,-pivot.y,-pivot.z)).clone();
+}
+function setLink(q,sd){
+  const q2=crankPoint(q),h2=hornPoint(sd),qw=toWorld(q2.x,-29.9,q2.y),hw=toWorld(h2.x,-29.9,h2.y);
+  const current=hw.clone().sub(qw).normalize();tempQ.setFromUnitVectors(linkHomeVector,current);
+  meshes.link.matrix.copy(new THREE.Matrix4().makeTranslation(qw.x,qw.y,qw.z)
+    .multiply(new THREE.Matrix4().makeRotationFromQuaternion(tempQ))
+    .multiply(new THREE.Matrix4().makeTranslation(-qHomeWorld.x,-qHomeWorld.y,-qHomeWorld.z)));
+}
+function setCan(entry,u,n,opacity=1){
+  const current=toWorld(u,P.canY,n),roll=(u-entry.baseU)/P.canR;
+  entry.mesh.matrix.copy(new THREE.Matrix4().makeTranslation(current.x,current.y,current.z)
+    .multiply(new THREE.Matrix4().makeRotationY(roll))
+    .multiply(new THREE.Matrix4().makeTranslation(-entry.baseWorld.x,-entry.baseWorld.y,-entry.baseWorld.z)));
+  const transparent=opacity<.999;
+  if(entry.mesh.material.transparent!==transparent){entry.mesh.material.transparent=transparent;entry.mesh.material.needsUpdate=true}
+  entry.mesh.material.opacity=opacity;entry.mesh.material.depthWrite=opacity>.25;entry.mesh.visible=opacity>.01;
+}
+
+const markerFront=new THREE.Mesh(new THREE.SphereGeometry(3.1,24,16),new THREE.MeshBasicMaterial({color:0xef9144,transparent:true,opacity:.95}));
+const markerRear=new THREE.Mesh(new THREE.SphereGeometry(3.1,24,16),new THREE.MeshBasicMaterial({color:0x45cfc2,transparent:true,opacity:.35}));
+world.add(markerFront,markerRear);
+const trajectory=[];for(let i=0;i<=45;i++){const r=i/45,u=lerp(releaseU,115,smoother(r)),n=r<.55?24:24-44*Math.pow((r-.55)/.45,2);trajectory.push(toWorld(u,P.canY,n))}
+const pathGeometry=new THREE.BufferGeometry().setFromPoints(trajectory);
+const pathLine=new THREE.Line(pathGeometry,new THREE.LineDashedMaterial({color:0x75bfdc,dashSize:5,gapSize:3,transparent:true,opacity:.5}));pathLine.computeLineDistances();world.add(pathLine);
+
+let cycleTime=0,running=false,looping=false,issued=0,speed=1,lastFrame=performance.now(),scrubbing=false;
+
+function phaseAt(t){
+  let index=BOUNDS.length-2;for(let i=0;i<BOUNDS.length-1;i++){if(t<BOUNDS[i+1]-1e-7){index=i;break}}
+  const start=BOUNDS[index],end=BOUNDS[index+1];return {index,local:clamp((t-start)/(end-start||1))};
+}
+const phaseCopy=[
+  ['HOME · удержание','Передний палец внизу и держит первую банку. Задний поднят, очередь свободно упакована.'],
+  ['Рабочий ход сервы','Серва плавно двигает тягу и V‑коромысло. Первая банка остаётся под контролем переднего пальца.'],
+  ['Выдача одной банки','Задний палец уже перехватил вторую банку. Передний освобождает только первую — она прокатывается за край и падает.'],
+  ['EJECT · контроль очереди','Первая банка ушла. Задний палец продолжает удерживать вторую и не допускает двойной выдачи.'],
+  ['Обратный ход','Серва возвращает коромысло. Очередь пока остаётся на заднем пальце.'],
+  ['Передача к переднему пальцу','Задний палец поднимается, следующая банка плавно докатывается до переднего барьера.'],
+  ['Доводка в HOME','Серва заканчивает короткий обратный ход; передний палец удерживает новую первую банку.'],
+  ['HOME · цикл завершён','Механизм вернулся в исходное положение. Траектория выдачи одной банки завершена, следующая готова.']
+];
+
+function poseAt(t){
+  const ph=phaseAt(t);let sd=0,outputR=0,queueMode='packed',queueBlend=0;
+  if(ph.index===0){sd=0}
+  else if(ph.index===1){sd=P.servoMax*smoother(ph.local)}
+  else if(ph.index===2){sd=P.servoMax;outputR=ph.local;queueMode='rear'}
+  else if(ph.index===3){sd=P.servoMax;outputR=1;queueMode='rear'}
+  else if(ph.index===4){sd=lerp(P.servoMax,P.rearStartServo,smoother(ph.local));outputR=1;queueMode='rear'}
+  else if(ph.index===5){sd=P.rearStartServo;outputR=1;queueMode='handoff';queueBlend=smooth(ph.local)}
+  else if(ph.index===6){sd=lerp(P.rearStartServo,0,smoother(ph.local));outputR=1;queueMode='front'}
+  else{sd=0;outputR=1;queueMode='front'}
+  const q=rockerQ(sd),pins=fingers(q),frontU=gateLower(pins[0]),rearU=gateLower(pins[1]);
+  meshes.rocker.matrix.copy(pivotY(pivotWorld,deg(q-P.qHome)));
+  meshes.horn.matrix.copy(pivotY(servoWorld,deg(-sd)));
+  setLink(q,sd);
+
+  let lead=frontU;
+  if(queueMode==='packed'){
+    const u0=frontU,u1=sd<P.transferServo?u0-48:rearU;
+    const positions=[u0,u1,u1-48,u1-96];
+    for(let i=0;i<canEntries.length;i++)setCan(canEntries[i],positions[i],24,1);
+  }else{
+    if(queueMode==='rear')lead=rearU;
+    if(queueMode==='handoff'){
+      const qHold=rockerQ(P.rearStartServo),holdPins=fingers(qHold);
+      lead=lerp(gateLower(holdPins[1]),gateLower(holdPins[0]),queueBlend);
+    }
+    if(queueMode==='front')lead=frontU;
+    let outU=releaseU,outN=24,outAlpha=1;
+    if(outputR>0){
+      if(outputR<.55){const r=smoother(outputR/.55);outU=lerp(releaseU,80,r)}
+      else{const r=clamp((outputR-.55)/.45);outU=80+35*smoother(r);outN=24-44*easeIn(r);outAlpha=1-smooth((r-.82)/.18)}
+    }
+    setCan(canEntries[0],outU,outN,outAlpha);
+    for(let i=1;i<canEntries.length;i++)setCan(canEntries[i],lead-(i-1)*48,24,1);
+  }
+
+  const frontPos=toWorld(pins[0].x,-12,pins[0].y),rearPos=toWorld(pins[1].x,-12,pins[1].y);
+  markerFront.position.copy(frontPos);markerRear.position.copy(rearPos);
+  const rearActive=sd>=P.rearStartServo&&!(ph.index>=5&&ph.local>.75),frontActive=sd<P.releaseServo;
+  markerFront.material.opacity=frontActive?.98:.2;markerRear.material.opacity=rearActive?.98:.2;
+  markerFront.scale.setScalar(frontActive?1.25:.78);markerRear.scale.setScalar(rearActive?1.25:.78);
+
+  updateUi(ph,sd,q);
+  return {phase:ph.index,servo:sd,rocker:q};
+}
+
+function updateUi(ph,sd,q){
+  let title=phaseCopy[ph.index][0],text=phaseCopy[ph.index][1];
+  if(ph.index===1&&sd>=P.transferServo&&sd<P.releaseServo){title='Перехват второй банки';text='Задний палец уже вошёл между первой и второй банками. Передний всё ещё держит первую: в этот момент обе банки контролируются.'}
+  if(ph.index===1&&sd>=P.releaseServo){title='Передний палец освобождает первую';text='Перекрытие передачи завершено: задний палец надёжно держит вторую, поэтому наружу может уйти только первая банка.'}
+  document.getElementById('servoOut').textContent=sd.toFixed(1)+'°';
+  document.getElementById('rockerOut').textContent=(q<0?'−':'+')+Math.abs(q).toFixed(1)+'°';
+  document.getElementById('issuedOut').textContent=String(issued);
+  document.getElementById('phaseTitle').textContent=title;document.getElementById('phaseText').textContent=text;
+  document.getElementById('stage').innerHTML=title+'<small>'+text+'</small>';
+  if(!scrubbing)document.getElementById('timeline').value=String(Math.round(cycleTime/totalTime*1000));
+  document.getElementById('timeOut').value=cycleTime.toFixed(2)+' c';
+  document.querySelectorAll('.phases i').forEach((el,index)=>el.classList.toggle('active',index===ph.index));
+  document.getElementById('pause').innerHTML=(running?'⏸ Пауза':'▶ Продолжить')+'<small>'+(running?'остановить в текущей точке':'без сброса положения')+'</small>';
+  document.getElementById('loop').classList.toggle('active',looping);
+}
+
+function prepareNextCycle(){
+  const discharged=canEntries.shift();canEntries.push(discharged);cycleTime=0;
+}
+function startOnce(){if(cycleTime>=totalTime-1e-5)prepareNextCycle();looping=false;running=true}
+function startLoop(){if(cycleTime>=totalTime-1e-5)prepareNextCycle();looping=!looping;running=looping||running}
+function resetHome(){running=false;looping=false;cycleTime=0;issued=0;canEntries.splice(0,canEntries.length,...initialCanEntries);poseAt(0)}
+
+document.getElementById('once').addEventListener('click',startOnce);
+document.getElementById('loop').addEventListener('click',startLoop);
+document.getElementById('pause').addEventListener('click',()=>{running=!running;poseAt(cycleTime)});
+document.getElementById('home').addEventListener('click',resetHome);
+document.getElementById('speed').addEventListener('input',function(){speed=Number(this.value);document.getElementById('speedOut').value=speed.toFixed(2)+'×'});
+const timeline=document.getElementById('timeline');
+timeline.addEventListener('pointerdown',()=>{scrubbing=true;running=false});
+timeline.addEventListener('input',function(){cycleTime=Number(this.value)/1000*totalTime;poseAt(cycleTime)});
+timeline.addEventListener('change',()=>{scrubbing=false;poseAt(cycleTime)});
+window.addEventListener('keydown',event=>{
+  if(event.target instanceof Element&&event.target.closest('button,input,a,select,textarea'))return;
+  if(event.code==='Space'){event.preventDefault();running=!running;poseAt(cycleTime)}
+  if(event.code==='Home'){event.preventDefault();resetHome()}
+});
+
+let cameraFocus=new THREE.Vector3(),cameraRadius=180;
+function cameraPreset(name){
+  const t=cameraFocus.clone();controls.target.copy(t);
+  if(name==='side')camera.position.copy(t).add(new THREE.Vector3(0,-cameraRadius*2.4,cameraRadius*.35));
+  else if(name==='gate'){const gate=toWorld(0,-8,42);controls.target.copy(gate);camera.position.copy(gate).add(new THREE.Vector3(95,-155,90));}
+  else camera.position.copy(t).add(new THREE.Vector3(1.08,-1.25,.78).normalize().multiplyScalar(cameraRadius*2.25));
+  camera.lookAt(controls.target);controls.update();
+}
+document.querySelectorAll('[data-camera]').forEach(button=>button.addEventListener('click',()=>cameraPreset(button.dataset.camera)));
+document.getElementById('resetCamera').addEventListener('click',()=>controls.reset());
+
+function resize(){const v=document.getElementById('viewport'),w=v.clientWidth,h=v.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()}
+window.addEventListener('resize',resize);resize();
+
+async function init(){
+  try{
+    const entries=Object.entries(FILES),loaded={};
+    for(let i=0;i<entries.length;i++){
+      const [name,file]=entries[i];document.getElementById('loadText').textContent='STL '+(i+1)+' из '+entries.length+' · '+file;
+      document.getElementById('loadFill').style.width=Math.round((i+1)/entries.length*100)+'%';loaded[name]=await loadGeometry(file);
+    }
+    for(const name of ['frame','clamp','rocker','link','servo','horn','sheet']){
+      const mesh=new THREE.Mesh(loaded[name],materials[name]);mesh.castShadow=true;mesh.receiveShadow=true;mesh.matrixAutoUpdate=false;mesh.matrix.identity();world.add(mesh);meshes[name]=mesh;
+    }
+    for(let i=0;i<3;i++){
+      const name='can'+(i+1),mesh=new THREE.Mesh(loaded[name],materials[name].clone());mesh.castShadow=true;mesh.receiveShadow=true;mesh.matrixAutoUpdate=false;world.add(mesh);
+      canEntries.push({mesh,baseU:homeU[i],baseWorld:toWorld(homeU[i],P.canY,24)});
+    }
+    const tailMesh=new THREE.Mesh(loaded.can3,mat(0xf0b55a,.27,.2));tailMesh.castShadow=true;tailMesh.receiveShadow=true;tailMesh.matrixAutoUpdate=false;world.add(tailMesh);
+    canEntries.push({mesh:tailMesh,baseU:homeU[2],baseWorld:toWorld(homeU[2],P.canY,24)});initialCanEntries=[...canEntries];
+
+    const focus=new THREE.Box3();for(const name of ['frame','clamp','rocker','link','servo','horn'])focus.expandByObject(meshes[name]);
+    for(const entry of canEntries)focus.expandByObject(entry.mesh);focus.expandByPoint(toWorld(118,P.canY,-25));
+    cameraFocus=focus.getCenter(new THREE.Vector3());const size=focus.getSize(new THREE.Vector3());cameraRadius=Math.max(size.x,size.y,size.z)*.72+30;
+    cameraPreset('iso');controls.saveState();
+    poseAt(0);
+    document.getElementById('load').classList.add('hidden');document.getElementById('load').setAttribute('aria-hidden','true');document.getElementById('viewport').setAttribute('aria-busy','false');
+  }catch(error){document.getElementById('error').textContent='Ошибка загрузки: '+error.message;document.getElementById('load').classList.add('hidden');document.getElementById('load').setAttribute('aria-hidden','true')}
+}
+
+function animate(now){
+  requestAnimationFrame(animate);const dt=Math.min(.05,(now-lastFrame)/1000);lastFrame=now;
+  if(running&&meshes.rocker){
+    cycleTime+=dt*speed;
+    if(cycleTime>=totalTime){
+      poseAt(totalTime);issued++;
+      if(looping){cycleTime-=totalTime;prepareNextCycle();running=true}else{cycleTime=totalTime;running=false}
+    }
+    poseAt(cycleTime);
+  }
+  controls.update();renderer.render(scene,camera);
+}
+
+window.__A_ANIMATOR__={
+  getState:()=>({cycleTime,totalTime,running,looping,issued,camera:camera.position.toArray(),target:controls.target.toArray()}),
+  setProgress:value=>{running=false;cycleTime=clamp(value)*totalTime;return poseAt(cycleTime)},
+  playOnce:startOnce,reset:resetHome
+};
+init();animate(performance.now());
+</script>
+</body>
+</html>

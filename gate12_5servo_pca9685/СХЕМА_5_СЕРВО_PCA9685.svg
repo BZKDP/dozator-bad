@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="1000" viewBox="0 0 1500 1000">
+  <defs>
+    <style>
+      .bg{fill:#f5f7fb}.panel{fill:white;stroke:#263238;stroke-width:3}.head{font:700 32px 'Segoe UI',Arial,sans-serif;fill:#14202b}.title{font:700 25px 'Segoe UI',Arial,sans-serif;fill:#14202b}.text{font:20px 'Segoe UI',Arial,sans-serif;fill:#263238}.small{font:17px 'Segoe UI',Arial,sans-serif;fill:#37474f}.tiny{font:15px 'Segoe UI',Arial,sans-serif;fill:#455a64}.warn{font:700 19px 'Segoe UI',Arial,sans-serif;fill:#b71c1c}.pin{font:700 18px Consolas,monospace;fill:#102027}.logic{fill:none;stroke-width:7;stroke-linecap:round}.wire{fill:none;stroke-width:8;stroke-linecap:round}.thin{fill:none;stroke-width:4;stroke-linecap:round}.tag{fill:#eef2f7;stroke:#90a4ae;stroke-width:2}.servo{fill:#fff8e1;stroke:#7a5b00;stroke-width:2}.num{font:700 21px 'Segoe UI',Arial,sans-serif;fill:white}
+    </style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#455a64"/></marker>
+  </defs>
+  <rect width="1500" height="1000" class="bg"/>
+  <text x="60" y="56" class="head">Пять дозаторов: компьютер → ESP32 → PCA9685 → 5 серв</text>
+  <text x="60" y="88" class="small">Управление и питание разделены. ESP32 питается от USB, сервы — от отдельного стабилизированного блока 5 В / 5 А.</text>
+
+  <!-- PC -->
+  <rect x="60" y="150" width="255" height="160" rx="18" class="panel"/>
+  <rect x="95" y="180" width="185" height="85" rx="7" fill="#263238"/>
+  <rect x="105" y="190" width="165" height="65" fill="#b3e5fc"/>
+  <path d="M145 280h85l25 18H120z" fill="#78909c"/>
+  <text x="187" y="345" text-anchor="middle" class="title">КОМПЬЮТЕР</text>
+  <text x="187" y="374" text-anchor="middle" class="small">программа + COM-порт</text>
+
+  <!-- ESP32 -->
+  <rect x="415" y="125" width="315" height="310" rx="18" class="panel"/>
+  <rect x="465" y="175" width="215" height="210" rx="12" fill="#263238"/>
+  <rect x="535" y="135" width="75" height="45" rx="5" fill="#b0bec5"/>
+  <text x="572" y="238" text-anchor="middle" style="font:700 27px 'Segoe UI',Arial;fill:white">ESP32</text>
+  <text x="572" y="273" text-anchor="middle" style="font:19px 'Segoe UI',Arial;fill:#cfd8dc">DevKit / WROOM-32</text>
+  <text x="445" y="405" class="pin">3V3  GND  GPIO21  GPIO22</text>
+  <text x="572" y="469" text-anchor="middle" class="small">Питание ТОЛЬКО через USB</text>
+
+  <!-- USB -->
+  <path d="M315 230 C350 230 375 155 415 155" class="logic" stroke="#546e7a" marker-end="url(#arrow)"/>
+  <rect x="322" y="173" width="88" height="34" rx="8" class="tag"/><text x="366" y="197" text-anchor="middle" class="tiny">USB data</text>
+
+  <!-- PCA -->
+  <rect x="840" y="115" width="590" height="565" rx="22" fill="#e8f5e9" stroke="#1b5e20" stroke-width="4"/>
+  <text x="1135" y="160" text-anchor="middle" class="title">PCA9685 — драйвер серв, адрес 0x40</text>
+  <text x="870" y="204" class="pin">VCC   GND   SDA   SCL</text>
+  <rect x="870" y="234" width="520" height="72" rx="10" fill="#c8e6c9" stroke="#388e3c" stroke-width="2"/>
+  <text x="1130" y="263" text-anchor="middle" class="text">ЛОГИКА: VCC = 3,3 В от ESP32</text>
+  <text x="1130" y="291" text-anchor="middle" class="small">не питает сервы</text>
+
+  <!-- logic wires -->
+  <path d="M690 400 C770 400 775 192 870 192" class="logic" stroke="#8e24aa"/>
+  <path d="M672 420 C770 470 785 210 920 210" class="logic" stroke="#263238"/>
+  <path d="M654 438 C755 525 800 195 1015 195" class="logic" stroke="#00897b"/>
+  <path d="M636 455 C760 590 810 212 1095 212" class="logic" stroke="#1565c0"/>
+  <rect x="737" y="336" width="92" height="118" rx="8" class="tag"/>
+  <text x="783" y="362" text-anchor="middle" class="tiny" fill="#8e24aa">3V3→VCC</text>
+  <text x="783" y="388" text-anchor="middle" class="tiny">GND→GND</text>
+  <text x="783" y="414" text-anchor="middle" class="tiny" fill="#00897b">21→SDA</text>
+  <text x="783" y="440" text-anchor="middle" class="tiny" fill="#1565c0">22→SCL</text>
+
+  <!-- channel rail -->
+  <text x="880" y="349" class="text">Каналы:</text>
+  <text x="1000" y="349" class="tiny">GND (коричн./чёрн.)</text>
+  <text x="1190" y="349" class="tiny" fill="#c62828">V+ (красный)</text>
+  <text x="1315" y="349" class="tiny" fill="#ef6c00">PWM (жёлт./оранж.)</text>
+
+  <g>
+    <rect x="875" y="370" width="515" height="48" rx="8" fill="#f1f8e9" stroke="#81c784"/><circle cx="907" cy="394" r="17" fill="#263238"/><text x="907" y="401" text-anchor="middle" class="num">0</text><text x="952" y="402" class="text">Дозатор 1</text>
+    <rect x="875" y="425" width="515" height="48" rx="8" fill="#f1f8e9" stroke="#81c784"/><circle cx="907" cy="449" r="17" fill="#263238"/><text x="907" y="456" text-anchor="middle" class="num">1</text><text x="952" y="457" class="text">Дозатор 2</text>
+    <rect x="875" y="480" width="515" height="48" rx="8" fill="#f1f8e9" stroke="#81c784"/><circle cx="907" cy="504" r="17" fill="#263238"/><text x="907" y="511" text-anchor="middle" class="num">2</text><text x="952" y="512" class="text">Дозатор 3</text>
+    <rect x="875" y="535" width="515" height="48" rx="8" fill="#f1f8e9" stroke="#81c784"/><circle cx="907" cy="559" r="17" fill="#263238"/><text x="907" y="566" text-anchor="middle" class="num">3</text><text x="952" y="567" class="text">Дозатор 4</text>
+    <rect x="875" y="590" width="515" height="48" rx="8" fill="#f1f8e9" stroke="#81c784"/><circle cx="907" cy="614" r="17" fill="#263238"/><text x="907" y="621" text-anchor="middle" class="num">4</text><text x="952" y="622" class="text">Дозатор 5</text>
+    <!-- Three separate pins in every channel; PWM pins are not tied together. -->
+    <g fill="#263238"><circle cx="1160" cy="394" r="9"/><circle cx="1160" cy="449" r="9"/><circle cx="1160" cy="504" r="9"/><circle cx="1160" cy="559" r="9"/><circle cx="1160" cy="614" r="9"/></g>
+    <g fill="#d32f2f"><circle cx="1235" cy="394" r="9"/><circle cx="1235" cy="449" r="9"/><circle cx="1235" cy="504" r="9"/><circle cx="1235" cy="559" r="9"/><circle cx="1235" cy="614" r="9"/></g>
+    <g fill="#f57c00"><circle cx="1320" cy="394" r="9"/><circle cx="1320" cy="449" r="9"/><circle cx="1320" cy="504" r="9"/><circle cx="1320" cy="559" r="9"/><circle cx="1320" cy="614" r="9"/></g>
+  </g>
+
+  <!-- PSU -->
+  <rect x="60" y="665" width="340" height="205" rx="18" class="panel"/>
+  <text x="230" y="708" text-anchor="middle" class="title">БЛОК ПИТАНИЯ</text>
+  <text x="230" y="750" text-anchor="middle" style="font:700 30px 'Segoe UI',Arial;fill:#c62828">5 В / 5 А</text>
+  <text x="230" y="785" text-anchor="middle" class="warn">НЕ 12 В</text>
+  <text x="100" y="830" class="pin" fill="#c62828">+5V</text><text x="270" y="830" class="pin">GND</text>
+
+  <!-- fuse switch -->
+  <rect x="455" y="690" width="250" height="78" rx="12" fill="#fff3e0" stroke="#ef6c00" stroke-width="3"/>
+  <text x="580" y="722" text-anchor="middle" class="text">предохранитель 5 А</text>
+  <text x="580" y="751" text-anchor="middle" class="small">+ выключатель</text>
+  <path d="M150 825 H455" class="wire" stroke="#d32f2f"/>
+  <path d="M705 729 H785 V650 H900" class="wire" stroke="#d32f2f" marker-end="url(#arrow)"/>
+  <text x="805" y="638" class="pin" fill="#c62828">V+</text>
+  <path d="M310 825 H760 V670 H950" class="wire" stroke="#263238" marker-end="url(#arrow)"/>
+  <text x="870" y="692" class="pin">GND</text>
+
+  <!-- capacitor -->
+  <line x1="610" y1="820" x2="610" y2="905" class="thin" stroke="#d32f2f"/>
+  <line x1="635" y1="820" x2="635" y2="905" class="thin" stroke="#263238"/>
+  <line x1="585" y1="852" x2="660" y2="852" stroke="#263238" stroke-width="7"/>
+  <line x1="592" y1="872" x2="653" y2="872" stroke="#263238" stroke-width="3"/>
+  <path d="M610 820 V790 H720" class="thin" stroke="#d32f2f"/>
+  <path d="M635 820 V800 H760" class="thin" stroke="#263238"/>
+  <text x="485" y="930" class="text">1000–2200 мкФ / ≥10 В</text>
+  <text x="515" y="958" class="small">полоса на корпусе = минус к GND</text>
+
+  <!-- warning -->
+  <rect x="840" y="735" width="590" height="190" rx="15" fill="#ffebee" stroke="#c62828" stroke-width="3"/>
+  <text x="875" y="777" class="warn">ВАЖНО</text>
+  <text x="875" y="813" class="text">• +5 В блока НЕ вести на ESP32 5V/VIN.</text>
+  <text x="875" y="849" class="text">• Общая земля ESP32 ↔ PCA9685 обязательна.</text>
+  <text x="875" y="885" class="text">• VCC = 3,3 В логики; V+ = 5 В серв.</text>
+  <text x="875" y="915" class="small">Сначала проверить полярность мультиметром без серв.</text>
+</svg>

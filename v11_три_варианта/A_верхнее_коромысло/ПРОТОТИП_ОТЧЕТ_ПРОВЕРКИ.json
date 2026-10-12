@@ -1,0 +1,5484 @@
+{
+  "generated_utc": "2026-09-06T20:50:59.479635+00:00",
+  "status": "PROTOTYPE_FOR_COMPARISON",
+  "prototype_warning": "Сначала один канал и 300 циклов; не печатать сразу все пять комплектов.",
+  "print_meshes": [
+    {
+      "file": "A01_рама_верхнего_коромысла.stl",
+      "extents_mm": [
+        106.141,
+        99.892,
+        68.0
+      ],
+      "bounds_mm": [
+        [
+          -13.891,
+          -91.392,
+          0.0
+        ],
+        [
+          92.25,
+          8.5,
+          68.0
+        ]
+      ],
+      "watertight": true,
+      "is_volume": true,
+      "components": 1,
+      "euler_number": -14,
+      "boundary_edges": 0,
+      "overused_edges": 0,
+      "volume_cm3": 14.681
+    },
+    {
+      "file": "A02_коромысло_с_2_пальцами.stl",
+      "extents_mm": [
+        56.108,
+        37.678,
+        23.6
+      ],
+      "bounds_mm": [
+        [
+          -28.054,
+          -62.195,
+          0.0
+        ],
+        [
+          28.054,
+          -24.516,
+          23.6
+        ]
+      ],
+      "watertight": true,
+      "is_volume": true,
+      "components": 1,
+      "euler_number": 0,
+      "boundary_edges": 0,
+      "overused_edges": 0,
+      "volume_cm3": 2.069
+    },
+    {
+      "file": "A03_короткая_тяга_12мм.stl",
+      "extents_mm": [
+        18.026,
+        6.4,
+        2.0
+      ],
+      "bounds_mm": [
+        [
+          -3.2,
+          -3.2,
+          -0.0
+        ],
+        [
+          14.826,
+          3.2,
+          2.0
+        ]
+      ],
+      "watertight": true,
+      "is_volume": true,
+      "components": 1,
+      "euler_number": -2,
+      "boundary_edges": 0,
+      "overused_edges": 0,
+      "volume_cm3": 0.178
+    },
+    {
+      "file": "A04_нижний_прижим_ската.stl",
+      "extents_mm": [
+        20.0,
+        64.0,
+        4.8
+      ],
+      "bounds_mm": [
+        [
+          72.0,
+          -32.0,
+          0.0
+        ],
+        [
+          92.0,
+          32.0,
+          4.8
+        ]
+      ],
+      "watertight": true,
+      "is_volume": true,
+      "components": 1,
+      "euler_number": -2,
+      "boundary_edges": 0,
+      "overused_edges": 0,
+      "volume_cm3": 5.101
+    }
+  ],
+  "print_meshes_all_watertight_one_component": true,
+  "bed_220x220": {
+    "items": [
+      {
+        "part": "A01_frame",
+        "xy_bounds_mm": [
+          5.0,
+          5.0,
+          111.14,
+          104.89
+        ],
+        "inside": true,
+        "overlaps": []
+      },
+      {
+        "part": "A02_rocker",
+        "xy_bounds_mm": [
+          5.0,
+          115.0,
+          61.11,
+          152.68
+        ],
+        "inside": true,
+        "overlaps": []
+      },
+      {
+        "part": "A04_clamp",
+        "xy_bounds_mm": [
+          75.0,
+          115.0,
+          95.0,
+          179.0
+        ],
+        "inside": true,
+        "overlaps": []
+      },
+      {
+        "part": "A03_link",
+        "xy_bounds_mm": [
+          110.0,
+          115.0,
+          128.03,
+          121.4
+        ],
+        "inside": true,
+        "overlaps": []
+      }
+    ],
+    "pass": true
+  },
+  "kinematic_sweep": {
+    "sample_count": 87,
+    "front_can_intended_contact_clearance_mm": -0.0,
+    "minimum_pin_to_fixed_HOME_display_can_clearance_mm": -2.9877,
+    "fixed_HOME_display_cans_used_for_acceptance": false,
+    "fixed_display_minimum_location": {
+      "servo_deg": 83.7,
+      "rocker_deg": 22.0,
+      "pin": "rear",
+      "can": 1
+    },
+    "note": "Fixed HOME display cans are only a diagnostic; see continuous_can_barrier_proof.moving_can_handoff for the kinematic acceptance proof.",
+    "samples": [
+      {
+        "servo_deg": 0.0,
+        "rocker_deg": -22.0,
+        "front_n": 33.8681,
+        "rear_n": 51.5901,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 7.9649
+      },
+      {
+        "servo_deg": 0.973,
+        "rocker_deg": -21.46194,
+        "front_n": 34.079,
+        "rear_n": 51.3883,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 0.1461
+      },
+      {
+        "servo_deg": 1.947,
+        "rocker_deg": -20.92906,
+        "front_n": 34.2885,
+        "rear_n": 51.1876,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 0.2903
+      },
+      {
+        "servo_deg": 2.92,
+        "rocker_deg": -20.40144,
+        "front_n": 34.4966,
+        "rear_n": 50.9881,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 0.4327
+      },
+      {
+        "servo_deg": 3.893,
+        "rocker_deg": -19.87911,
+        "front_n": 34.7031,
+        "rear_n": 50.7897,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 0.5731
+      },
+      {
+        "servo_deg": 4.866,
+        "rocker_deg": -19.36213,
+        "front_n": 34.9081,
+        "rear_n": 50.5926,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 0.7115
+      },
+      {
+        "servo_deg": 5.84,
+        "rocker_deg": -18.85049,
+        "front_n": 35.1115,
+        "rear_n": 50.3969,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 0.8481
+      },
+      {
+        "servo_deg": 6.813,
+        "rocker_deg": -18.34422,
+        "front_n": 35.3133,
+        "rear_n": 50.2025,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 0.9828
+      },
+      {
+        "servo_deg": 7.786,
+        "rocker_deg": -17.84331,
+        "front_n": 35.5134,
+        "rear_n": 50.0095,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 1.1156
+      },
+      {
+        "servo_deg": 8.759,
+        "rocker_deg": -17.34773,
+        "front_n": 35.7119,
+        "rear_n": 49.8178,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 1.2466
+      },
+      {
+        "servo_deg": 9.733,
+        "rocker_deg": -16.85745,
+        "front_n": 35.9086,
+        "rear_n": 49.6277,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 1.3757
+      },
+      {
+        "servo_deg": 10.706,
+        "rocker_deg": -16.37243,
+        "front_n": 36.1037,
+        "rear_n": 49.439,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 1.503
+      },
+      {
+        "servo_deg": 11.679,
+        "rocker_deg": -15.89262,
+        "front_n": 36.297,
+        "rear_n": 49.2517,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 1.6285
+      },
+      {
+        "servo_deg": 12.652,
+        "rocker_deg": -15.41797,
+        "front_n": 36.4886,
+        "rear_n": 49.066,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 1.7522
+      },
+      {
+        "servo_deg": 13.626,
+        "rocker_deg": -14.94839,
+        "front_n": 36.6785,
+        "rear_n": 48.8817,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 1.8742
+      },
+      {
+        "servo_deg": 14.599,
+        "rocker_deg": -14.48381,
+        "front_n": 36.8667,
+        "rear_n": 48.6989,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 1.9944
+      },
+      {
+        "servo_deg": 15.572,
+        "rocker_deg": -14.02416,
+        "front_n": 37.0532,
+        "rear_n": 48.5175,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 2.113
+      },
+      {
+        "servo_deg": 16.545,
+        "rocker_deg": -13.56933,
+        "front_n": 37.2381,
+        "rear_n": 48.3377,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 2.2299
+      },
+      {
+        "servo_deg": 17.519,
+        "rocker_deg": -13.11923,
+        "front_n": 37.4212,
+        "rear_n": 48.1592,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 2.3453
+      },
+      {
+        "servo_deg": 18.492,
+        "rocker_deg": -12.67375,
+        "front_n": 37.6028,
+        "rear_n": 47.9822,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 2.459
+      },
+      {
+        "servo_deg": 19.465,
+        "rocker_deg": -12.2328,
+        "front_n": 37.7827,
+        "rear_n": 47.8066,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 2.5712
+      },
+      {
+        "servo_deg": 20.438,
+        "rocker_deg": -11.79625,
+        "front_n": 37.9611,
+        "rear_n": 47.6324,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 2.6819
+      },
+      {
+        "servo_deg": 21.412,
+        "rocker_deg": -11.36399,
+        "front_n": 38.1379,
+        "rear_n": 47.4596,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 2.7912
+      },
+      {
+        "servo_deg": 22.385,
+        "rocker_deg": -10.9359,
+        "front_n": 38.3132,
+        "rear_n": 47.2881,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 2.899
+      },
+      {
+        "servo_deg": 23.358,
+        "rocker_deg": -10.51185,
+        "front_n": 38.487,
+        "rear_n": 47.1179,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 3.0055
+      },
+      {
+        "servo_deg": 24.331,
+        "rocker_deg": -10.0917,
+        "front_n": 38.6593,
+        "rear_n": 46.9489,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 3.1106
+      },
+      {
+        "servo_deg": 25.305,
+        "rocker_deg": -9.67534,
+        "front_n": 38.8303,
+        "rear_n": 46.7812,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 3.2144
+      },
+      {
+        "servo_deg": 26.278,
+        "rocker_deg": -9.26262,
+        "front_n": 38.9999,
+        "rear_n": 46.6147,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 3.317
+      },
+      {
+        "servo_deg": 27.251,
+        "rocker_deg": -8.85341,
+        "front_n": 39.1682,
+        "rear_n": 46.4493,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 3.4183
+      },
+      {
+        "servo_deg": 28.224,
+        "rocker_deg": -8.44756,
+        "front_n": 39.3353,
+        "rear_n": 46.2851,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 3.5185
+      },
+      {
+        "servo_deg": 29.198,
+        "rocker_deg": -8.04493,
+        "front_n": 39.5011,
+        "rear_n": 46.1219,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 3.6176
+      },
+      {
+        "servo_deg": 30.171,
+        "rocker_deg": -7.64537,
+        "front_n": 39.6658,
+        "rear_n": 45.9597,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 3.7155
+      },
+      {
+        "servo_deg": 31.144,
+        "rocker_deg": -7.24874,
+        "front_n": 39.8293,
+        "rear_n": 45.7985,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 3.8124
+      },
+      {
+        "servo_deg": 32.117,
+        "rocker_deg": -6.85487,
+        "front_n": 39.9918,
+        "rear_n": 45.6383,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 3.9084
+      },
+      {
+        "servo_deg": 33.091,
+        "rocker_deg": -6.46362,
+        "front_n": 40.1532,
+        "rear_n": 45.4789,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 4.0033
+      },
+      {
+        "servo_deg": 34.064,
+        "rocker_deg": -6.07483,
+        "front_n": 40.3138,
+        "rear_n": 45.3203,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 4.0974
+      },
+      {
+        "servo_deg": 35.037,
+        "rocker_deg": -5.68833,
+        "front_n": 40.4734,
+        "rear_n": 45.1625,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 4.1905
+      },
+      {
+        "servo_deg": 36.01,
+        "rocker_deg": -5.30396,
+        "front_n": 40.6322,
+        "rear_n": 45.0054,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 4.2727
+      },
+      {
+        "servo_deg": 36.984,
+        "rocker_deg": -4.92156,
+        "front_n": 40.7902,
+        "rear_n": 44.8489,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 4.1808
+      },
+      {
+        "servo_deg": 37.957,
+        "rocker_deg": -4.54095,
+        "front_n": 40.9475,
+        "rear_n": 44.693,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 4.089
+      },
+      {
+        "servo_deg": 38.93,
+        "rocker_deg": -4.16196,
+        "front_n": 41.1042,
+        "rear_n": 44.5377,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 3.9973
+      },
+      {
+        "servo_deg": 39.903,
+        "rocker_deg": -3.7844,
+        "front_n": 41.2603,
+        "rear_n": 44.3828,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 3.9057
+      },
+      {
+        "servo_deg": 40.877,
+        "rocker_deg": -3.40811,
+        "front_n": 41.4159,
+        "rear_n": 44.2282,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 3.814
+      },
+      {
+        "servo_deg": 41.85,
+        "rocker_deg": -3.03287,
+        "front_n": 41.571,
+        "rear_n": 44.0741,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 3.7223
+      },
+      {
+        "servo_deg": 42.823,
+        "rocker_deg": -2.65851,
+        "front_n": 41.7258,
+        "rear_n": 43.9201,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 3.6306
+      },
+      {
+        "servo_deg": 43.796,
+        "rocker_deg": -2.28482,
+        "front_n": 41.8803,
+        "rear_n": 43.7664,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 3.5387
+      },
+      {
+        "servo_deg": 44.77,
+        "rocker_deg": -1.9116,
+        "front_n": 42.0346,
+        "rear_n": 43.6127,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 3.4467
+      },
+      {
+        "servo_deg": 45.743,
+        "rocker_deg": -1.53863,
+        "front_n": 42.1888,
+        "rear_n": 43.459,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 3.3544
+      },
+      {
+        "servo_deg": 46.716,
+        "rocker_deg": -1.16568,
+        "front_n": 42.3429,
+        "rear_n": 43.3053,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 3.2618
+      },
+      {
+        "servo_deg": 47.689,
+        "rocker_deg": -0.79254,
+        "front_n": 42.4971,
+        "rear_n": 43.1514,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 3.169
+      },
+      {
+        "servo_deg": 48.663,
+        "rocker_deg": -0.41895,
+        "front_n": 42.6514,
+        "rear_n": 42.9973,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 3.0757
+      },
+      {
+        "servo_deg": 49.636,
+        "rocker_deg": -0.04467,
+        "front_n": 42.8059,
+        "rear_n": 42.8428,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 2.9819
+      },
+      {
+        "servo_deg": 50.609,
+        "rocker_deg": 0.33057,
+        "front_n": 42.9608,
+        "rear_n": 42.6879,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 2.8877
+      },
+      {
+        "servo_deg": 51.582,
+        "rocker_deg": 0.70705,
+        "front_n": 43.1162,
+        "rear_n": 42.5324,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 2.7928
+      },
+      {
+        "servo_deg": 52.556,
+        "rocker_deg": 1.08506,
+        "front_n": 43.2721,
+        "rear_n": 42.3762,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 2.6973
+      },
+      {
+        "servo_deg": 53.529,
+        "rocker_deg": 1.46491,
+        "front_n": 43.4287,
+        "rear_n": 42.2192,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 2.6011
+      },
+      {
+        "servo_deg": 54.502,
+        "rocker_deg": 1.84694,
+        "front_n": 43.5861,
+        "rear_n": 42.0613,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 2.5039
+      },
+      {
+        "servo_deg": 55.475,
+        "rocker_deg": 2.23149,
+        "front_n": 43.7444,
+        "rear_n": 41.9024,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 2.4059
+      },
+      {
+        "servo_deg": 56.449,
+        "rocker_deg": 2.61895,
+        "front_n": 43.9038,
+        "rear_n": 41.7422,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 2.3068
+      },
+      {
+        "servo_deg": 57.422,
+        "rocker_deg": 3.00972,
+        "front_n": 44.0645,
+        "rear_n": 41.5806,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 2.2066
+      },
+      {
+        "servo_deg": 58.395,
+        "rocker_deg": 3.40425,
+        "front_n": 44.2267,
+        "rear_n": 41.4175,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 2.1051
+      },
+      {
+        "servo_deg": 59.368,
+        "rocker_deg": 3.80301,
+        "front_n": 44.3904,
+        "rear_n": 41.2526,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 2.0023
+      },
+      {
+        "servo_deg": 60.342,
+        "rocker_deg": 4.20651,
+        "front_n": 44.5559,
+        "rear_n": 41.0858,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 1.8979
+      },
+      {
+        "servo_deg": 61.315,
+        "rocker_deg": 4.61533,
+        "front_n": 44.7235,
+        "rear_n": 40.9168,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 1.7918
+      },
+      {
+        "servo_deg": 62.288,
+        "rocker_deg": 5.03009,
+        "front_n": 44.8933,
+        "rear_n": 40.7454,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 1.6838
+      },
+      {
+        "servo_deg": 63.261,
+        "rocker_deg": 5.45149,
+        "front_n": 45.0657,
+        "rear_n": 40.5712,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 1.5738
+      },
+      {
+        "servo_deg": 64.235,
+        "rocker_deg": 5.8803,
+        "front_n": 45.2409,
+        "rear_n": 40.3941,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 1.4615
+      },
+      {
+        "servo_deg": 65.208,
+        "rocker_deg": 6.31738,
+        "front_n": 45.4192,
+        "rear_n": 40.2136,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 1.3467
+      },
+      {
+        "servo_deg": 66.181,
+        "rocker_deg": 6.7637,
+        "front_n": 45.6011,
+        "rear_n": 40.0294,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 1.2291
+      },
+      {
+        "servo_deg": 67.154,
+        "rocker_deg": 7.22037,
+        "front_n": 45.787,
+        "rear_n": 39.841,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 1.1084
+      },
+      {
+        "servo_deg": 68.128,
+        "rocker_deg": 7.68866,
+        "front_n": 45.9773,
+        "rear_n": 39.6479,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 0.9842
+      },
+      {
+        "servo_deg": 69.101,
+        "rocker_deg": 8.17003,
+        "front_n": 46.1726,
+        "rear_n": 39.4496,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 0.8561
+      },
+      {
+        "servo_deg": 70.074,
+        "rocker_deg": 8.66618,
+        "front_n": 46.3736,
+        "rear_n": 39.2453,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 0.7237
+      },
+      {
+        "servo_deg": 71.047,
+        "rocker_deg": 9.17912,
+        "front_n": 46.581,
+        "rear_n": 39.0343,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 0.5864
+      },
+      {
+        "servo_deg": 72.021,
+        "rocker_deg": 9.71126,
+        "front_n": 46.7957,
+        "rear_n": 38.8156,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 0.4434
+      },
+      {
+        "servo_deg": 72.994,
+        "rocker_deg": 10.2655,
+        "front_n": 47.0188,
+        "rear_n": 38.588,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 0.2939
+      },
+      {
+        "servo_deg": 73.967,
+        "rocker_deg": 10.84542,
+        "front_n": 47.2518,
+        "rear_n": 38.3502,
+        "min_clearance_to_fixed_HOME_display_cans_mm": 0.1369
+      },
+      {
+        "servo_deg": 74.94,
+        "rocker_deg": 11.45549,
+        "front_n": 47.4962,
+        "rear_n": 38.1004,
+        "min_clearance_to_fixed_HOME_display_cans_mm": -0.0288
+      },
+      {
+        "servo_deg": 75.914,
+        "rocker_deg": 12.10149,
+        "front_n": 47.7543,
+        "rear_n": 37.8363,
+        "min_clearance_to_fixed_HOME_display_cans_mm": -0.205
+      },
+      {
+        "servo_deg": 76.887,
+        "rocker_deg": 12.79101,
+        "front_n": 48.0288,
+        "rear_n": 37.555,
+        "min_clearance_to_fixed_HOME_display_cans_mm": -0.3939
+      },
+      {
+        "servo_deg": 77.86,
+        "rocker_deg": 13.53444,
+        "front_n": 48.3238,
+        "rear_n": 37.2523,
+        "min_clearance_to_fixed_HOME_display_cans_mm": -0.5984
+      },
+      {
+        "servo_deg": 78.833,
+        "rocker_deg": 14.34665,
+        "front_n": 48.6448,
+        "rear_n": 36.9223,
+        "min_clearance_to_fixed_HOME_display_cans_mm": -0.8228
+      },
+      {
+        "servo_deg": 79.807,
+        "rocker_deg": 15.25025,
+        "front_n": 49.0002,
+        "rear_n": 36.5564,
+        "min_clearance_to_fixed_HOME_display_cans_mm": -1.0738
+      },
+      {
+        "servo_deg": 80.78,
+        "rocker_deg": 16.28272,
+        "front_n": 49.404,
+        "rear_n": 36.1398,
+        "min_clearance_to_fixed_HOME_display_cans_mm": -1.3621
+      },
+      {
+        "servo_deg": 81.753,
+        "rocker_deg": 17.51527,
+        "front_n": 49.8827,
+        "rear_n": 35.6448,
+        "min_clearance_to_fixed_HOME_display_cans_mm": -1.7085
+      },
+      {
+        "servo_deg": 82.726,
+        "rocker_deg": 19.12123,
+        "front_n": 50.5006,
+        "rear_n": 35.0038,
+        "min_clearance_to_fixed_HOME_display_cans_mm": -2.1632
+      },
+      {
+        "servo_deg": 83.7,
+        "rocker_deg": 22.0,
+        "front_n": 51.5901,
+        "rear_n": 33.8681,
+        "min_clearance_to_fixed_HOME_display_cans_mm": -2.9877
+      }
+    ]
+  },
+  "continuous_can_barrier_proof": {
+    "model": "Ø48 can centre constrained to deck line n=24; Ø4 circular finger",
+    "can_path_n_mm": 24.0,
+    "blocking_centre_height_limit_mm": 50.0,
+    "sample_count": 337,
+    "no_both_gates_free": true,
+    "both_free_servo_samples_deg": [],
+    "rear_begins_blocking": {
+      "rocker_deg": -17.818819,
+      "servo_deg": 7.833859
+    },
+    "front_stops_blocking": {
+      "rocker_deg": 17.818819,
+      "servo_deg": 81.962157
+    },
+    "both_block_overlap": {
+      "rocker_deg": 35.637638,
+      "servo_deg": 74.128298
+    },
+    "moving_can_handoff": {
+      "model": "can 1 follows front upstream boundary; packed can 2 transfers to rear upstream boundary; no friction/timing assumption",
+      "rear_contacts_packed_can2": {
+        "servo_deg": 51.830002,
+        "rocker_deg": 0.803088
+      },
+      "front_releases_can1": {
+        "servo_deg": 81.962157,
+        "rocker_deg": 17.818819
+      },
+      "positive_handoff_overlap_servo_deg": 30.132155,
+      "minimum_can1_centre_corridor_between_gates_mm": 11.439608,
+      "minimum_can1_can2_centre_spacing_after_transfer_mm": 48.0,
+      "required_can1_can2_centre_spacing_mm": 48.0,
+      "can1_downstream_of_rear_barrier_at_release_mm": 21.732018,
+      "retained_can2_centre_u_at_EJECT_mm": -46.476364,
+      "pass": true
+    },
+    "raised_finger_endpoint_clearance_above_blocking_limit_mm": 1.590145,
+    "gate_planes_and_cans_home_mm": {
+      "front_finger_u_n": [
+        22.42183,
+        33.8681
+      ],
+      "rear_finger_u_n": [
+        -21.44178,
+        51.59015
+      ],
+      "can_centres_u_n": [
+        [
+          -1.63271,
+          24.0
+        ],
+        [
+          -49.63271,
+          24.0
+        ],
+        [
+          -97.63271,
+          24.0
+        ]
+      ],
+      "front_finger_to_can1_u_offset_mm": 24.05453,
+      "rear_finger_between_can1_can2": true,
+      "note": "Пальцы стоят в плоскостях затворов: перед первой банкой и между первой/второй, не над центрами."
+    },
+    "key_states": {
+      "HOME": {
+        "front": {
+          "centre_u_n_mm": [
+            22.42183,
+            33.8681
+          ],
+          "excluded_path_halfwidth_mm": 24.05453,
+          "excluded_u_interval_mm": [
+            -1.63271,
+            46.47636
+          ],
+          "blocks_deck_can": true
+        },
+        "rear": {
+          "centre_u_n_mm": [
+            -21.44178,
+            51.59015
+          ],
+          "excluded_path_halfwidth_mm": 0.0,
+          "excluded_u_interval_mm": [
+            -21.44178,
+            -21.44178
+          ],
+          "blocks_deck_can": false
+        }
+      },
+      "MID": {
+        "front": {
+          "centre_u_n_mm": [
+            23.69029,
+            41.57102
+          ],
+          "excluded_path_halfwidth_mm": 19.16401,
+          "excluded_u_interval_mm": [
+            4.52628,
+            42.8543
+          ],
+          "blocks_deck_can": true
+        },
+        "rear": {
+          "centre_u_n_mm": [
+            -23.55187,
+            44.07406
+          ],
+          "excluded_path_halfwidth_mm": 16.52369,
+          "excluded_u_interval_mm": [
+            -40.07556,
+            -7.02819
+          ],
+          "blocks_deck_can": true
+        }
+      },
+      "EJECT": {
+        "front": {
+          "centre_u_n_mm": [
+            21.44178,
+            51.59015
+          ],
+          "excluded_path_halfwidth_mm": 0.0,
+          "excluded_u_interval_mm": [
+            21.44178,
+            21.44178
+          ],
+          "blocks_deck_can": false
+        },
+        "rear": {
+          "centre_u_n_mm": [
+            -22.42183,
+            33.8681
+          ],
+          "excluded_path_halfwidth_mm": 24.05453,
+          "excluded_u_interval_mm": [
+            -46.47636,
+            1.63271
+          ],
+          "blocks_deck_can": true
+        }
+      }
+    },
+    "pass": true
+  },
+  "force_validation": {
+    "model": "quasi-static frictionless Ø4/Ø48 contact; exact four-bar derivative; peak limit, not average, determines table",
+    "sg90_design_torque_limit_Nm": 0.06,
+    "rear_first_contacts_packed_can2": {
+      "rocker_deg": 0.803088,
+      "servo_deg": 51.830002
+    },
+    "target_cases": {
+      "22x100g": {
+        "cans": 22,
+        "mass_each_g": 100,
+        "downhill_force_N": 5.585833,
+        "peak_servo_torque_Nm": 0.052271,
+        "peak_at": {
+          "servo_deg": 0.0,
+          "rocker_deg": -22.0,
+          "gate": "front",
+          "loaded_cans": 22
+        },
+        "ideal_average_servo_torque_Nm": 0.045924,
+        "pass_0_06Nm": true
+      },
+      "11x200g": {
+        "cans": 11,
+        "mass_each_g": 200,
+        "downhill_force_N": 5.585833,
+        "peak_servo_torque_Nm": 0.052271,
+        "peak_at": {
+          "servo_deg": 0.0,
+          "rocker_deg": -22.0,
+          "gate": "front",
+          "loaded_cans": 11
+        },
+        "ideal_average_servo_torque_Nm": 0.045137,
+        "pass_0_06Nm": true
+      },
+      "22x200g": {
+        "cans": 22,
+        "mass_each_g": 200,
+        "downhill_force_N": 11.171665,
+        "peak_servo_torque_Nm": 0.104542,
+        "peak_at": {
+          "servo_deg": 0.0,
+          "rocker_deg": -22.0,
+          "gate": "front",
+          "loaded_cans": 22
+        },
+        "ideal_average_servo_torque_Nm": 0.091848,
+        "pass_0_06Nm": false
+      }
+    },
+    "checkpoints": [
+      {
+        "servo_deg": 0.0,
+        "rocker_deg": -22.0,
+        "gate": "front",
+        "loaded_cans": 22,
+        "servo_torque_Nm_for_22x100g": 0.052271
+      },
+      {
+        "servo_deg": 20.924904,
+        "rocker_deg": -11.579594,
+        "gate": "front",
+        "loaded_cans": 22,
+        "servo_torque_Nm_for_22x100g": 0.045938
+      },
+      {
+        "servo_deg": 41.849808,
+        "rocker_deg": -3.032872,
+        "gate": "front",
+        "loaded_cans": 22,
+        "servo_torque_Nm_for_22x100g": 0.046602
+      },
+      {
+        "servo_deg": 51.810062,
+        "rocker_deg": 0.795352,
+        "gate": "front",
+        "loaded_cans": 22,
+        "servo_torque_Nm_for_22x100g": 0.052238
+      },
+      {
+        "servo_deg": 62.774712,
+        "rocker_deg": 5.239917,
+        "gate": "rear",
+        "loaded_cans": 21,
+        "servo_torque_Nm_for_22x100g": 0.043628
+      },
+      {
+        "servo_deg": 83.699616,
+        "rocker_deg": 22.0,
+        "gate": "rear",
+        "loaded_cans": 21,
+        "servo_torque_Nm_for_22x100g": 0.046079
+      }
+    ],
+    "load_table": [
+      {
+        "mass_each_g": 50,
+        "strict_quasistatic_max_cans_at_0_06Nm": 22,
+        "peak_at_max_Nm": 0.026135,
+        "next_count": null,
+        "next_count_peak_Nm": null,
+        "physical_channel_capacity_cap": 22
+      },
+      {
+        "mass_each_g": 100,
+        "strict_quasistatic_max_cans_at_0_06Nm": 22,
+        "peak_at_max_Nm": 0.052271,
+        "next_count": null,
+        "next_count_peak_Nm": null,
+        "physical_channel_capacity_cap": 22
+      },
+      {
+        "mass_each_g": 200,
+        "strict_quasistatic_max_cans_at_0_06Nm": 12,
+        "peak_at_max_Nm": 0.057023,
+        "next_count": 13,
+        "next_count_peak_Nm": 0.061775,
+        "physical_channel_capacity_cap": 22
+      }
+    ],
+    "full_22x200g_pass": false,
+    "full_22x100g_pass": true,
+    "11x200g_pass": true,
+    "checkpoint_peak_servo_torque_Nm": 0.104542,
+    "ideal_average_servo_torque_full_queue_Nm": 0.091848,
+    "strict_quasistatic_max_cans_200g": 12,
+    "prototype_recommended_initial_max_cans_200g": 8,
+    "endpoint_load_direction": {
+      "home_signed_rocker_torque_Nm_22x200g": 0.188203,
+      "eject_signed_rocker_torque_Nm_21x200g": -0.01653,
+      "home_load_reacts_into_hard_stop": false,
+      "eject_load_reacts_into_hard_stop": false,
+      "power_off_self_hold": false
+    },
+    "power_safety": {
+      "external_signal_pulldown": "10 kΩ from each servo signal to GND",
+      "hold_pwm_required": true,
+      "continuous_pwm_requirement": "while any can remains in the channel, valid calibrated 50 Hz PWM must remain continuously present in HOME, EJECT and during motion; servo power alone is not a holding command",
+      "startup": [
+        "servo 5 V OFF",
+        "boot ESP32 and hold all servo signal pins LOW",
+        "start valid 50 Hz PWM and command calibrated HOME",
+        "enable servo 5 V",
+        "load cans"
+      ],
+      "shutdown": [
+        "stop dispensing",
+        "command HOME",
+        "fully unload every can from the channel",
+        "disable servo 5 V",
+        "stop PWM only after servo 5 V is absent",
+        "power down controller"
+      ],
+      "loaded_power_loss_safe": false,
+      "loaded_signal_loss_safe": false
+    },
+    "warning": "Peak table is quasi-static. Friction, impacts and print flex require a one-lane endurance test; loaded power loss is not safe."
+  },
+  "collisions": {
+    "key_state_pairs": [
+      {
+        "state": "HOME",
+        "pair": "rocker/cans",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "state": "HOME",
+        "pair": "link/cans",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "state": "HOME",
+        "pair": "horn/cans",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "state": "HOME",
+        "pair": "servo/cans",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "state": "HOME",
+        "pair": "frame/cans",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "state": "HOME",
+        "pair": "clamp/cans",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "state": "HOME",
+        "pair": "frame/rocker",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "state": "HOME",
+        "pair": "frame/link",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "state": "HOME",
+        "pair": "frame/horn",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "state": "HOME",
+        "pair": "frame/servo",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "state": "HOME",
+        "pair": "clamp/rocker",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "state": "HOME",
+        "pair": "servo/rocker",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "state": "MID",
+        "pair": "rocker/cans",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "state": "MID",
+        "pair": "link/cans",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "state": "MID",
+        "pair": "horn/cans",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "state": "MID",
+        "pair": "servo/cans",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "state": "MID",
+        "pair": "frame/cans",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "state": "MID",
+        "pair": "clamp/cans",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "state": "MID",
+        "pair": "frame/rocker",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "state": "MID",
+        "pair": "frame/link",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "state": "MID",
+        "pair": "frame/horn",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "state": "MID",
+        "pair": "frame/servo",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "state": "MID",
+        "pair": "clamp/rocker",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "state": "MID",
+        "pair": "servo/rocker",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "state": "EJECT",
+        "pair": "rocker/cans",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "state": "EJECT",
+        "pair": "link/cans",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "state": "EJECT",
+        "pair": "horn/cans",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "state": "EJECT",
+        "pair": "servo/cans",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "state": "EJECT",
+        "pair": "frame/cans",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "state": "EJECT",
+        "pair": "clamp/cans",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "state": "EJECT",
+        "pair": "frame/rocker",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "state": "EJECT",
+        "pair": "frame/link",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "state": "EJECT",
+        "pair": "frame/horn",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "state": "EJECT",
+        "pair": "frame/servo",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "state": "EJECT",
+        "pair": "clamp/rocker",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "state": "EJECT",
+        "pair": "servo/rocker",
+        "intersection_mm3": 0.0,
+        "pass": true
+      }
+    ],
+    "drive_sweep_13_positions": [
+      {
+        "servo_deg": 0.0,
+        "rocker_deg": -22.0,
+        "pair": "frame/rocker",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 0.0,
+        "rocker_deg": -22.0,
+        "pair": "frame/link",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 0.0,
+        "rocker_deg": -22.0,
+        "pair": "frame/horn",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 0.0,
+        "rocker_deg": -22.0,
+        "pair": "clamp/rocker",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 0.0,
+        "rocker_deg": -22.0,
+        "pair": "servo/rocker",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 6.975,
+        "rocker_deg": -18.26037,
+        "pair": "frame/rocker",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 6.975,
+        "rocker_deg": -18.26037,
+        "pair": "frame/link",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 6.975,
+        "rocker_deg": -18.26037,
+        "pair": "frame/horn",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 6.975,
+        "rocker_deg": -18.26037,
+        "pair": "clamp/rocker",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 6.975,
+        "rocker_deg": -18.26037,
+        "pair": "servo/rocker",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 13.9499,
+        "rocker_deg": -14.79298,
+        "pair": "frame/rocker",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 13.9499,
+        "rocker_deg": -14.79298,
+        "pair": "frame/link",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 13.9499,
+        "rocker_deg": -14.79298,
+        "pair": "frame/horn",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 13.9499,
+        "rocker_deg": -14.79298,
+        "pair": "clamp/rocker",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 13.9499,
+        "rocker_deg": -14.79298,
+        "pair": "servo/rocker",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 20.9249,
+        "rocker_deg": -11.57959,
+        "pair": "frame/rocker",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 20.9249,
+        "rocker_deg": -11.57959,
+        "pair": "frame/link",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 20.9249,
+        "rocker_deg": -11.57959,
+        "pair": "frame/horn",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 20.9249,
+        "rocker_deg": -11.57959,
+        "pair": "clamp/rocker",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 20.9249,
+        "rocker_deg": -11.57959,
+        "pair": "servo/rocker",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 27.8999,
+        "rocker_deg": -8.58248,
+        "pair": "frame/rocker",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 27.8999,
+        "rocker_deg": -8.58248,
+        "pair": "frame/link",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 27.8999,
+        "rocker_deg": -8.58248,
+        "pair": "frame/horn",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 27.8999,
+        "rocker_deg": -8.58248,
+        "pair": "clamp/rocker",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 27.8999,
+        "rocker_deg": -8.58248,
+        "pair": "servo/rocker",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 34.8748,
+        "rocker_deg": -5.75259,
+        "pair": "frame/rocker",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 34.8748,
+        "rocker_deg": -5.75259,
+        "pair": "frame/link",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 34.8748,
+        "rocker_deg": -5.75259,
+        "pair": "frame/horn",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 34.8748,
+        "rocker_deg": -5.75259,
+        "pair": "clamp/rocker",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 34.8748,
+        "rocker_deg": -5.75259,
+        "pair": "servo/rocker",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 41.8498,
+        "rocker_deg": -3.03287,
+        "pair": "frame/rocker",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 41.8498,
+        "rocker_deg": -3.03287,
+        "pair": "frame/link",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 41.8498,
+        "rocker_deg": -3.03287,
+        "pair": "frame/horn",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 41.8498,
+        "rocker_deg": -3.03287,
+        "pair": "clamp/rocker",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 41.8498,
+        "rocker_deg": -3.03287,
+        "pair": "servo/rocker",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 48.8248,
+        "rocker_deg": -0.35663,
+        "pair": "frame/rocker",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 48.8248,
+        "rocker_deg": -0.35663,
+        "pair": "frame/link",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 48.8248,
+        "rocker_deg": -0.35663,
+        "pair": "frame/horn",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 48.8248,
+        "rocker_deg": -0.35663,
+        "pair": "clamp/rocker",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 48.8248,
+        "rocker_deg": -0.35663,
+        "pair": "servo/rocker",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 55.7997,
+        "rocker_deg": 2.3603,
+        "pair": "frame/rocker",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 55.7997,
+        "rocker_deg": 2.3603,
+        "pair": "frame/link",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 55.7997,
+        "rocker_deg": 2.3603,
+        "pair": "frame/horn",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 55.7997,
+        "rocker_deg": 2.3603,
+        "pair": "clamp/rocker",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 55.7997,
+        "rocker_deg": 2.3603,
+        "pair": "servo/rocker",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 62.7747,
+        "rocker_deg": 5.23992,
+        "pair": "frame/rocker",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 62.7747,
+        "rocker_deg": 5.23992,
+        "pair": "frame/link",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 62.7747,
+        "rocker_deg": 5.23992,
+        "pair": "frame/horn",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 62.7747,
+        "rocker_deg": 5.23992,
+        "pair": "clamp/rocker",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 62.7747,
+        "rocker_deg": 5.23992,
+        "pair": "servo/rocker",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 69.7497,
+        "rocker_deg": 8.49903,
+        "pair": "frame/rocker",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 69.7497,
+        "rocker_deg": 8.49903,
+        "pair": "frame/link",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 69.7497,
+        "rocker_deg": 8.49903,
+        "pair": "frame/horn",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 69.7497,
+        "rocker_deg": 8.49903,
+        "pair": "clamp/rocker",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 69.7497,
+        "rocker_deg": 8.49903,
+        "pair": "servo/rocker",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 76.7246,
+        "rocker_deg": 12.67267,
+        "pair": "frame/rocker",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 76.7246,
+        "rocker_deg": 12.67267,
+        "pair": "frame/link",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 76.7246,
+        "rocker_deg": 12.67267,
+        "pair": "frame/horn",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 76.7246,
+        "rocker_deg": 12.67267,
+        "pair": "clamp/rocker",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 76.7246,
+        "rocker_deg": 12.67267,
+        "pair": "servo/rocker",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 83.6996,
+        "rocker_deg": 22.0,
+        "pair": "frame/rocker",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 83.6996,
+        "rocker_deg": 22.0,
+        "pair": "frame/link",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 83.6996,
+        "rocker_deg": 22.0,
+        "pair": "frame/horn",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 83.6996,
+        "rocker_deg": 22.0,
+        "pair": "clamp/rocker",
+        "intersection_mm3": 0.0,
+        "pass": true
+      },
+      {
+        "servo_deg": 83.6996,
+        "rocker_deg": 22.0,
+        "pair": "servo/rocker",
+        "intersection_mm3": 0.0,
+        "pass": true
+      }
+    ],
+    "adjacent_channels": [
+      {
+        "state": "HOME",
+        "pitch_mm": 79.0,
+        "intersection_mm3": 0.0,
+        "pass": true,
+        "aabb_gap_y_mm": 8.75
+      },
+      {
+        "state": "MID",
+        "pitch_mm": 79.0,
+        "intersection_mm3": 0.0,
+        "pass": true,
+        "aabb_gap_y_mm": 8.75
+      },
+      {
+        "state": "EJECT",
+        "pitch_mm": 79.0,
+        "intersection_mm3": 0.0,
+        "pass": true,
+        "aabb_gap_y_mm": 8.75
+      }
+    ],
+    "exact_common_cassette": {
+      "sources": [
+        {
+          "path": "../00_ОБЩАЯ_КОМПОНОВКА/STL_КАССЕТА_СБОРКА/cassette_lower_sheet.stl",
+          "sha256": "a139d99fce96895ee93f2346b14e14aa747d6b0896e7c75c78ecf0cb2931f404"
+        },
+        {
+          "path": "../00_ОБЩАЯ_КОМПОНОВКА/STL_КАССЕТА_СБОРКА/cassette_divider.stl",
+          "sha256": "cc19fa4ecf79f44e2ce96d72fd6fa4d5c24bcc6e6716a20a8d811255f44167cf"
+        }
+      ],
+      "pair_count": 450,
+      "states": [
+        "HOME",
+        "MID",
+        "EJECT"
+      ],
+      "lanes": 5,
+      "lane_pitch_mm": 79.0,
+      "divider_count": 4,
+      "maximum_intersection_by_lane_mm3": {
+        "lane_1": 0.0,
+        "lane_2": 0.0,
+        "lane_3": 0.0,
+        "lane_4": 0.0,
+        "lane_5": 0.0
+      },
+      "checks": [
+        {
+          "state": "HOME",
+          "lane": 1,
+          "part": "frame",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 1,
+          "part": "frame",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 1,
+          "part": "frame",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 1,
+          "part": "frame",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 1,
+          "part": "frame",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 1,
+          "part": "clamp",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 1,
+          "part": "clamp",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 1,
+          "part": "clamp",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 1,
+          "part": "clamp",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 1,
+          "part": "clamp",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 1,
+          "part": "rocker",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 1,
+          "part": "rocker",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 1,
+          "part": "rocker",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 1,
+          "part": "rocker",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 1,
+          "part": "rocker",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 1,
+          "part": "link",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 1,
+          "part": "link",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 1,
+          "part": "link",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 1,
+          "part": "link",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 1,
+          "part": "link",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 1,
+          "part": "servo",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 1,
+          "part": "servo",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 1,
+          "part": "servo",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 1,
+          "part": "servo",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 1,
+          "part": "servo",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 1,
+          "part": "horn",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 1,
+          "part": "horn",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 1,
+          "part": "horn",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 1,
+          "part": "horn",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 1,
+          "part": "horn",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 2,
+          "part": "frame",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 2,
+          "part": "frame",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 2,
+          "part": "frame",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 2,
+          "part": "frame",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 2,
+          "part": "frame",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 2,
+          "part": "clamp",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 2,
+          "part": "clamp",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 2,
+          "part": "clamp",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 2,
+          "part": "clamp",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 2,
+          "part": "clamp",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 2,
+          "part": "rocker",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 2,
+          "part": "rocker",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 2,
+          "part": "rocker",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 2,
+          "part": "rocker",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 2,
+          "part": "rocker",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 2,
+          "part": "link",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 2,
+          "part": "link",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 2,
+          "part": "link",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 2,
+          "part": "link",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 2,
+          "part": "link",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 2,
+          "part": "servo",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 2,
+          "part": "servo",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 2,
+          "part": "servo",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 2,
+          "part": "servo",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 2,
+          "part": "servo",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 2,
+          "part": "horn",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 2,
+          "part": "horn",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 2,
+          "part": "horn",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 2,
+          "part": "horn",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 2,
+          "part": "horn",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 3,
+          "part": "frame",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 3,
+          "part": "frame",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 3,
+          "part": "frame",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 3,
+          "part": "frame",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 3,
+          "part": "frame",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 3,
+          "part": "clamp",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 3,
+          "part": "clamp",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 3,
+          "part": "clamp",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 3,
+          "part": "clamp",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 3,
+          "part": "clamp",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 3,
+          "part": "rocker",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 3,
+          "part": "rocker",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 3,
+          "part": "rocker",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 3,
+          "part": "rocker",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 3,
+          "part": "rocker",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 3,
+          "part": "link",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 3,
+          "part": "link",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 3,
+          "part": "link",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 3,
+          "part": "link",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 3,
+          "part": "link",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 3,
+          "part": "servo",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 3,
+          "part": "servo",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 3,
+          "part": "servo",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 3,
+          "part": "servo",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 3,
+          "part": "servo",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 3,
+          "part": "horn",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 3,
+          "part": "horn",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 3,
+          "part": "horn",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 3,
+          "part": "horn",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 3,
+          "part": "horn",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 4,
+          "part": "frame",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 4,
+          "part": "frame",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 4,
+          "part": "frame",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 4,
+          "part": "frame",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 4,
+          "part": "frame",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 4,
+          "part": "clamp",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 4,
+          "part": "clamp",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 4,
+          "part": "clamp",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 4,
+          "part": "clamp",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 4,
+          "part": "clamp",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 4,
+          "part": "rocker",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 4,
+          "part": "rocker",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 4,
+          "part": "rocker",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 4,
+          "part": "rocker",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 4,
+          "part": "rocker",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 4,
+          "part": "link",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 4,
+          "part": "link",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 4,
+          "part": "link",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 4,
+          "part": "link",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 4,
+          "part": "link",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 4,
+          "part": "servo",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 4,
+          "part": "servo",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 4,
+          "part": "servo",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 4,
+          "part": "servo",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 4,
+          "part": "servo",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 4,
+          "part": "horn",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 4,
+          "part": "horn",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 4,
+          "part": "horn",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 4,
+          "part": "horn",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 4,
+          "part": "horn",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 5,
+          "part": "frame",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 5,
+          "part": "frame",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 5,
+          "part": "frame",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 5,
+          "part": "frame",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 5,
+          "part": "frame",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 5,
+          "part": "clamp",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 5,
+          "part": "clamp",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 5,
+          "part": "clamp",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 5,
+          "part": "clamp",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 5,
+          "part": "clamp",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 5,
+          "part": "rocker",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 5,
+          "part": "rocker",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 5,
+          "part": "rocker",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 5,
+          "part": "rocker",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 5,
+          "part": "rocker",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 5,
+          "part": "link",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 5,
+          "part": "link",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 5,
+          "part": "link",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 5,
+          "part": "link",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 5,
+          "part": "link",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 5,
+          "part": "servo",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 5,
+          "part": "servo",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 5,
+          "part": "servo",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 5,
+          "part": "servo",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 5,
+          "part": "servo",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 5,
+          "part": "horn",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 5,
+          "part": "horn",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 5,
+          "part": "horn",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 5,
+          "part": "horn",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "HOME",
+          "lane": 5,
+          "part": "horn",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 1,
+          "part": "frame",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 1,
+          "part": "frame",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 1,
+          "part": "frame",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 1,
+          "part": "frame",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 1,
+          "part": "frame",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 1,
+          "part": "clamp",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 1,
+          "part": "clamp",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 1,
+          "part": "clamp",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 1,
+          "part": "clamp",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 1,
+          "part": "clamp",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 1,
+          "part": "rocker",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 1,
+          "part": "rocker",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 1,
+          "part": "rocker",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 1,
+          "part": "rocker",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 1,
+          "part": "rocker",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 1,
+          "part": "link",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 1,
+          "part": "link",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 1,
+          "part": "link",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 1,
+          "part": "link",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 1,
+          "part": "link",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 1,
+          "part": "servo",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 1,
+          "part": "servo",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 1,
+          "part": "servo",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 1,
+          "part": "servo",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 1,
+          "part": "servo",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 1,
+          "part": "horn",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 1,
+          "part": "horn",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 1,
+          "part": "horn",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 1,
+          "part": "horn",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 1,
+          "part": "horn",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 2,
+          "part": "frame",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 2,
+          "part": "frame",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 2,
+          "part": "frame",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 2,
+          "part": "frame",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 2,
+          "part": "frame",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 2,
+          "part": "clamp",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 2,
+          "part": "clamp",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 2,
+          "part": "clamp",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 2,
+          "part": "clamp",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 2,
+          "part": "clamp",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 2,
+          "part": "rocker",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 2,
+          "part": "rocker",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 2,
+          "part": "rocker",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 2,
+          "part": "rocker",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 2,
+          "part": "rocker",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 2,
+          "part": "link",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 2,
+          "part": "link",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 2,
+          "part": "link",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 2,
+          "part": "link",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 2,
+          "part": "link",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 2,
+          "part": "servo",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 2,
+          "part": "servo",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 2,
+          "part": "servo",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 2,
+          "part": "servo",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 2,
+          "part": "servo",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 2,
+          "part": "horn",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 2,
+          "part": "horn",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 2,
+          "part": "horn",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 2,
+          "part": "horn",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 2,
+          "part": "horn",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 3,
+          "part": "frame",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 3,
+          "part": "frame",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 3,
+          "part": "frame",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 3,
+          "part": "frame",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 3,
+          "part": "frame",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 3,
+          "part": "clamp",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 3,
+          "part": "clamp",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 3,
+          "part": "clamp",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 3,
+          "part": "clamp",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 3,
+          "part": "clamp",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 3,
+          "part": "rocker",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 3,
+          "part": "rocker",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 3,
+          "part": "rocker",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 3,
+          "part": "rocker",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 3,
+          "part": "rocker",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 3,
+          "part": "link",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 3,
+          "part": "link",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 3,
+          "part": "link",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 3,
+          "part": "link",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 3,
+          "part": "link",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 3,
+          "part": "servo",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 3,
+          "part": "servo",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 3,
+          "part": "servo",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 3,
+          "part": "servo",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 3,
+          "part": "servo",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 3,
+          "part": "horn",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 3,
+          "part": "horn",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 3,
+          "part": "horn",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 3,
+          "part": "horn",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 3,
+          "part": "horn",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 4,
+          "part": "frame",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 4,
+          "part": "frame",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 4,
+          "part": "frame",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 4,
+          "part": "frame",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 4,
+          "part": "frame",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 4,
+          "part": "clamp",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 4,
+          "part": "clamp",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 4,
+          "part": "clamp",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 4,
+          "part": "clamp",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 4,
+          "part": "clamp",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 4,
+          "part": "rocker",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 4,
+          "part": "rocker",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 4,
+          "part": "rocker",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 4,
+          "part": "rocker",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 4,
+          "part": "rocker",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 4,
+          "part": "link",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 4,
+          "part": "link",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 4,
+          "part": "link",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 4,
+          "part": "link",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 4,
+          "part": "link",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 4,
+          "part": "servo",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 4,
+          "part": "servo",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 4,
+          "part": "servo",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 4,
+          "part": "servo",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 4,
+          "part": "servo",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 4,
+          "part": "horn",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 4,
+          "part": "horn",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 4,
+          "part": "horn",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 4,
+          "part": "horn",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 4,
+          "part": "horn",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 5,
+          "part": "frame",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 5,
+          "part": "frame",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 5,
+          "part": "frame",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 5,
+          "part": "frame",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 5,
+          "part": "frame",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 5,
+          "part": "clamp",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 5,
+          "part": "clamp",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 5,
+          "part": "clamp",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 5,
+          "part": "clamp",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 5,
+          "part": "clamp",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 5,
+          "part": "rocker",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 5,
+          "part": "rocker",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 5,
+          "part": "rocker",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 5,
+          "part": "rocker",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 5,
+          "part": "rocker",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 5,
+          "part": "link",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 5,
+          "part": "link",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 5,
+          "part": "link",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 5,
+          "part": "link",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 5,
+          "part": "link",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 5,
+          "part": "servo",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 5,
+          "part": "servo",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 5,
+          "part": "servo",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 5,
+          "part": "servo",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 5,
+          "part": "servo",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 5,
+          "part": "horn",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 5,
+          "part": "horn",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 5,
+          "part": "horn",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 5,
+          "part": "horn",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "MID",
+          "lane": 5,
+          "part": "horn",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 1,
+          "part": "frame",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 1,
+          "part": "frame",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 1,
+          "part": "frame",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 1,
+          "part": "frame",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 1,
+          "part": "frame",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 1,
+          "part": "clamp",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 1,
+          "part": "clamp",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 1,
+          "part": "clamp",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 1,
+          "part": "clamp",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 1,
+          "part": "clamp",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 1,
+          "part": "rocker",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 1,
+          "part": "rocker",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 1,
+          "part": "rocker",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 1,
+          "part": "rocker",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 1,
+          "part": "rocker",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 1,
+          "part": "link",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 1,
+          "part": "link",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 1,
+          "part": "link",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 1,
+          "part": "link",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 1,
+          "part": "link",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 1,
+          "part": "servo",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 1,
+          "part": "servo",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 1,
+          "part": "servo",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 1,
+          "part": "servo",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 1,
+          "part": "servo",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 1,
+          "part": "horn",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 1,
+          "part": "horn",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 1,
+          "part": "horn",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 1,
+          "part": "horn",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 1,
+          "part": "horn",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 2,
+          "part": "frame",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 2,
+          "part": "frame",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 2,
+          "part": "frame",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 2,
+          "part": "frame",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 2,
+          "part": "frame",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 2,
+          "part": "clamp",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 2,
+          "part": "clamp",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 2,
+          "part": "clamp",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 2,
+          "part": "clamp",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 2,
+          "part": "clamp",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 2,
+          "part": "rocker",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 2,
+          "part": "rocker",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 2,
+          "part": "rocker",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 2,
+          "part": "rocker",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 2,
+          "part": "rocker",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 2,
+          "part": "link",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 2,
+          "part": "link",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 2,
+          "part": "link",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 2,
+          "part": "link",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 2,
+          "part": "link",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 2,
+          "part": "servo",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 2,
+          "part": "servo",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 2,
+          "part": "servo",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 2,
+          "part": "servo",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 2,
+          "part": "servo",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 2,
+          "part": "horn",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 2,
+          "part": "horn",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 2,
+          "part": "horn",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 2,
+          "part": "horn",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 2,
+          "part": "horn",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 3,
+          "part": "frame",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 3,
+          "part": "frame",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 3,
+          "part": "frame",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 3,
+          "part": "frame",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 3,
+          "part": "frame",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 3,
+          "part": "clamp",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 3,
+          "part": "clamp",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 3,
+          "part": "clamp",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 3,
+          "part": "clamp",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 3,
+          "part": "clamp",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 3,
+          "part": "rocker",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 3,
+          "part": "rocker",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 3,
+          "part": "rocker",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 3,
+          "part": "rocker",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 3,
+          "part": "rocker",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 3,
+          "part": "link",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 3,
+          "part": "link",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 3,
+          "part": "link",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 3,
+          "part": "link",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 3,
+          "part": "link",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 3,
+          "part": "servo",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 3,
+          "part": "servo",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 3,
+          "part": "servo",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 3,
+          "part": "servo",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 3,
+          "part": "servo",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 3,
+          "part": "horn",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 3,
+          "part": "horn",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 3,
+          "part": "horn",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 3,
+          "part": "horn",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 3,
+          "part": "horn",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 4,
+          "part": "frame",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 4,
+          "part": "frame",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 4,
+          "part": "frame",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 4,
+          "part": "frame",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 4,
+          "part": "frame",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 4,
+          "part": "clamp",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 4,
+          "part": "clamp",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 4,
+          "part": "clamp",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 4,
+          "part": "clamp",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 4,
+          "part": "clamp",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 4,
+          "part": "rocker",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 4,
+          "part": "rocker",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 4,
+          "part": "rocker",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 4,
+          "part": "rocker",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 4,
+          "part": "rocker",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 4,
+          "part": "link",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 4,
+          "part": "link",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 4,
+          "part": "link",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 4,
+          "part": "link",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 4,
+          "part": "link",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 4,
+          "part": "servo",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 4,
+          "part": "servo",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 4,
+          "part": "servo",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 4,
+          "part": "servo",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 4,
+          "part": "servo",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 4,
+          "part": "horn",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 4,
+          "part": "horn",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 4,
+          "part": "horn",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 4,
+          "part": "horn",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 4,
+          "part": "horn",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 5,
+          "part": "frame",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 5,
+          "part": "frame",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 5,
+          "part": "frame",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 5,
+          "part": "frame",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 5,
+          "part": "frame",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 5,
+          "part": "clamp",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 5,
+          "part": "clamp",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 5,
+          "part": "clamp",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 5,
+          "part": "clamp",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 5,
+          "part": "clamp",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 5,
+          "part": "rocker",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 5,
+          "part": "rocker",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 5,
+          "part": "rocker",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 5,
+          "part": "rocker",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 5,
+          "part": "rocker",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 5,
+          "part": "link",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 5,
+          "part": "link",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 5,
+          "part": "link",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 5,
+          "part": "link",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 5,
+          "part": "link",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 5,
+          "part": "servo",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 5,
+          "part": "servo",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 5,
+          "part": "servo",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 5,
+          "part": "servo",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 5,
+          "part": "servo",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 5,
+          "part": "horn",
+          "target": "exact_lower_sheet",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 5,
+          "part": "horn",
+          "target": "exact_divider_1",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 5,
+          "part": "horn",
+          "target": "exact_divider_2",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 5,
+          "part": "horn",
+          "target": "exact_divider_3",
+          "intersection_mm3": 0.0,
+          "pass": true
+        },
+        {
+          "state": "EJECT",
+          "lane": 5,
+          "part": "horn",
+          "target": "exact_divider_4",
+          "intersection_mm3": 0.0,
+          "pass": true
+        }
+      ],
+      "pass": true
+    }
+  },
+  "collision_pass": true,
+  "mounting_and_support_chain": {
+    "common_lower_sheet": {
+      "source": "../00_ОБЩАЯ_КОМПОНОВКА/STL_КАССЕТА_СБОРКА/cassette_lower_sheet.stl",
+      "thickness_mm": 4.0,
+      "front_edge_local_u_mm": 80.000001,
+      "local_bounds_mm": [
+        [
+          -489.4019,
+          -195.5,
+          -4.000013
+        ],
+        [
+          80.000001,
+          195.5,
+          2e-05
+        ]
+      ]
+    },
+    "identical_all_five_channels": true,
+    "internal_divider_count": 4,
+    "exact_divider_source": "../00_ОБЩАЯ_КОМПОНОВКА/STL_КАССЕТА_СБОРКА/cassette_divider.stl",
+    "exact_divider_outlet_extension_beyond_lower_sheet_mm": 41.411046,
+    "extra_structural_vertical_sheets_required": 0,
+    "existing_box_side_walls_used_as_guides": 2,
+    "dividers_used_for_structure": false,
+    "attachment": "A01+A04 clamp the common lower-sheet front edge with two M4 screws outside the sheet; no sheet holes",
+    "designed_clearances_mm": {
+      "frame_relief_past_sheet_edge": 0.25,
+      "upper_leadin_above_sheet": 0.3,
+      "lower_pad_below_sheet": 0.2
+    },
+    "solid_intersections_mm3": {
+      "frame_lower_sheet": 0.0,
+      "clamp_lower_sheet_before_tightening": 0.0,
+      "frame_clamp_before_screws_tightened": 0.0,
+      "frame_servo_installed": 0.0
+    },
+    "servo_snap_fit": {
+      "output_boss_nominal_diameter_mm": 4.8,
+      "output_boss_frame_bore_mm": 5.6,
+      "ear_slot_clearance_x_total_mm": 1.2,
+      "ear_slot_clearance_y_each_side_mm": 0.4,
+      "ear_slot_clearance_n_each_side_mm": 0.4,
+      "note": "Side walls flex only during insertion; the ears occupy non-intersecting capture pockets in the installed position."
+    },
+    "box_shelf_layout_mm": {
+      "box_depth": 600.0,
+      "shelf_supported_depth": 390.0,
+      "front_overhang": 210.0,
+      "separate_beam_or_plinth": false
+    },
+    "pass": true
+  },
+  "overall_geometry_pass": true,
+  "prototype_ready_for_one_lane_test": true,
+  "production_ready": false,
+  "production_blocker": "Prototype endurance and power-loss containment remain unverified; 22×200 g exceeds the 0.06 N·m target."
+}

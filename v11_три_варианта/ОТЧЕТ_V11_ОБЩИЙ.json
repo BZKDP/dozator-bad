@@ -1,0 +1,1093 @@
+{
+  "project": "V11 — три варианта для одной SG90/MG90S на канал",
+  "status": "PASS",
+  "scope": "геометрия, восемь внутренних фиксаторов, хеши раскроя/STL/3MF, коллизии, удержание при худших люфтах, границы полной кассеты, 3MF вариантов и свежий PrusaSlicer-аудит; физические испытания всё равно обязательны",
+  "bed_mm": [
+    220.0,
+    220.0
+  ],
+  "common_cassette": {
+    "status": "PASS",
+    "parts": [
+      {
+        "file": "00_ОБЩАЯ_КОМПОНОВКА\\STL_КАССЕТА_СБОРКА\\cassette_divider.stl",
+        "extents_mm": [
+          590.0,
+          4.0,
+          390.0
+        ],
+        "bounds_mm": [
+          [
+            0.0,
+            -2.0,
+            0.0
+          ],
+          [
+            590.0,
+            2.0,
+            390.0
+          ]
+        ],
+        "watertight": true,
+        "components": 1,
+        "fits_220x220_xy": false,
+        "min_z_mm": 0.0,
+        "triangles": 2220
+      },
+      {
+        "file": "00_ОБЩАЯ_КОМПОНОВКА\\STL_КАССЕТА_СБОРКА\\cassette_lower_sheet.stl",
+        "extents_mm": [
+          551.035,
+          391.0,
+          151.236
+        ],
+        "bounds_mm": [
+          [
+            39.482,
+            2.0,
+            8.786
+          ],
+          [
+            590.518,
+            393.0,
+            160.022
+          ]
+        ],
+        "watertight": true,
+        "components": 1,
+        "fits_220x220_xy": false,
+        "min_z_mm": 8.786,
+        "triangles": 956
+      },
+      {
+        "file": "00_ОБЩАЯ_КОМПОНОВКА\\STL_КАССЕТА_СБОРКА\\cassette_upper_sheet.stl",
+        "extents_mm": [
+          535.968,
+          391.0,
+          137.272
+        ],
+        "bounds_mm": [
+          [
+            -0.484,
+            2.0,
+            209.669
+          ],
+          [
+            535.484,
+            393.0,
+            346.941
+          ]
+        ],
+        "watertight": true,
+        "components": 1,
+        "fits_220x220_xy": false,
+        "min_z_mm": 209.669,
+        "triangles": 956
+      }
+    ],
+    "print_part": {
+      "file": "00_ОБЩАЯ_КОМПОНОВКА\\STL_ПЕЧАТЬ\\фиксатор_ската_универсальный_V11_PRINT.stl",
+      "extents_mm": [
+        16.0,
+        12.0,
+        16.5
+      ],
+      "bounds_mm": [
+        [
+          -8.0,
+          -6.0,
+          0.0
+        ],
+        [
+          8.0,
+          6.0,
+          16.5
+        ]
+      ],
+      "watertight": true,
+      "components": 1,
+      "fits_220x220_xy": true,
+      "min_z_mm": 0.0,
+      "triangles": 242
+    },
+    "ready_fixator_plate": {
+      "file": "00_ОБЩАЯ_КОМПОНОВКА\\PLATES_3MF\\КАССЕТА_8_ВНУТРЕННИХ_ФИКСАТОРОВ_220x220.3mf",
+      "unit": "millimeter",
+      "objects": 8,
+      "mesh_objects": 8,
+      "build_items": 8,
+      "zip_member_count": 3,
+      "zip_integrity": true,
+      "plate_bounds_mm": [
+        [
+          27.0,
+          74.0,
+          0.0
+        ],
+        [
+          193.0,
+          146.0,
+          16.5
+        ]
+      ],
+      "plate_extents_mm": [
+        166.0,
+        72.0,
+        16.5
+      ],
+      "all_objects_watertight_one_body": true,
+      "object_intersections": [],
+      "inside_220x220": true,
+      "minimum_xy_edge_margin_mm": 27.0,
+      "prusa_slicer_audit": {
+        "available": true,
+        "executable": "C:\\Program Files\\Prusa3D\\PrusaSlicer\\prusa-slicer-console.exe",
+        "exit_code": 0,
+        "gcode_created": true,
+        "status": "PASS",
+        "blocking_warnings": [],
+        "adhesion_warning": false,
+        "profile": {
+          "bed_mm": [
+            220,
+            220
+          ],
+          "layer_height_mm": 0.2,
+          "perimeters": 5,
+          "infill_percent": 40,
+          "top_solid_layers": 5,
+          "bottom_solid_layers": 5,
+          "supports": false,
+          "brim_mm": 5.0
+        }
+      }
+    },
+    "manifest": "00_ОБЩАЯ_КОМПОНОВКА\\ФИКСАТОРЫ_V11_MANIFEST.json",
+    "errors": [],
+    "warnings": []
+  },
+  "variants": {
+    "A": {
+      "status": "PASS",
+      "print_stl_count": 4,
+      "print_parts": [
+        {
+          "file": "A_верхнее_коромысло\\STL_ПЕЧАТЬ\\A01_рама_верхнего_коромысла.stl",
+          "extents_mm": [
+            106.141,
+            99.892,
+            68.0
+          ],
+          "bounds_mm": [
+            [
+              -13.891,
+              -91.392,
+              0.0
+            ],
+            [
+              92.25,
+              8.5,
+              68.0
+            ]
+          ],
+          "watertight": true,
+          "components": 1,
+          "fits_220x220_xy": true,
+          "min_z_mm": 0.0,
+          "triangles": 5492
+        },
+        {
+          "file": "A_верхнее_коромысло\\STL_ПЕЧАТЬ\\A02_коромысло_с_2_пальцами.stl",
+          "extents_mm": [
+            56.108,
+            37.678,
+            23.6
+          ],
+          "bounds_mm": [
+            [
+              -28.054,
+              -62.195,
+              0.0
+            ],
+            [
+              28.054,
+              -24.516,
+              23.6
+            ]
+          ],
+          "watertight": true,
+          "components": 1,
+          "fits_220x220_xy": true,
+          "min_z_mm": 0.0,
+          "triangles": 4746
+        },
+        {
+          "file": "A_верхнее_коромысло\\STL_ПЕЧАТЬ\\A03_короткая_тяга_12мм.stl",
+          "extents_mm": [
+            18.026,
+            6.4,
+            2.0
+          ],
+          "bounds_mm": [
+            [
+              -3.2,
+              -3.2,
+              -0.0
+            ],
+            [
+              14.826,
+              3.2,
+              2.0
+            ]
+          ],
+          "watertight": true,
+          "components": 1,
+          "fits_220x220_xy": true,
+          "min_z_mm": -0.0,
+          "triangles": 908
+        },
+        {
+          "file": "A_верхнее_коромысло\\STL_ПЕЧАТЬ\\A04_нижний_прижим_ската.stl",
+          "extents_mm": [
+            20.0,
+            64.0,
+            4.8
+          ],
+          "bounds_mm": [
+            [
+              72.0,
+              -32.0,
+              0.0
+            ],
+            [
+              92.0,
+              32.0,
+              4.8
+            ]
+          ],
+          "watertight": true,
+          "components": 1,
+          "fits_220x220_xy": true,
+          "min_z_mm": 0.0,
+          "triangles": 1076
+        }
+      ],
+      "state_asset_counts": {
+        "HOME": 12,
+        "MID": 11,
+        "EJECT": 11
+      },
+      "ready_3mf_plates": [
+        {
+          "file": "A_верхнее_коромысло\\A_ПЛИТА_220x220_1_канал.3mf",
+          "unit": "millimeter",
+          "objects": 4,
+          "mesh_objects": 4,
+          "build_items": 4,
+          "zip_member_count": 3,
+          "zip_integrity": true,
+          "plate_bounds_mm": [
+            [
+              5.0,
+              5.0,
+              0.0
+            ],
+            [
+              128.026,
+              179.0,
+              68.0
+            ]
+          ],
+          "plate_extents_mm": [
+            123.026,
+            174.0,
+            68.0
+          ],
+          "all_objects_watertight_one_body": true,
+          "object_intersections": [],
+          "inside_220x220": true,
+          "minimum_xy_edge_margin_mm": 5.0,
+          "prusa_slicer_audit": {
+            "available": true,
+            "executable": "C:\\Program Files\\Prusa3D\\PrusaSlicer\\prusa-slicer-console.exe",
+            "exit_code": 0,
+            "gcode_created": true,
+            "status": "PASS",
+            "blocking_warnings": [],
+            "adhesion_warning": true,
+            "profile": {
+              "bed_mm": [
+                220,
+                220
+              ],
+              "layer_height_mm": 0.2,
+              "perimeters": 4,
+              "infill_percent": 40,
+              "top_solid_layers": 5,
+              "bottom_solid_layers": 5,
+              "supports": false,
+              "brim_mm": 4.0
+            }
+          }
+        }
+      ],
+      "manifest": "A_верхнее_коромысло\\manifest_A.json",
+      "errors": [],
+      "warnings": [
+        "A_ПЛИТА_220x220_1_канал.3mf: PrusaSlicer предупреждает о слабой адгезии; использовать указанный в инструкции brim"
+      ]
+    },
+    "B": {
+      "status": "PASS",
+      "print_stl_count": 10,
+      "print_parts": [
+        {
+          "file": "B_роторная_кассета\\STL_ПЕЧАТЬ\\B01A_ротор_4_кармана_открытый.stl",
+          "extents_mm": [
+            107.447,
+            107.447,
+            71.95
+          ],
+          "bounds_mm": [
+            [
+              -87.523,
+              2.277,
+              0.0
+            ],
+            [
+              19.923,
+              109.723,
+              71.95
+            ]
+          ],
+          "watertight": true,
+          "components": 1,
+          "fits_220x220_xy": true,
+          "min_z_mm": 0.0,
+          "triangles": 7462
+        },
+        {
+          "file": "B_роторная_кассета\\STL_ПЕЧАТЬ\\B01B_индексатор_3_ключа.stl",
+          "extents_mm": [
+            52.0,
+            52.0,
+            6.55
+          ],
+          "bounds_mm": [
+            [
+              -59.8,
+              30.0,
+              0.0
+            ],
+            [
+              -7.8,
+              82.0,
+              6.55
+            ]
+          ],
+          "watertight": true,
+          "components": 1,
+          "fits_220x220_xy": true,
+          "min_z_mm": 0.0,
+          "triangles": 1638
+        },
+        {
+          "file": "B_роторная_кассета\\STL_ПЕЧАТЬ\\B02GL_левая_направляющая.stl",
+          "extents_mm": [
+            106.498,
+            108.618,
+            6.4
+          ],
+          "bounds_mm": [
+            [
+              -69.3,
+              -14.994,
+              0.0
+            ],
+            [
+              37.198,
+              93.624,
+              6.4
+            ]
+          ],
+          "watertight": true,
+          "components": 1,
+          "fits_220x220_xy": true,
+          "min_z_mm": 0.0,
+          "triangles": 1254
+        },
+        {
+          "file": "B_роторная_кассета\\STL_ПЕЧАТЬ\\B02GR_правая_направляющая.stl",
+          "extents_mm": [
+            106.498,
+            108.618,
+            6.4
+          ],
+          "bounds_mm": [
+            [
+              -37.198,
+              -14.994,
+              0.0
+            ],
+            [
+              69.3,
+              93.624,
+              6.4
+            ]
+          ],
+          "watertight": true,
+          "components": 1,
+          "fits_220x220_xy": true,
+          "min_z_mm": 0.0,
+          "triangles": 1254
+        },
+        {
+          "file": "B_роторная_кассета\\STL_ПЕЧАТЬ\\B02I_входной_зажим_A02.stl",
+          "extents_mm": [
+            75.0,
+            20.958,
+            29.5
+          ],
+          "bounds_mm": [
+            [
+              -37.5,
+              -20.784,
+              0.0
+            ],
+            [
+              37.5,
+              0.173,
+              29.5
+            ]
+          ],
+          "watertight": true,
+          "components": 1,
+          "fits_220x220_xy": true,
+          "min_z_mm": 0.0,
+          "triangles": 1498
+        },
+        {
+          "file": "B_роторная_кассета\\STL_ПЕЧАТЬ\\B02L_левая_щека_серва.stl",
+          "extents_mm": [
+            147.765,
+            145.467,
+            10.35
+          ],
+          "bounds_mm": [
+            [
+              -85.383,
+              39.732,
+              0.0
+            ],
+            [
+              62.382,
+              185.2,
+              10.35
+            ]
+          ],
+          "watertight": true,
+          "components": 1,
+          "fits_220x220_xy": true,
+          "min_z_mm": 0.0,
+          "triangles": 4948
+        },
+        {
+          "file": "B_роторная_кассета\\STL_ПЕЧАТЬ\\B02O_выходной_лоток.stl",
+          "extents_mm": [
+            125.748,
+            75.0,
+            3.0
+          ],
+          "bounds_mm": [
+            [
+              -182.755,
+              -37.5,
+              0.0
+            ],
+            [
+              -57.007,
+              37.5,
+              3.0
+            ]
+          ],
+          "watertight": true,
+          "components": 1,
+          "fits_220x220_xy": true,
+          "min_z_mm": 0.0,
+          "triangles": 750
+        },
+        {
+          "file": "B_роторная_кассета\\STL_ПЕЧАТЬ\\B02R_правая_щека_ось.stl",
+          "extents_mm": [
+            147.765,
+            145.467,
+            6.15
+          ],
+          "bounds_mm": [
+            [
+              -62.382,
+              39.732,
+              0.0
+            ],
+            [
+              85.383,
+              185.2,
+              6.15
+            ]
+          ],
+          "watertight": true,
+          "components": 1,
+          "fits_220x220_xy": true,
+          "min_z_mm": 0.0,
+          "triangles": 1724
+        },
+        {
+          "file": "B_роторная_кассета\\STL_ПЕЧАТЬ\\B03_гравитационная_собачка.stl",
+          "extents_mm": [
+            68.399,
+            91.331,
+            1.55
+          ],
+          "bounds_mm": [
+            [
+              -75.599,
+              47.001,
+              0.0
+            ],
+            [
+              -7.2,
+              138.331,
+              1.55
+            ]
+          ],
+          "watertight": true,
+          "components": 1,
+          "fits_220x220_xy": true,
+          "min_z_mm": 0.0,
+          "triangles": 1132
+        },
+        {
+          "file": "B_роторная_кассета\\STL_ПЕЧАТЬ\\T01_coupon_ось_собачки_020_035_050.stl",
+          "extents_mm": [
+            100.0,
+            22.0,
+            4.0
+          ],
+          "bounds_mm": [
+            [
+              -50.0,
+              -11.0,
+              0.0
+            ],
+            [
+              50.0,
+              11.0,
+              4.0
+            ]
+          ],
+          "watertight": true,
+          "components": 1,
+          "fits_220x220_xy": true,
+          "min_z_mm": 0.0,
+          "triangles": 960
+        }
+      ],
+      "state_asset_counts": {
+        "HOME": 2,
+        "MID": 2,
+        "EJECT": 2
+      },
+      "ready_3mf_plates": [
+        {
+          "file": "B_роторная_кассета\\PLATES_3MF\\B11_plate_01_ротор_собачка_coupon.3mf",
+          "unit": "millimeter",
+          "objects": 4,
+          "mesh_objects": 4,
+          "build_items": 4,
+          "zip_member_count": 3,
+          "zip_integrity": true,
+          "plate_bounds_mm": [
+            [
+              12.277,
+              6.277,
+              0.0
+            ],
+            [
+              204.2,
+              206.0,
+              71.95
+            ]
+          ],
+          "plate_extents_mm": [
+            191.923,
+            199.723,
+            71.95
+          ],
+          "all_objects_watertight_one_body": true,
+          "object_intersections": [],
+          "inside_220x220": true,
+          "minimum_xy_edge_margin_mm": 6.277,
+          "prusa_slicer_audit": {
+            "available": true,
+            "executable": "C:\\Program Files\\Prusa3D\\PrusaSlicer\\prusa-slicer-console.exe",
+            "exit_code": 0,
+            "gcode_created": true,
+            "status": "PASS",
+            "blocking_warnings": [],
+            "adhesion_warning": false,
+            "profile": {
+              "bed_mm": [
+                220,
+                220
+              ],
+              "layer_height_mm": 0.2,
+              "perimeters": 4,
+              "infill_percent": 30,
+              "top_solid_layers": 5,
+              "bottom_solid_layers": 5,
+              "supports": false,
+              "brim_mm": 0.0
+            }
+          }
+        },
+        {
+          "file": "B_роторная_кассета\\PLATES_3MF\\B11_plate_02_левая_рама.3mf",
+          "unit": "millimeter",
+          "objects": 2,
+          "mesh_objects": 2,
+          "build_items": 2,
+          "zip_member_count": 3,
+          "zip_integrity": true,
+          "plate_bounds_mm": [
+            [
+              36.117,
+              13.521,
+              0.0
+            ],
+            [
+              183.883,
+              204.734,
+              29.5
+            ]
+          ],
+          "plate_extents_mm": [
+            147.765,
+            191.213,
+            29.5
+          ],
+          "all_objects_watertight_one_body": true,
+          "object_intersections": [],
+          "inside_220x220": true,
+          "minimum_xy_edge_margin_mm": 13.521,
+          "prusa_slicer_audit": {
+            "available": true,
+            "executable": "C:\\Program Files\\Prusa3D\\PrusaSlicer\\prusa-slicer-console.exe",
+            "exit_code": 0,
+            "gcode_created": true,
+            "status": "PASS",
+            "blocking_warnings": [],
+            "adhesion_warning": true,
+            "profile": {
+              "bed_mm": [
+                220,
+                220
+              ],
+              "layer_height_mm": 0.2,
+              "perimeters": 4,
+              "infill_percent": 30,
+              "top_solid_layers": 5,
+              "bottom_solid_layers": 5,
+              "supports": false,
+              "brim_mm": 4.0
+            }
+          }
+        },
+        {
+          "file": "B_роторная_кассета\\PLATES_3MF\\B11_plate_03_правая_рама.3mf",
+          "unit": "millimeter",
+          "objects": 1,
+          "mesh_objects": 1,
+          "build_items": 1,
+          "zip_member_count": 3,
+          "zip_integrity": true,
+          "plate_bounds_mm": [
+            [
+              36.117,
+              37.266,
+              0.0
+            ],
+            [
+              183.883,
+              182.734,
+              6.15
+            ]
+          ],
+          "plate_extents_mm": [
+            147.765,
+            145.467,
+            6.15
+          ],
+          "all_objects_watertight_one_body": true,
+          "object_intersections": [],
+          "inside_220x220": true,
+          "minimum_xy_edge_margin_mm": 36.117,
+          "prusa_slicer_audit": {
+            "available": true,
+            "executable": "C:\\Program Files\\Prusa3D\\PrusaSlicer\\prusa-slicer-console.exe",
+            "exit_code": 0,
+            "gcode_created": true,
+            "status": "PASS",
+            "blocking_warnings": [],
+            "adhesion_warning": false,
+            "profile": {
+              "bed_mm": [
+                220,
+                220
+              ],
+              "layer_height_mm": 0.2,
+              "perimeters": 4,
+              "infill_percent": 30,
+              "top_solid_layers": 5,
+              "bottom_solid_layers": 5,
+              "supports": false,
+              "brim_mm": 0.0
+            }
+          }
+        },
+        {
+          "file": "B_роторная_кассета\\PLATES_3MF\\B11_plate_04_левая_направляющая_лоток.3mf",
+          "unit": "millimeter",
+          "objects": 2,
+          "mesh_objects": 2,
+          "build_items": 2,
+          "zip_member_count": 3,
+          "zip_integrity": true,
+          "plate_bounds_mm": [
+            [
+              47.126,
+              14.5,
+              0.0
+            ],
+            [
+              172.874,
+              212.309,
+              6.4
+            ]
+          ],
+          "plate_extents_mm": [
+            125.748,
+            197.809,
+            6.4
+          ],
+          "all_objects_watertight_one_body": true,
+          "object_intersections": [],
+          "inside_220x220": true,
+          "minimum_xy_edge_margin_mm": 7.691,
+          "prusa_slicer_audit": {
+            "available": true,
+            "executable": "C:\\Program Files\\Prusa3D\\PrusaSlicer\\prusa-slicer-console.exe",
+            "exit_code": 0,
+            "gcode_created": true,
+            "status": "PASS",
+            "blocking_warnings": [],
+            "adhesion_warning": false,
+            "profile": {
+              "bed_mm": [
+                220,
+                220
+              ],
+              "layer_height_mm": 0.2,
+              "perimeters": 4,
+              "infill_percent": 30,
+              "top_solid_layers": 5,
+              "bottom_solid_layers": 5,
+              "supports": false,
+              "brim_mm": 0.0
+            }
+          }
+        },
+        {
+          "file": "B_роторная_кассета\\PLATES_3MF\\B11_plate_05_правая_направляющая.3mf",
+          "unit": "millimeter",
+          "objects": 1,
+          "mesh_objects": 1,
+          "build_items": 1,
+          "zip_member_count": 3,
+          "zip_integrity": true,
+          "plate_bounds_mm": [
+            [
+              56.751,
+              55.691,
+              0.0
+            ],
+            [
+              163.249,
+              164.309,
+              6.4
+            ]
+          ],
+          "plate_extents_mm": [
+            106.498,
+            108.618,
+            6.4
+          ],
+          "all_objects_watertight_one_body": true,
+          "object_intersections": [],
+          "inside_220x220": true,
+          "minimum_xy_edge_margin_mm": 55.691,
+          "prusa_slicer_audit": {
+            "available": true,
+            "executable": "C:\\Program Files\\Prusa3D\\PrusaSlicer\\prusa-slicer-console.exe",
+            "exit_code": 0,
+            "gcode_created": true,
+            "status": "PASS",
+            "blocking_warnings": [],
+            "adhesion_warning": false,
+            "profile": {
+              "bed_mm": [
+                220,
+                220
+              ],
+              "layer_height_mm": 0.2,
+              "perimeters": 4,
+              "infill_percent": 30,
+              "top_solid_layers": 5,
+              "bottom_solid_layers": 5,
+              "supports": false,
+              "brim_mm": 0.0
+            }
+          }
+        }
+      ],
+      "manifest": "B_роторная_кассета\\manifest_V11_B.json",
+      "errors": [],
+      "warnings": [
+        "B11_plate_02_левая_рама.3mf: PrusaSlicer предупреждает о слабой адгезии; использовать указанный в инструкции brim"
+      ]
+    },
+    "C": {
+      "status": "PASS",
+      "print_stl_count": 6,
+      "print_parts": [
+        {
+          "file": "C_верхние_линейные_ножи\\STL_ПЕЧАТЬ\\C01_верхняя_рама_направляющая.stl",
+          "extents_mm": [
+            133.3,
+            122.0,
+            74.4
+          ],
+          "bounds_mm": [
+            [
+              -125.0,
+              -77.0,
+              0.0
+            ],
+            [
+              8.3,
+              45.0,
+              74.4
+            ]
+          ],
+          "watertight": true,
+          "components": 1,
+          "fits_220x220_xy": true,
+          "min_z_mm": 0.0,
+          "triangles": 934
+        },
+        {
+          "file": "C_верхние_линейные_ножи\\STL_ПЕЧАТЬ\\C02_передняя_линейная_заслонка.stl",
+          "extents_mm": [
+            71.2,
+            66.0,
+            18.85
+          ],
+          "bounds_mm": [
+            [
+              -35.6,
+              -66.0,
+              0.0
+            ],
+            [
+              35.6,
+              -0.0,
+              18.85
+            ]
+          ],
+          "watertight": true,
+          "components": 1,
+          "fits_220x220_xy": true,
+          "min_z_mm": 0.0,
+          "triangles": 270
+        },
+        {
+          "file": "C_верхние_линейные_ножи\\STL_ПЕЧАТЬ\\C03_задний_линейный_сепаратор.stl",
+          "extents_mm": [
+            71.2,
+            66.0,
+            14.65
+          ],
+          "bounds_mm": [
+            [
+              -35.6,
+              -66.0,
+              0.0
+            ],
+            [
+              35.6,
+              -0.0,
+              14.65
+            ]
+          ],
+          "watertight": true,
+          "components": 1,
+          "fits_220x220_xy": true,
+          "min_z_mm": 0.0,
+          "triangles": 278
+        },
+        {
+          "file": "C_верхние_линейные_ножи\\STL_ПЕЧАТЬ\\C04_коромысло_SG90_MG90S.stl",
+          "extents_mm": [
+            16.4,
+            73.566,
+            5.4
+          ],
+          "bounds_mm": [
+            [
+              -8.2,
+              -36.783,
+              0.0
+            ],
+            [
+              8.2,
+              36.783,
+              5.4
+            ]
+          ],
+          "watertight": true,
+          "components": 1,
+          "fits_220x220_xy": true,
+          "min_z_mm": 0.0,
+          "triangles": 1784
+        },
+        {
+          "file": "C_верхние_линейные_ножи\\STL_ПЕЧАТЬ\\C05_плоский_кронштейн_сервы.stl",
+          "extents_mm": [
+            55.0,
+            14.8,
+            8.7
+          ],
+          "bounds_mm": [
+            [
+              70.0,
+              0.85,
+              0.0
+            ],
+            [
+              125.0,
+              15.65,
+              8.7
+            ]
+          ],
+          "watertight": true,
+          "components": 1,
+          "fits_220x220_xy": true,
+          "min_z_mm": 0.0,
+          "triangles": 666
+        },
+        {
+          "file": "C_верхние_линейные_ножи\\STL_ПЕЧАТЬ\\T01_КУПОН_штатной_качалки.stl",
+          "extents_mm": [
+            118.0,
+            30.0,
+            3.2
+          ],
+          "bounds_mm": [
+            [
+              -59.0,
+              -15.0,
+              0.0
+            ],
+            [
+              59.0,
+              15.0,
+              3.2
+            ]
+          ],
+          "watertight": true,
+          "components": 1,
+          "fits_220x220_xy": true,
+          "min_z_mm": 0.0,
+          "triangles": 1418
+        }
+      ],
+      "state_asset_counts": {
+        "HOME": 22,
+        "MID": 22,
+        "EJECT": 22
+      },
+      "ready_3mf_plates": [
+        {
+          "file": "C_верхние_линейные_ножи\\STL_ПЕЧАТЬ\\C2_ПЛИТА_1_КАНАЛ_готовая_220x220.3mf",
+          "unit": "millimeter",
+          "objects": 6,
+          "mesh_objects": 6,
+          "build_items": 6,
+          "zip_member_count": 3,
+          "zip_integrity": true,
+          "plate_bounds_mm": [
+            [
+              7.0,
+              7.0,
+              0.0
+            ],
+            [
+              208.2,
+              208.4,
+              74.4
+            ]
+          ],
+          "plate_extents_mm": [
+            201.2,
+            201.4,
+            74.4
+          ],
+          "all_objects_watertight_one_body": true,
+          "object_intersections": [],
+          "inside_220x220": true,
+          "minimum_xy_edge_margin_mm": 7.0,
+          "prusa_slicer_audit": {
+            "available": true,
+            "executable": "C:\\Program Files\\Prusa3D\\PrusaSlicer\\prusa-slicer-console.exe",
+            "exit_code": 0,
+            "gcode_created": true,
+            "status": "PASS",
+            "blocking_warnings": [],
+            "adhesion_warning": false,
+            "profile": {
+              "bed_mm": [
+                220,
+                220
+              ],
+              "layer_height_mm": 0.2,
+              "perimeters": 4,
+              "infill_percent": 30,
+              "top_solid_layers": 5,
+              "bottom_solid_layers": 5,
+              "supports": false,
+              "brim_mm": 0.0
+            }
+          }
+        }
+      ],
+      "manifest": "C_верхние_линейные_ножи\\MANIFEST_C2.json",
+      "errors": [],
+      "warnings": []
+    }
+  },
+  "viewer": {
+    "file": "ОТКРОЙ_V11_ТРИ_ВАРИАНТА.html",
+    "status": "PASS",
+    "errors": []
+  },
+  "overall_errors": []
+}

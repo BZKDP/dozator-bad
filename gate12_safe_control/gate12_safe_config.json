@@ -1,0 +1,10 @@
+{
+  "port": "COM6",
+  "min_us": 1450,
+  "max_us": 1550,
+  "current_us": 1550,
+  "home_us": 1550,
+  "drop_us": 1550,
+  "hold_ms": 450,
+  "rate_us_s": 300
+}

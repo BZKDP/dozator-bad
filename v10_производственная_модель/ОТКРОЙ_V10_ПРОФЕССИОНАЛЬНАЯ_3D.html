@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>V10 · профессиональная 3D-модель дозатора банок</title>
+  <style>
+    :root{
+      --bg:#0a0f15;--panel:#111923;--panel2:#17222e;--line:#28394a;
+      --text:#edf5fb;--muted:#93a8ba;--blue:#45aaf2;--cyan:#48d1c5;
+      --green:#50d890;--amber:#f3b85b;--red:#f06c70;--wood:#d0a069;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-serif;overflow:hidden}
+    button,input{font:inherit}
+    #app{height:100%;display:grid;grid-template-columns:minmax(0,1fr) 410px}
+    #viewport{position:relative;min-width:0;background:radial-gradient(circle at 45% 25%,#18232e 0,#0a0f15 58%)}
+    canvas{display:block;width:100%;height:100%;outline:none}
+    #panel{overflow:auto;background:linear-gradient(180deg,#15202b,#0e151d 72%);border-left:1px solid var(--line);padding:20px 19px 24px}
+    h1{font-size:21px;line-height:1.16;margin:0 0 6px;letter-spacing:.01em}
+    .subtitle{font-size:12px;line-height:1.45;color:var(--muted);margin:0 0 14px}
+    .eyebrow{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#70a8cf;font-weight:800;margin:17px 0 7px}
+    .mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+    button{border:1px solid var(--line);background:#1b2835;color:var(--text);border-radius:8px;padding:9px 10px;font-weight:700;font-size:12px;line-height:1.22;cursor:pointer;text-align:left;transition:.14s ease}
+    button:hover{border-color:#54718b;background:#213241}
+    button.active{border-color:var(--blue);background:#174f76;box-shadow:inset 0 0 0 1px rgba(69,170,242,.22)}
+    button.primary{border-color:#277657;background:#184e3c}
+    button.stop{border-color:#765154}
+    button:disabled{opacity:.45;cursor:default}
+    .phase-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+    .phase-grid button small{display:block;color:#9fb5c7;font-weight:500;margin-top:2px}
+    .range-row{display:grid;grid-template-columns:50px 1fr 48px;gap:8px;align-items:center;margin:10px 0 5px}
+    .range-row span{font:700 12px Consolas,monospace;color:#cfe4f4}
+    input[type=range]{width:100%;accent-color:var(--blue)}
+    .status{margin-top:13px;border:1px solid #2a4651;border-radius:10px;background:#0d171e;padding:11px 12px}
+    .status-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+    #phaseName{font-size:14px;font-weight:800}
+    #safety{font-size:10px;font-weight:900;letter-spacing:.06em;color:var(--green);border:1px solid #286c4b;border-radius:99px;padding:4px 7px;white-space:nowrap}
+    .gate-bars{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+    .gate{border:1px solid #233440;border-radius:7px;padding:7px}
+    .gate-label{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:5px}
+    .bar{height:5px;border-radius:9px;background:#22303b;overflow:hidden}.bar i{display:block;height:100%;width:0;background:var(--amber);border-radius:9px;transition:width .08s linear}.gate.rear .bar i{background:var(--cyan)}
+    #info{margin-top:14px;border:1px solid var(--line);border-radius:10px;background:#0e161e;padding:13px}
+    #info h2{font-size:15px;margin:0 0 7px}
+    #info p{font-size:12px;line-height:1.48;color:#aabcca;margin:6px 0}
+    .facts{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px}
+    .fact{font-size:10px;color:#91a5b6;border:1px solid #253542;border-radius:7px;padding:7px}
+    .fact b{display:block;color:#f2f7fa;font-size:14px;margin-bottom:1px}
+    .note{margin-top:10px;padding:8px 9px;border-left:3px solid var(--amber);background:#1c2020;border-radius:5px;font-size:11px;line-height:1.45;color:#c9d4da}
+    .legend{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;font-size:10px;color:var(--muted)}
+    .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px}
+    #hud{position:absolute;left:16px;top:16px;max-width:620px;background:rgba(8,13,18,.82);border:1px solid rgba(164,194,216,.2);border-radius:9px;padding:10px 12px;backdrop-filter:blur(9px);font-size:11px;line-height:1.4;color:#b5c7d5;pointer-events:none}
+    #hud strong{color:#f4f8fb}
+    #viewTitle{position:absolute;left:16px;bottom:16px;max-width:70%;background:rgba(8,13,18,.86);border:1px solid rgba(164,194,216,.18);border-radius:9px;padding:9px 12px;backdrop-filter:blur(9px);font-weight:800;font-size:12px;pointer-events:none}
+    #viewTitle small{font-weight:500;color:#9eb1c1;margin-left:8px}
+    #load{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#0a0f15;z-index:9;transition:opacity .35s ease}
+    #load.hidden{opacity:0;pointer-events:none}
+    .loader{width:min(440px,78vw);text-align:center}.loader h2{font-size:18px;margin:0 0 10px}.loader p{font-size:12px;color:var(--muted)}
+    .loadbar{height:6px;background:#1d2b36;border-radius:10px;overflow:hidden;margin:13px 0}.loadbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--cyan));transition:width .2s}
+    #error{color:#ff9b9e;font-size:12px;white-space:pre-wrap}
+    .kbd{border:1px solid #405263;border-bottom-width:2px;border-radius:4px;padding:1px 4px;color:#dce9f2}
+    @media(max-width:980px){#app{grid-template-columns:1fr}#panel{position:absolute;right:0;top:0;width:min(410px,94vw);height:100%;z-index:5;background:rgba(17,25,35,.96);backdrop-filter:blur(10px)}#hud{max-width:calc(100% - 430px)}}
+  </style>
+  <script type="importmap">{"imports":{"three":"../libs/three.module.js"}}</script>
+</head>
+<body>
+<div id="app">
+  <main id="viewport">
+    <div id="hud"><strong>ЛКМ</strong> — вращать · колесо — масштаб · <strong>ПКМ</strong> — сдвиг · <span class="kbd">1…6</span> виды · <span class="kbd">Space</span> медленный цикл. Геометрия печатных деталей загружается непосредственно из STL V10.</div>
+    <div id="viewTitle">Полная система</div>
+    <div id="load"><div class="loader"><h2>Загружаю производственную геометрию V10</h2><p id="loadText">Проверяю STL…</p><div class="loadbar"><i id="loadFill"></i></div><div id="error"></div></div></div>
+  </main>
+  <aside id="panel">
+    <h1>V10 · дозатор одной банки</h1>
+    <p class="subtitle">Пять одинаковых каналов, каждый от вашей SG90/MG90S. Два полноширинных затвора приводятся одним двухпазовым кулачком.</p>
+
+    <div class="eyebrow">Что показать</div>
+    <div class="mode-grid" id="modeButtons">
+      <button data-mode="system" class="active">1 · Вся установка</button>
+      <button data-mode="cassette">2 · Ровно 6 листов</button>
+      <button data-mode="lane">3 · Один канал</button>
+      <button data-mode="drive">4 · Привод / разрез</button>
+      <button data-mode="exploded">5 · Взрыв-схема</button>
+      <button data-mode="print">6 · Столы печати</button>
+    </div>
+
+    <div class="eyebrow">Положение одного серво</div>
+    <div class="phase-grid">
+      <button data-angle="0">HOME<small>передний держит</small></button>
+      <button data-angle="34">Задний закрыт<small>34°</small></button>
+      <button data-angle="42">Оба закрыты<small>безопасный overlap</small></button>
+      <button data-angle="76">Передний открыт<small>банка свободна</small></button>
+      <button data-angle="84">EJECT<small>конец хода</small></button>
+      <button id="cycle" class="primary">▶ Медленный цикл<small style="display:block;color:#a8cabb;font-weight:500;margin-top:2px">туда и обратно</small></button>
+    </div>
+    <div class="range-row"><span>0°</span><input id="angle" type="range" min="0" max="84" value="0" step="0.2"><span id="angleValue">0.0°</span></div>
+
+    <div class="status">
+      <div class="status-top"><span id="phaseName">HOME · передний закрыт</span><span id="safety">SAFE · путь перекрыт</span></div>
+      <div class="gate-bars">
+        <div class="gate front"><div class="gate-label"><span>ПЕРЕДНИЙ</span><b id="frontValue">17.0 мм</b></div><div class="bar"><i id="frontBar"></i></div></div>
+        <div class="gate rear"><div class="gate-label"><span>ЗАДНИЙ</span><b id="rearValue">−2.0 мм</b></div><div class="bar"><i id="rearBar"></i></div></div>
+      </div>
+    </div>
+
+    <section id="info"></section>
+    <div class="legend">
+      <span><i class="dot" style="background:#d0a069"></i>лист 4 мм</span>
+      <span><i class="dot" style="background:#303e4a"></i>PETG корпус</span>
+      <span><i class="dot" style="background:#f09b48"></i>затворы</span>
+      <span><i class="dot" style="background:#45b7aa"></i>кулачок</span>
+      <span><i class="dot" style="background:#416faf"></i>SG90/MG90S</span>
+    </div>
+  </aside>
+</div>
+
+<script type="module">
+import * as THREE from 'three';
+import {OrbitControls} from '../libs/OrbitControls.js';
+
+const P={
+  canL:70,canD:47,canDesignD:48,boxD:595,boxW:395,boxH:395,cassD:590,cassW:391,cassH:390,
+  sheet:4,lanePitch:79,dividers:[77,156,235,314],lowX0:40,lowX1:590,lowA:15,
+  upX0:0,upX1:535,upFront:345,upA:14,moduleW:78.4,moduleY0:-140,moduleY1:70,gateRearBoxX:-15,
+  frontY:0,rearY:-50,openZ:-2,closedZ:17,camY:-25,camZ:-37.5,camAngle:84,
+  rearEnd:34,frontStart:42,frontEnd:76,pinDrop:45,followerOffset:2.1
+};
+const COLORS={wood:0xd0a069,woodEdge:0x8b5c35,body:0x2c3945,frame:0x718291,blade:0xf09b48,rear:0x53cfc1,cam:0x45b7aa,cover:0xa6bac7,servo:0x416faf,horn:0xf2f3ee,metal:0xb7c5ce,box:0x6b8295,ink:0xdce8ef};
+const mat={
+  wood:new THREE.MeshStandardMaterial({color:COLORS.wood,roughness:.78,metalness:0}),
+  woodEdge:new THREE.MeshStandardMaterial({color:COLORS.woodEdge,roughness:.9}),
+  body:new THREE.MeshStandardMaterial({color:COLORS.body,roughness:.56,metalness:.05}),
+  frame:new THREE.MeshStandardMaterial({color:COLORS.frame,roughness:.62,metalness:.12}),
+  blade:new THREE.MeshStandardMaterial({color:COLORS.blade,roughness:.48}),
+  rear:new THREE.MeshStandardMaterial({color:COLORS.rear,roughness:.46}),
+  cam:new THREE.MeshStandardMaterial({color:COLORS.cam,roughness:.38,metalness:.08}),
+  cover:new THREE.MeshStandardMaterial({color:COLORS.cover,roughness:.35,metalness:.22,transparent:true,opacity:.66}),
+  servo:new THREE.MeshStandardMaterial({color:COLORS.servo,roughness:.5}),
+  horn:new THREE.MeshStandardMaterial({color:COLORS.horn,roughness:.48}),
+  metal:new THREE.MeshStandardMaterial({color:COLORS.metal,roughness:.26,metalness:.68}),
+  box:new THREE.MeshStandardMaterial({color:COLORS.box,roughness:.9,transparent:true,opacity:.055,side:THREE.DoubleSide}),
+  ghost:new THREE.MeshStandardMaterial({color:0x7f98aa,roughness:.72,transparent:true,opacity:.18,depthWrite:false}),
+  cutGhost:new THREE.MeshStandardMaterial({color:0x597080,roughness:.65,transparent:true,opacity:.22,depthWrite:false}),
+  bed:new THREE.MeshStandardMaterial({color:0x202b32,roughness:.95,metalness:.05}),
+  plinth:new THREE.MeshStandardMaterial({color:0x3b3128,roughness:.93,metalness:0}),
+  bedLine:new THREE.LineBasicMaterial({color:0x526873,transparent:true,opacity:.42})
+};
+const HOME_CAN_Y=[-26.2,-74.4,-122.6];
+const canPalette=[0x63c99b,0x5aa9e6,0xd98b65,0xaa83dc,0x77c4d0];
+const canMats=canPalette.map(c=>new THREE.MeshStandardMaterial({color:c,roughness:.29,metalness:.28}));
+const canBodyGeo=new THREE.CylinderGeometry(P.canD/2,P.canD/2,P.canL-7,64,1,false);
+const canLidGeo=new THREE.CylinderGeometry(P.canD/2+.6,P.canD/2+.6,7,64,1,false);
+const canRingGeo=new THREE.TorusGeometry(P.canD/2-.6,.75,10,64);
+const cache=new Map();
+const assemblyBase='STL_СБОРКА_НЕ_ПЕЧАТАТЬ/';
+const printBase='STL_ПЕЧАТЬ/';
+const assetList=[
+  ['tray',assemblyBase+'tray.stl'],['frame',assemblyBase+'drive_frame.stl'],
+  ['front',assemblyBase+'front_blade_ref.stl'],['rear',assemblyBase+'rear_blade_ref.stl'],
+  ['cam',assemblyBase+'cam_home.stl'],['cover',assemblyBase+'cam_cover.stl'],
+  ['roller',assemblyBase+'follower_roller.stl'],['followerScrew',assemblyBase+'follower_screw.stl'],
+  ['bridge',assemblyBase+'input_bridge.stl'],['camBushing',assemblyBase+'cam_support_bushing.stl'],['lock',assemblyBase+'cassette_lock.stl'],
+  ['lower',assemblyBase+'cassette_lower_sheet.stl'],['upper',assemblyBase+'cassette_upper_sheet.stl'],
+  ['divider',assemblyBase+'cassette_divider.stl'],['servoBody',assemblyBase+'servo_body.stl'],
+  ['servoShaft',assemblyBase+'servo_shaft.stl'],['servoHorn',assemblyBase+'servo_horn.stl'],
+  ['servoScrew',assemblyBase+'servo_screw.stl'],['supportBeam',assemblyBase+'support_beam_2040.stl'],
+  ['supportWedges',assemblyBase+'support_wedges_pair.stl'],['supportBrackets',assemblyBase+'support_brackets_pair.stl'],
+  ['plinth',assemblyBase+'plinth_reference.stl'],
+  ['pTray',printBase+'M01_лоток_корпус.stl'],['pFrame',printBase+'M02_рама_привода.stl'],
+  ['pFront',printBase+'M03_передняя_заслонка.stl'],['pRear',printBase+'M04_задний_сепаратор.stl'],
+  ['pCam',printBase+'M05_кулачок_SG90_MG90S.stl'],['pCover',printBase+'M06_крышка_кулачка.stl'],
+  ['pRoller',printBase+'M07_ролик_толкателя.stl'],['pBridge',printBase+'M08_входной_мост.stl'],
+  ['pBushing',printBase+'M09_опорная_втулка_кулачка.stl'],['pLock',printBase+'A04_X_замок_кассеты.stl'],
+  ['pGuideCoupon',printBase+'T01_КУПОН_зазоры_направляющей.stl'],['pHornCoupon',printBase+'T02_КУПОН_карман_качалки.stl'],
+  ['pWedge',printBase+'B01_клин_балки_15град.stl']
+];
+// Five fused state files are QA references, not duplicated into the live scene.
+// The live animation is built from the 22 separate assembly components above.
+const stateReferenceList=[
+  ['stateHome',assemblyBase+'one_lane_HOME.stl'],
+  ['stateRearClosed',assemblyBase+'one_lane_REAR_CLOSED.stl'],
+  ['stateBothClosed',assemblyBase+'one_lane_BOTH_CLOSED.stl'],
+  ['stateEject',assemblyBase+'one_lane_EJECT.stl'],
+  ['stateHomeCans',assemblyBase+'one_lane_HOME_with_3_cans.stl']
+];
+
+function parseSTL(buffer){
+  const view=new DataView(buffer);
+  let binary=false,count=0;
+  if(buffer.byteLength>=84){count=view.getUint32(80,true);binary=84+count*50===buffer.byteLength}
+  const positions=[];
+  if(binary){
+    let o=84;
+    for(let f=0;f<count;f++,o+=50){
+      const nx=view.getFloat32(o,true),ny=view.getFloat32(o+4,true),nz=view.getFloat32(o+8,true);
+      for(let v=0;v<3;v++){
+        const q=o+12+v*12;
+        positions.push(view.getFloat32(q,true),view.getFloat32(q+4,true),view.getFloat32(q+8,true));
+      }
+      void nx;void ny;void nz;
+    }
+  }else{
+    const text=new TextDecoder().decode(buffer);
+    const re=/vertex\s+([+\-\d.eE]+)\s+([+\-\d.eE]+)\s+([+\-\d.eE]+)/g;
+    let m;while((m=re.exec(text))!==null)positions.push(Number(m[1]),Number(m[2]),Number(m[3]));
+  }
+  if(!positions.length||positions.length%9!==0)throw new Error('Некорректный STL: треугольники не найдены');
+  const g=new THREE.BufferGeometry();
+  g.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));
+  g.computeVertexNormals();g.computeBoundingBox();g.computeBoundingSphere();
+  return g;
+}
+async function loadGeometry(key,url,index){
+  const response=await fetch(url);
+  if(!response.ok)throw new Error(`${response.status} ${url}`);
+  const geo=parseSTL(await response.arrayBuffer());cache.set(key,geo);
+  const done=index+1;document.getElementById('loadFill').style.width=`${done/assetList.length*100}%`;
+  document.getElementById('loadText').textContent=`STL ${done} из ${assetList.length}: ${url.split('/').pop()}`;
+}
+function part(key,material=mat.body){
+  const g=cache.get(key);if(!g)throw new Error(`STL не загружен: ${key}`);
+  const m=new THREE.Mesh(g,material);m.castShadow=true;m.receiveShadow=true;m.userData.assetKey=key;return m;
+}
+function smooth(q){q=Math.max(0,Math.min(1,q));return q*q*(3-2*q)}
+function frontHeight(a){if(a<=P.frontStart)return P.closedZ;if(a>=P.frontEnd)return P.openZ;return P.closedZ+(P.openZ-P.closedZ)*smooth((a-P.frontStart)/(P.frontEnd-P.frontStart))}
+function rearHeight(a){if(a<=0)return P.openZ;if(a>=P.rearEnd)return P.closedZ;return P.openZ+(P.closedZ-P.openZ)*smooth(a/P.rearEnd)}
+function lowerZ(x){return x*Math.tan(THREE.MathUtils.degToRad(P.lowA))}
+function upperZ(x){return P.upFront-x*Math.tan(THREE.MathUtils.degToRad(P.upA))}
+
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x0a0f15);scene.fog=new THREE.Fog(0x0a0f15,1050,2600);
+const camera=new THREE.PerspectiveCamera(38,1,.5,5000);camera.up.set(0,0,1);
+const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;document.getElementById('viewport').prepend(renderer.domElement);
+const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.dampingFactor=.07;controls.minDistance=80;controls.maxDistance=2600;
+scene.add(new THREE.HemisphereLight(0xcce8ff,0x28301f,1.42));
+const keyLight=new THREE.DirectionalLight(0xffffff,2.25);keyLight.position.set(-480,-520,850);keyLight.castShadow=true;keyLight.shadow.mapSize.set(2048,2048);keyLight.shadow.camera.left=-800;keyLight.shadow.camera.right=800;keyLight.shadow.camera.top=800;keyLight.shadow.camera.bottom=-800;scene.add(keyLight);
+const rim=new THREE.DirectionalLight(0x7cc9ff,.92);rim.position.set(700,450,480);scene.add(rim);
+const floor=new THREE.Mesh(new THREE.PlaneGeometry(3000,3000),new THREE.MeshStandardMaterial({color:0x0e151c,roughness:1}));floor.position.z=-100.5;floor.receiveShadow=true;scene.add(floor);
+const grid=new THREE.GridHelper(2600,52,0x304454,0x192630);grid.rotation.x=Math.PI/2;grid.position.z=-100.2;scene.add(grid);
+let world=new THREE.Group();scene.add(world);
+let modules=[],dynamicCans=[],currentMode='system',currentAngle=0,targetAngle=0,cycleRunning=false,cycleDirection=1,lastTime=performance.now();
+
+function makeCan(axis='x',sku=0){
+  const g=new THREE.Group();
+  const body=new THREE.Mesh(canBodyGeo,canMats[sku%canMats.length]);body.castShadow=true;body.receiveShadow=true;g.add(body);
+  const lid=new THREE.Mesh(canLidGeo,mat.metal);lid.position.y=(P.canL-7)/2+3.5;lid.castShadow=true;g.add(lid);
+  const bottom=new THREE.Mesh(canRingGeo,mat.metal);bottom.rotation.x=Math.PI/2;bottom.position.y=-(P.canL-7)/2-.4;g.add(bottom);
+  const lidRing=new THREE.Mesh(canRingGeo,mat.metal);lidRing.rotation.x=Math.PI/2;lidRing.position.y=P.canL/2+.05;g.add(lidRing);
+  if(axis==='x')g.rotation.z=Math.PI/2;
+  return g;
+}
+function makeLabel(text,color='#eaf4fb',scale=1){
+  const c=document.createElement('canvas'),ctx=c.getContext('2d');c.width=768;c.height=128;
+  ctx.clearRect(0,0,c.width,c.height);ctx.font='700 40px Segoe UI,Arial';ctx.textAlign='center';ctx.textBaseline='middle';
+  const w=Math.min(740,ctx.measureText(text).width+64);ctx.fillStyle='rgba(7,12,17,.84)';ctx.strokeStyle='rgba(150,188,215,.42)';ctx.lineWidth=3;
+  const x=(c.width-w)/2,y=18,h=92,r=14;ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fill();ctx.stroke();ctx.fillStyle=color;ctx.fillText(text,c.width/2,65);
+  const tx=new THREE.CanvasTexture(c);tx.colorSpace=THREE.SRGBColorSpace;const s=new THREE.Sprite(new THREE.SpriteMaterial({map:tx,transparent:true,depthTest:false}));s.scale.set(150*scale,25*scale,1);s.renderOrder=20;return s;
+}
+function addLine(points,color=0x85a5b9,parent=world,dashed=false){
+  const geo=new THREE.BufferGeometry().setFromPoints(points.map(p=>new THREE.Vector3(...p)));
+  const material=dashed?new THREE.LineDashedMaterial({color,dashSize:5,gapSize:3,transparent:true,opacity:.8}):new THREE.LineBasicMaterial({color,transparent:true,opacity:.82});
+  const line=new THREE.Line(geo,material);if(dashed)line.computeLineDistances();parent.add(line);return line;
+}
+function addDimension(a,b,text,parent=world,color=0x78b9e7,labelOffset=[0,0,0]){
+  addLine([a,b],color,parent,false);const s=makeLabel(text,'#bfe3fb',.78);s.position.set((a[0]+b[0])/2+labelOffset[0],(a[1]+b[1])/2+labelOffset[1],(a[2]+b[2])/2+labelOffset[2]);parent.add(s);
+}
+function addBoxReference(parent=world){
+  const geo=new THREE.BoxGeometry(P.boxD,P.boxW,P.boxH);const e=new THREE.LineSegments(new THREE.EdgesGeometry(geo),new THREE.LineBasicMaterial({color:0x7891a4,transparent:true,opacity:.48}));e.position.set(P.boxD/2,P.boxW/2,P.boxH/2);parent.add(e);
+  const side1=new THREE.Mesh(new THREE.BoxGeometry(P.boxD,4,P.boxH),mat.box);side1.position.set(P.boxD/2,-3,P.boxH/2);parent.add(side1);const side2=side1.clone();side2.position.y=P.boxW+3;parent.add(side2);const back=new THREE.Mesh(new THREE.BoxGeometry(4,P.boxW,P.boxH),mat.box);back.position.set(P.boxD+3,P.boxW/2,P.boxH/2);parent.add(back);
+}
+function addCassette(parent=world,exploded=false,withCans=false){
+  const group=new THREE.Group();parent.add(group);
+  const lower=part('lower',mat.wood);lower.position.set(0,0,exploded?-40:0);group.add(lower);
+  const upper=part('upper',mat.wood);upper.position.set(0,0,exploded?58:0);group.add(upper);
+  const dividerYs=P.dividers.map(v=>2+v);
+  dividerYs.forEach((y,i)=>{const d=part('divider',mat.woodEdge);d.position.set(0,y+(exploded?(i-1.5)*25:0),0);group.add(d)});
+  if(exploded){
+    const labels=[['1 · нижний цельный лист',lower,[300,195,-22]],['2 · верхний цельный лист',upper,[265,195,405]]];
+    labels.forEach(([text,obj,pos])=>{const s=makeLabel(text);s.position.set(...pos);group.add(s);void obj});
+    dividerYs.forEach((y,i)=>{const s=makeLabel(`${i+3} · разделитель с двумя пазами`,'#f1d2ac',.82);s.position.set(450,y+(i-1.5)*25,315);group.add(s)});
+    for(let i=0;i<8;i++){const lock=part('lock',mat.cam);lock.position.set(68+i*35,-75,-30);group.add(lock)}
+  }
+  if(withCans){
+    const lanes=[39.5,118.5,197.5,276.5,355.5];
+    lanes.forEach((y,lane)=>{
+      [109,162,215,268,321,374,427,480,533].forEach((x,j)=>{const c=makeCan('y',lane);c.position.set(x,y,lowerZ(x)+P.canDesignD/2+3);group.add(c)});
+      [105,175,245,315,385,455].forEach((x,j)=>{const c=makeCan('y',lane+1);c.position.set(x,y,upperZ(x)+P.canDesignD/2+3);group.add(c)});
+    });
+  }
+  return group;
+}
+function pivotFor(mesh,pivot){const g=new THREE.Group();g.position.copy(pivot);mesh.position.sub(pivot);g.add(mesh);return g}
+function addFollowerHardware(parent,gateY,gateH){
+  const pinY=gateY+P.followerOffset,pinZ=gateH-P.pinDrop;
+  const roller=part('roller',mat.metal);roller.position.set(-33.7,pinY,pinZ);parent.add(roller);
+  const screw=part('followerScrew',mat.metal);screw.position.set(-30.75,pinY,pinZ);parent.add(screw);
+  return {roller,screw};
+}
+function addServoWires(parent,mode='long'){
+  const g=new THREE.Group();parent.add(g);
+  const colors=[0x5b3325,0xe44b48,0xf39a3e],offsets=[-2.4,0,2.4];
+  const endX=mode==='short'?28:67,endY=mode==='short'?-12:34,endZ=mode==='short'?-27:-19;
+  offsets.forEach((offset,i)=>{
+    const curve=new THREE.CatmullRomCurve3([
+      new THREE.Vector3(5.4,-25+offset,-29),new THREE.Vector3(17,-25+offset,-30),
+      new THREE.Vector3(mode==='short'?23:38,mode==='short'?-19+offset:0+offset,-27),
+      new THREE.Vector3(endX,endY+offset,endZ)
+    ]);
+    const tube=new THREE.Mesh(new THREE.TubeGeometry(curve,28,.82,7,false),new THREE.MeshStandardMaterial({color:colors[i],roughness:.7}));tube.castShadow=true;g.add(tube)
+  });
+  if(mode!=='short'){
+    const plug=new THREE.Mesh(new THREE.BoxGeometry(8,11,8),new THREE.MeshStandardMaterial({color:0x171b1f,roughness:.74}));plug.position.set(endX+4,endY,endZ);plug.castShadow=true;g.add(plug);
+    offsets.forEach((offset,i)=>{const pin=new THREE.Mesh(new THREE.BoxGeometry(5,1.5,1.5),mat.metal);pin.position.set(endX+9,endY+offset,endZ);g.add(pin);void i})
+  }
+  return g;
+}
+function makeModule(options={}){
+  const {cutaway=false,exploded=false,withCans=false,laneIndex=0,cover=true,wireMode=null}=options;
+  const g=new THREE.Group();
+  const tray=part('tray',cutaway?mat.cutGhost:mat.body);tray.position.set(exploded?34:0,exploded?20:0,exploded?42:0);g.add(tray);
+  const bridge=part('bridge',cutaway?mat.cutGhost:mat.body);bridge.position.set(exploded?19:0,exploded?-42:0,exploded?20:0);g.add(bridge);
+  const frame=part('frame',mat.frame);frame.position.set(exploded?-18:0,exploded?-8:0,exploded?-15:0);g.add(frame);
+  const servoBody=part('servoBody',mat.servo);servoBody.position.set(exploded?33:0,0,0);g.add(servoBody);
+  const servoShaft=part('servoShaft',mat.metal);servoShaft.position.set(exploded?17:0,0,0);g.add(servoShaft);
+  if(wireMode&&!exploded)addServoWires(g,wireMode);
+  const front=part('front',mat.blade);front.position.set(exploded?28:0,exploded?34:0,frontHeight(currentAngle));g.add(front);
+  const rear=part('rear',mat.rear);rear.position.set(exploded?15:0,exploded?-30:0,rearHeight(currentAngle));g.add(rear);
+  const camMesh=part('cam',mat.cam),hornMesh=part('servoHorn',mat.horn),servoScrew=part('servoScrew',mat.metal);
+  const pivot=new THREE.Vector3(0,P.camY,P.camZ);const camPivot=new THREE.Group();camPivot.position.copy(pivot);[camMesh,hornMesh,servoScrew].forEach(m=>{m.position.sub(pivot);camPivot.add(m)});camPivot.position.x+=exploded?-25:0;g.add(camPivot);
+  const camBushing=part('camBushing',mat.rear);camBushing.position.x+=cutaway?-18:exploded?-36:0;g.add(camBushing);
+  let coverMesh=null;
+  if(cover){coverMesh=part('cover',cutaway?mat.ghost:mat.cover);coverMesh.position.x+=cutaway?-18:exploded?-48:0;coverMesh.position.y+=exploded?-4:0;g.add(coverMesh)}
+  const fh=addFollowerHardware(g,P.frontY,frontHeight(currentAngle)),rh=addFollowerHardware(g,P.rearY,rearHeight(currentAngle));
+  if(exploded){[fh.roller,fh.screw].forEach(o=>{o.position.x-=8;o.position.y+=33});[rh.roller,rh.screw].forEach(o=>{o.position.x-=8;o.position.y-=30})}
+  const canGroups=[];
+  if(withCans){
+    const canCount=typeof withCans==='number'?withCans:3;
+    HOME_CAN_Y.slice(0,canCount).forEach((y,i)=>{const c=makeCan('x',laneIndex+i);c.position.set(0,y,P.canDesignD/2);c.userData.queueIndex=i;g.add(c);canGroups.push(c);dynamicCans.push(c)});
+  }
+  const module={group:g,tray,bridge,front,rear,camPivot,camBushing,frontHardware:fh,rearHardware:rh,cans:canGroups,exploded,frontShiftY:exploded?34:0,rearShiftY:exploded?-30:0};modules.push(module);updateModule(module,currentAngle);return module;
+}
+function updateModule(m,a){
+  const f=frontHeight(a),r=rearHeight(a);
+  m.front.position.z=f;m.rear.position.z=r;m.camPivot.rotation.x=-THREE.MathUtils.degToRad(a);
+  for(const o of Object.values(m.frontHardware)){o.position.y=P.frontY+m.frontShiftY+P.followerOffset;o.position.z=f-P.pinDrop}
+  for(const o of Object.values(m.rearHardware)){o.position.y=P.rearY+m.rearShiftY+P.followerOffset;o.position.z=r-P.pinDrop}
+  if(m.cans.length){
+    const release=smooth((a-74)/10);const first=m.cans[0];first.position.y=HOME_CAN_Y[0]+release*142;first.position.z=P.canDesignD/2-release*13;first.rotation.x=release*2.7;
+    m.cans.slice(1).forEach((c,i)=>{c.position.y=HOME_CAN_Y[i+1];c.position.z=P.canDesignD/2;c.rotation.x=0});
+  }
+}
+function addModuleLabels(g){
+  const labels=[
+    ['передний стопор',42,3,27,'#ffc27d'],['задний сепаратор',42,-50,27,'#8ee8dd'],
+    ['двухпазовый кулачок',-3,-25,-75,'#8ee8dd'],['SG90/MG90S · 5 В отдельно · PWM ESP32',58,20,-49,'#9fc3ff',1.02],
+    ['съёмный входной мост',48,-108,10,'#b7c9d5'],['M09 · вторая опора оси',-69,-25,-20,'#8ee8dd']
+  ];
+  labels.forEach(([t,x,y,z,c,scale=.76])=>{const s=makeLabel(t,c,scale);s.position.set(x,y,z);g.add(s)});
+}
+function placeModuleInBox(group,laneCenter){
+  const theta=THREE.MathUtils.degToRad(P.lowA),c=Math.cos(theta),s=Math.sin(theta);
+  const tx=P.gateRearBoxX+c*P.rearY;
+  const tz=Math.tan(theta)*tx+(P.sheet/2)/c;
+  group.matrixAutoUpdate=false;
+  group.matrix.set(0,-c,-s,tx, 1,0,0,laneCenter, 0,-s,c,tz, 0,0,0,1);
+}
+function buildSystem(){
+  addBoxReference();addCassette(world,false,true);
+  const laneCenters=[39.5,118.5,197.5,276.5,355.5];
+  laneCenters.forEach((y,i)=>{const m=makeModule({withCans:3,laneIndex:i,wireMode:'short'});placeModuleInBox(m.group,y);world.add(m.group)});
+  world.add(part('plinth',mat.plinth),part('supportBrackets',mat.frame),part('supportWedges',mat.blade),part('supportBeam',mat.metal));
+  const supportLabel=makeLabel('опора 455 мм: подиум → 2 консоли → 2 клина B01 → профиль 2040','#d6e4eb',.82);supportLabel.position.set(-92,197.5,-82);world.add(supportLabel);
+  addDimension([0,-16,410],[595,-16,410],'595 мм · глубина внутри',world,0x6caee0,[0,0,12]);
+  addDimension([-78,0,-35],[-78,395,-35],'5 каналов · шаг 79 мм',world,0x6caee0,[-15,0,0]);
+}
+function buildCassette(){
+  addBoxReference();addCassette(world,true,false);
+  const s=makeLabel('4 одинаковых разделителя + 2 цельных ската = 6 листов','#ffffff',1.12);s.position.set(290,195,450);world.add(s);
+  addDimension([0,-24,-12],[590,-24,-12],'590 мм',world);addDimension([-25,2,-12],[-25,393,-12],'391 мм',world);
+}
+function buildLane(){
+  const m=makeModule({withCans:true,laneIndex:0,wireMode:'long'});world.add(m.group);addModuleLabels(m.group);
+  addDimension([38,P.frontY,32],[38,P.rearY,32],'50 мм · ровно одна банка',m.group,0x77bde9,[18,0,0]);
+  const flow=makeLabel('ОЧЕРЕДЬ  →  ЯЧЕЙКА  →  ВЫДАЧА','#d8e7f0',.88);flow.position.set(0,-18,72);m.group.add(flow);
+}
+function buildDrive(){
+  const m=makeModule({cutaway:true,withCans:false,laneIndex:1,cover:true,wireMode:'long'});world.add(m.group);addModuleLabels(m.group);
+  const s=makeLabel('крышка отнесена влево · видны оба паза и штатный рожок','#cbd9e2',.92);s.position.set(-54,-25,-87);m.group.add(s);
+  addDimension([-47,P.camY,P.camZ],[-47,P.camY,P.camZ+19],'19 мм · ход каждого ножа',m.group,0x7fcfe4,[-18,0,0]);
+}
+function buildExploded(){
+  const m=makeModule({exploded:true,withCans:false,laneIndex:2,cover:true});world.add(m.group);
+  const labels=[['M01 · лоток',47,35,82],['M08 · входной мост',47,-147,40],['M02 · рама',20,-56,-82],['M03 · передний нож',47,42,26],['M04 · задний нож',42,-86,26],['M05 · кулачок + штатный рожок',-57,-25,-78],['M06 · защитная крышка',-92,-25,-32],['M09 · опорная втулка',-76,-2,-52]];
+  labels.forEach(([t,x,y,z])=>{const s=makeLabel(t,'#e9f3f8',.74);s.position.set(x,y,z);m.group.add(s)});
+}
+function makeBed(cx,label){
+  const b=new THREE.Mesh(new THREE.BoxGeometry(220,220,4),mat.bed);b.position.set(cx,0,-2);b.receiveShadow=true;world.add(b);
+  for(let v=-100;v<=100;v+=20){addLine([[cx-110,v,.2],[cx+110,v,.2]],0x3b5360,world);addLine([[cx+v,-110,.2],[cx+v,110,.2]],0x3b5360,world)}
+  const s=makeLabel(label,'#cfe5f1',.9);s.position.set(cx,-130,12);world.add(s);
+}
+function placePrint(key,material,cx,cy,plateCx){
+  const m=part(key,material);const box=cache.get(key).boundingBox;const center=new THREE.Vector3();box.getCenter(center);m.position.set(plateCx+cx-center.x,cy-center.y,-box.min.z+.2);world.add(m);return m;
+}
+function buildPrint(){
+  makeBed(-150,'СТОЛ 1 · лоток + мост + тесты + опора');makeBed(150,'СТОЛ 2 · привод одного канала');
+  placePrint('pTray',mat.body,-55,17,-150);placePrint('pBridge',mat.body,25,30,-150);
+  placePrint('pHornCoupon',mat.horn,-42,-82,-150);placePrint('pGuideCoupon',mat.frame,62,-82,-150);
+  placePrint('pWedge',mat.blade,75,24,-150);placePrint('pBushing',mat.rear,97,-44,-150);
+  placePrint('pFrame',mat.frame,-70,-60,150);placePrint('pFront',mat.blade,35,-72,150);placePrint('pRear',mat.rear,35,-15,150);
+  placePrint('pCam',mat.cam,-66,45,150);placePrint('pCover',mat.cover,35,54,150);placePrint('pRoller',mat.metal,86,-68,150);placePrint('pLock',mat.cam,88,-38,150);
+  const note=makeLabel('Все 13 STL: M01–M09 + A04 + B01 + два обязательных тест-купона','#f2c77f',.95);note.position.set(0,145,34);world.add(note);
+  addDimension([-260,-116,3],[-40,-116,3],'220 мм',world);addDimension([40,-116,3],[260,-116,3],'220 мм',world);
+}
+const info={
+  system:{title:'Полная система · 5 независимых каналов',html:'<p>Внутри коробки находится съёмная кассета из <b>шести крупных листов</b>. Спереди стоят пять одинаковых печатных модулей; каждый приводится одной уже купленной SG90/MG90S.</p><p>Модули опираются на общий профиль 2040 длиной 455 мм. Две консоли стоят по Y = −17,5 и 412,5 мм, оставляя по 30 мм запаса за краями коробки; снизу находится подиум 600×470 мм.</p>',facts:[['1×455 мм','профиль 2040'],['600×470','подиум'],['−17,5 / 412,5','Y консолей'],['5 шт.','SG90 / MG90S']],note:'Ничего не висит в воздухе: коричневый объём — подиум, серые детали — реальная силовая цепочка до общей балки.'},
+  cassette:{title:'Кассета без клея · ровно 6 листов',html:'<p>Четыре цельных вертикальных разделителя имеют два встречных длинных паза. Нижний цельный скат задвигается <b>сзади вперёд</b>, верхний — <b>спереди назад</b>. Поэтому каждый разделитель остаётся одной деталью.</p><p>Вид намеренно разнесён: хорошо видны форма пазов, четыре одинаковых разделителя и оба цельных ската.</p>',facts:[['4×','590×390×4'],['1×','569.4×391'],['1×','551.38×391'],['8×','малый X-замок']],note:'X-замки — маленькие печатные фиксаторы, поэтому они не меняют требование «шесть листов».'},
+  lane:{title:'Один канал · две заслонки, одна банка между ними',html:'<p>Передний широкий нож удерживает первую банку. Кулачок сначала поднимает задний нож и изолирует очередь, затем опускает передний и выпускает только банку в 50-мм ячейке.</p><p>Слева по ходу очереди виден отдельный входной мост M08: его полка заходит под фанеру, а верх без ступеньки стыкуется с лотком.</p>',facts:[['66.5 мм','рабочая ширина'],['50 мм','между ножами'],['19 мм','ход ножей'],['85 мм','длина моста']],note:'Нажмите фазы сверху или двигайте ползунок: это реальная кинематика пазов 0…84°.'},
+  drive:{title:'Привод крупно · крышка снята',html:'<p>В центре — печатный двухпазовый кулачок. Он сидит на <b>штатном двойном рожке</b> SG90/MG90S, закреплён штатным винтом. Каждый паз ведёт реальный ролик и реальный контрольный M3-винт из свежих STL.</p><p>Бирюзовая M09-втулка образует вторую радиальную опору кулачка в крышке и оставляет сквозной доступ к центральному винту.</p>',facts:[['Ø69 мм','кулачок'],['M09','вторая опора'],['+2.1 мм','ось толкателя по Y'],['M3×12','оси роликов']],note:'Серва не держит вес очереди валом: боковые направляющие воспринимают нагрузку ножей.'},
+  exploded:{title:'Взрыв-схема одного печатного модуля',html:'<p>Детали разнесены вдоль своих осей, но показаны в сборочных координатах. Это позволяет понять порядок: M08-мост к M01-лотку, рама под лоток, серва в посадочное место, штатный рожок в карман кулачка, M09 в крышку, ролики на ножи.</p>',facts:[['M01–M09','рабочие STL'],['1 шт.','штатный рожок'],['1 шт.','опорная втулка'],['2 шт.','ролики']],note:'STL сервы — контрольный габарит SG90/MG90S; печатать его не нужно.'},
+  print:{title:'Размещение на Ender-3 V3 SE · 220×220',html:'<p>Слева — M01, M08, M09, B01 и оба тест-купона. Справа — рама, оба ножа, кулачок, крышка, ролик и замок. Все <b>13 STL</b> загружены из папки STL_ПЕЧАТЬ в экспортной ориентации.</p><p>Это наглядная карта, не готовый G-code: профиль пластика, сопло и компенсацию первого слоя задаёт слайсер.</p>',facts:[['13 STL','полный набор'],['M09','опорная втулка'],['B01 ×2','клинья балки'],['T01/T02','посадочные купоны']],note:'Сначала напечатайте два купона и один канал; только после проверки посадок и 300 циклов тиражируйте пять.'}
+};
+function renderInfo(mode){const x=info[mode];document.getElementById('info').innerHTML=`<h2>${x.title}</h2>${x.html}<div class="facts">${x.facts.map(f=>`<div class="fact"><b>${f[0]}</b>${f[1]}</div>`).join('')}</div><div class="note">${x.note}</div>`}
+function clearWorld(){scene.remove(world);world=new THREE.Group();scene.add(world);modules=[];dynamicCans=[]}
+const cameraPresets={
+  system:{pos:[-980,-700,630],target:[220,200,150]},cassette:{pos:[-724,-556,546],target:[280,195,190]},
+  lane:{pos:[331,287,210],target:[0,-28,-2]},drive:{pos:[-318,118,76],target:[-22,-25,-35]},
+  exploded:{pos:[380,339,249],target:[-5,-24,-10]},print:{pos:[0,-590,500],target:[0,0,25]}
+};
+function setCamera(mode,instant=false){const p=cameraPresets[mode];camera.position.fromArray(p.pos);controls.target.fromArray(p.target);controls.update();void instant}
+function buildMode(mode){
+  clearWorld();currentMode=mode;
+  if(mode==='system')buildSystem();else if(mode==='cassette')buildCassette();else if(mode==='lane')buildLane();else if(mode==='drive')buildDrive();else if(mode==='exploded')buildExploded();else buildPrint();
+  document.querySelectorAll('[data-mode]').forEach(b=>b.classList.toggle('active',b.dataset.mode===mode));
+  document.getElementById('viewTitle').innerHTML=`${info[mode].title}<small>${mode==='print'?'реальная ориентация STL':'масштаб 1:1 · миллиметры'}</small>`;
+  renderInfo(mode);setCamera(mode);applyAngle(currentAngle,false);
+}
+function phaseText(a){if(a<1)return'HOME · передний закрыт';if(a<P.rearEnd)return'Фаза 1 · закрывается задний';if(a<P.frontStart)return'Фаза 2 · ОБА ЗАКРЫТЫ';if(a<P.frontEnd)return'Фаза 3 · открывается передний';return'EJECT · задний держит очередь'}
+function applyAngle(a,updateSlider=true){
+  currentAngle=Math.max(0,Math.min(P.camAngle,a));modules.forEach(m=>updateModule(m,currentAngle));
+  const f=frontHeight(currentAngle),r=rearHeight(currentAngle);
+  document.getElementById('angleValue').textContent=`${currentAngle.toFixed(1)}°`;if(updateSlider)document.getElementById('angle').value=currentAngle;
+  document.getElementById('phaseName').textContent=phaseText(currentAngle);
+  const safe=Math.max(f,r)>=P.closedZ-.2,safety=document.getElementById('safety');
+  safety.textContent=safe?'SAFE · путь перекрыт':'STOP · оба открыты';safety.style.color=safe?'var(--green)':'var(--red)';safety.style.borderColor=safe?'#286c4b':'#84454a';
+  document.getElementById('frontValue').textContent=`${f.toFixed(1)} мм`;document.getElementById('rearValue').textContent=`${r.toFixed(1)} мм`;
+  document.getElementById('frontBar').style.width=`${(f-P.openZ)/(P.closedZ-P.openZ)*100}%`;document.getElementById('rearBar').style.width=`${(r-P.openZ)/(P.closedZ-P.openZ)*100}%`;
+  document.querySelectorAll('[data-angle]').forEach(b=>b.classList.toggle('active',Math.abs(Number(b.dataset.angle)-currentAngle)<1));
+}
+function goAngle(a){cycleRunning=false;document.getElementById('cycle').textContent='▶ Медленный цикл';targetAngle=Number(a)}
+document.getElementById('modeButtons').addEventListener('click',e=>{const b=e.target.closest('[data-mode]');if(b)buildMode(b.dataset.mode)});
+document.querySelectorAll('[data-angle]').forEach(b=>b.addEventListener('click',()=>goAngle(b.dataset.angle)));
+document.getElementById('angle').addEventListener('input',e=>{cycleRunning=false;targetAngle=Number(e.target.value);applyAngle(targetAngle,false)});
+document.getElementById('cycle').addEventListener('click',()=>{cycleRunning=!cycleRunning;if(cycleRunning){cycleDirection=currentAngle>42?-1:1;targetAngle=cycleDirection>0?84:0}document.getElementById('cycle').textContent=cycleRunning?'■ Остановить цикл':'▶ Медленный цикл'});
+window.addEventListener('keydown',e=>{if(e.target instanceof HTMLInputElement)return;if(e.code==='Space'){e.preventDefault();document.getElementById('cycle').click()}const modes=['system','cassette','lane','drive','exploded','print'];const i=Number(e.key)-1;if(i>=0&&i<modes.length)buildMode(modes[i])});
+function resize(){const el=document.getElementById('viewport'),w=el.clientWidth,h=el.clientHeight;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h,false)}window.addEventListener('resize',resize);
+function animate(now){requestAnimationFrame(animate);const dt=Math.min(.05,(now-lastTime)/1000);lastTime=now;
+  if(cycleRunning){const speed=25;currentAngle+=cycleDirection*speed*dt;if(currentAngle>=84){currentAngle=84;cycleDirection=-1}else if(currentAngle<=0){currentAngle=0;cycleDirection=1}targetAngle=currentAngle;applyAngle(currentAngle)}
+  else if(Math.abs(targetAngle-currentAngle)>.02){const step=Math.sign(targetAngle-currentAngle)*Math.min(Math.abs(targetAngle-currentAngle),42*dt);applyAngle(currentAngle+step)}
+  controls.update();renderer.render(scene,camera)
+}
+async function boot(){
+  try{
+    for(let a=0;a<=P.camAngle;a+=.2)if(Math.max(frontHeight(a),rearHeight(a))<P.closedZ-.2)throw new Error(`Небезопасная кинематика около ${a.toFixed(1)}°`);
+    const manifestResponse=await fetch('V10_MANIFEST.json');if(!manifestResponse.ok)throw new Error('V10_MANIFEST.json недоступен');
+    const manifest=await manifestResponse.json();if(manifest.print_parts.length!==13||manifest.assembly_parts.length!==27)throw new Error(`Набор STL изменился: manifest ${manifest.print_parts.length}/13 печать, ${manifest.assembly_parts.length}/27 сборка`);
+    for(const [,url] of stateReferenceList){const r=await fetch(url,{method:'HEAD'});if(!r.ok)throw new Error(`QA-сборка недоступна: ${url}`)}
+    for(let i=0;i<assetList.length;i++)await loadGeometry(assetList[i][0],assetList[i][1],i);
+    buildMode('system');resize();document.getElementById('load').classList.add('hidden');requestAnimationFrame(animate)
+  }catch(err){document.getElementById('error').textContent=`Не удалось открыть модель.\n${err.message}\n\nЗапускайте страницу через локальный HTTP-сервер из корня проекта, не как file://.`;console.error(err)}
+}
+boot();
+</script>
+</body>
+</html>

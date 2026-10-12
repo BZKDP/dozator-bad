@@ -1,0 +1,143 @@
+<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Выкройки картона — как резать и размечать по деталям</title>
+<style>
+ body{margin:0;background:#0f1216;color:#e6edf5;font-family:Segoe UI,Arial,sans-serif;padding:14px}
+ h1{font-size:19px;margin:0 0 4px} .sub{color:#8fa4b8;font-size:13px;margin-bottom:12px}
+ .steps{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+ .steps button{padding:8px 12px;border:1px solid #37414f;background:#1b2330;color:#cfe0ef;border-radius:9px;cursor:pointer;font-size:13px;font-weight:600}
+ .steps button.on{background:#b5822f;border-color:#e0b25a;color:#fff}
+ .wrap{display:flex;gap:18px;flex-wrap:wrap;align-items:flex-start}
+ svg{background:#0a0e12;border-radius:10px}
+ .card{background:#161d26;border:1px solid #28323f;border-radius:12px;padding:14px 16px;max-width:400px}
+ .card h2{font-size:16px;margin:0 0 8px;color:#ffd27f}
+ ol{margin:5px 0;padding-left:20px} li{margin:8px 0;font-size:13.5px;line-height:1.5}
+ b.g{color:#ffd166} .red{color:#ff8a8a} .blue{color:#7fd1ff}
+ table{border-collapse:collapse;font-size:12.5px;margin:8px 0} td,th{border:1px solid #2a3340;padding:4px 8px;text-align:center}
+ th{background:#1d2732;color:#ffd27f}
+ .note{background:#20303a;border-radius:8px;padding:8px 10px;font-size:12.5px;color:#cfe3f5;margin-top:10px}
+</style></head><body>
+<h1>Выкройки картона — режем и размечаем по одной детали</h1>
+<div class="sub">Каждый лист лежит ПЛОСКО перед тобой. <span class="red">Красное = контур реза</span>, <span class="blue">синее = линии разметки под скаты</span>. Всё в целых мм.</div>
+<div class="steps" id="steps"></div>
+<div class="wrap"><svg id="svg" width="760" height="560"></svg><div class="card" id="card"></div></div>
+<script>
+const LOW=[[25,42],[165,80],[305,117],[445,155],[565,187]];
+const UPP=[[25,330],[165,305],[305,281],[445,256],[534,240]];
+const STEPS=[
+ {t:'1. Боковина (×2)', W:590,H:390, lines:true, qty:'2 шт',
+  txt:['Отрежь прямоугольник <b class="g">590 × 390</b> мм (длина × высота). Ножом по линейке — прямые резы.',
+       'Теперь РАЗМЕТКА наклона. По нижнему краю отмеряешь ДЛИНУ (слева), по боку ВЫСОТУ (снизу).',
+       '<span class="blue">НИЖНЯЯ линия (выдача, 15°):</span> поставь 5 синих точек по таблице, соедини линейкой.',
+       '<span class="blue">ВЕРХНЯЯ линия (склад, 10°):</span> ещё 5 точек, соедини.',
+       'На эти две линии потом лягут скаты (приклеишь термоклеем).'],
+  tab:true},
+ {t:'2. Перегородка (×4)', W:590,H:390, lines:true, qty:'4 шт',
+  txt:['Точно такой же прямоугольник <b class="g">590 × 390</b>, и РАЗМЕТКА наклона ТА ЖЕ, что у боковины.',
+       'Совет: вырежи и размечай первую боковину, потом приложи её к остальным 5 картонкам как ШАБЛОН и обведи линии — быстрее и точнее.',
+       'Итого 6 одинаковых вертикальных картонок (2 боковины + 4 перегородки) с одинаковыми наклонными линиями.'],
+  tab:true},
+ {t:'3. Нижний скат — РЕЖЬ ПО МЕСТУ', W:600,H:420, sheet:true, qty:'1 шт',
+  txt:['<b class="red">НЕ режь по числу!</b> Вручную наклонная линия никогда не ляжет миллиметр-в-миллиметр, поэтому точное число ската не сходится (ты это и поймал). Режем ПО МЕСТУ:',
+       '1) Сначала собери и скрепи все 6 стенок с наклонными линиями (шаги 1-2, 5).',
+       '2) Возьми БОЛЬШОЙ кусок картона с запасом (режь ~<b class="g">600 × 420</b>) и положи его СВЕРХУ на НИЖНИЕ наклонные линии всех стенок.',
+       '3) Карандашом обведи по стенкам: докуда идёт наклон (длина) и между крайними стенками (ширина).',
+       '4) Сними, отрежь по обводке. Ляжет точно — ты обвёл СВОЮ реальную геометрию.',
+       'Ориентир длины ~559, ширина ~405 — но верь ОБВОДКЕ, а не этим числам.'],
+  tab:false},
+ {t:'4. Верхний скат — РЕЖЬ ПО МЕСТУ', W:560,H:420, sheet:true, qty:'1 шт',
+  txt:['Так же по месту. Кусок с запасом (~<b class="g">560 × 420</b>), положи на ВЕРХНИЕ наклонные линии, обведи, отрежь.',
+       '<b class="g">ВАЖНО:</b> сзади НЕ доводи верхний скат до задней стенки — оставь проём ~50-60 мм. Через него банки переваливают со склада на нижнюю выдачу.',
+       'Ориентир ~517 × 405, но режь по своей обводке.'],
+  tab:false},
+ {t:'5. Задняя стенка (×1)', W:405,H:390, sheet:true, qty:'1 шт',
+  txt:['Из листа <b class="g">800 × 600</b> вырежи <b class="g">405 × 390</b>.',
+       'От левого края 405 — вертикаль; от нижнего 390 — горизонталь. Режь по ним.',
+       'Приклеивается сзади — держит перегородки в строю и не даёт банкам выпасть назад.'],
+  tab:false},
+ {t:'6. Сборка', assembly:true,
+  txt:['Разметь ОСНОВАНИЕ (дно или стол): 5 каналов, перегородки через <b class="g">80 мм</b> — отметь от левого края 80 / 160 / 240 / 320, боковины по краям (0 и 400).',
+       'Поставь 6 вертикальных картонок (2 боковины + 4 перегородки) вертикально, наклонными линиями в одну сторону.',
+       'Скрепи их сверху и снизу поперечной полоской картона или термоклеем — чтобы держали шаг 80.',
+       'Положи <b style="color:#7fb2d8">нижний скат</b> на нижние линии (15°), приклей по линиям к каждой перегородке.',
+       'Положи <b style="color:#9ccf7a">верхний скат</b> на верхние линии (10°), приклей.',
+       'Приклей <b style="color:#b67b3b">заднюю стенку</b>. Готово — вставляй передними кромками в док.']}
+];
+const S=document.getElementById('svg');
+function el(t,a,txt){const e=document.createElementNS('http://www.w3.org/2000/svg',t);for(const k in a)e.setAttribute(k,a[k]);if(txt!=null)e.textContent=txt;return e;}
+function draw(step){
+ S.innerHTML='';
+ const d=STEPS[step];
+ if(d.assembly){
+  const t=el('text',{x:380,y:280,fill:'#8fa4b8','font-size':16,'text-anchor':'middle'},'Порядок сборки — в карточке справа →');S.appendChild(t);
+  const t2=el('text',{x:380,y:310,fill:'#ffd27f','font-size':14,'text-anchor':'middle'},'6 картонок + 2 ската + задняя стенка');S.appendChild(t2);
+  return;
+ }
+ // ---- режим РАСКРОЙ скатов: деталь в углу листа 800x600 ----
+ if(d.sheet){
+  const SW=800,SH=600, M=58, sc=Math.min((760-2*M)/SW,(560-2*M)/SH);
+  const X=x=>M+x*sc, Y=y=>560-M-y*sc;
+  const W=d.W,H=d.H;
+  // лист (серый отход)
+  S.appendChild(el('rect',{x:X(0),y:Y(SH),width:SW*sc,height:SH*sc,fill:'#2a3340',stroke:'#5a6675','stroke-width':1.5}));
+  // деталь (красный рез) в левом-нижнем углу
+  S.appendChild(el('rect',{x:X(0),y:Y(H),width:W*sc,height:H*sc,fill:'#1a2a34',stroke:'#ff6b6b','stroke-width':3}));
+  S.appendChild(el('text',{x:X(W/2),y:Y(H/2),fill:'#7fd1ff','font-size':15,'font-weight':700,'text-anchor':'middle'},W+' × '+H));
+  // отметки реза: вертикаль W и горизонталь H
+  S.appendChild(el('line',{x1:X(W),y1:Y(0),x2:X(W),y2:Y(SH),stroke:'#ff6b6b','stroke-width':1,'stroke-dasharray':'4 4'}));
+  S.appendChild(el('text',{x:X(W),y:Y(0)+20,fill:'#ff8a8a','font-size':14,'font-weight':700,'text-anchor':'middle'},'рез '+W));
+  S.appendChild(el('line',{x1:X(0),y1:Y(H),x2:X(SW),y2:Y(H),stroke:'#ff6b6b','stroke-width':1,'stroke-dasharray':'4 4'}));
+  S.appendChild(el('text',{x:X(SW)-6,y:Y(H)-6,fill:'#ff8a8a','font-size':14,'font-weight':700,'text-anchor':'end'},'рез '+H));
+  // габариты листа
+  S.appendChild(el('text',{x:X(SW/2),y:Y(SH)-8,fill:'#9fb2c6','font-size':13,'text-anchor':'middle'},'лист 800'));
+  S.appendChild(el('text',{x:X(0)-12,y:Y(SH/2),fill:'#9fb2c6','font-size':13,'text-anchor':'middle','transform':`rotate(-90 ${X(0)-12} ${Y(SH/2)})`},'лист 600'));
+  S.appendChild(el('text',{x:X(SW*0.72),y:Y(SH*0.6),fill:'#8fa4b8','font-size':15,'text-anchor':'middle'},'отход'));
+  return;
+ }
+ const W=d.W,H=d.H, M=78, sc=Math.min((760-2*M)/W,(560-2*M)/H);
+ const X=x=>M+x*sc, Y=y=>560-M-y*sc; // Y вверх
+ function dimV(x,y0,y1,txt,col){ // вертикальная размерная стрелка
+  S.appendChild(el('line',{x1:x,y1:Y(y0),x2:x,y2:Y(y1),stroke:col,'stroke-width':1}));
+  S.appendChild(el('text',{x:x-4,y:(Y(y0)+Y(y1))/2+4,fill:col,'font-size':12,'font-weight':700,'text-anchor':'end'},txt));}
+ function dimH(y,x0,x1,txt,col){ // горизонтальная
+  S.appendChild(el('line',{x1:X(x0),y1:y,x2:X(x1),y2:y,stroke:col,'stroke-width':1}));
+  S.appendChild(el('text',{x:(X(x0)+X(x1))/2,y:y-4,fill:col,'font-size':12,'font-weight':700,'text-anchor':'middle'},txt));}
+ // контур реза (красный)
+ S.appendChild(el('rect',{x:X(0),y:Y(H),width:W*sc,height:H*sc,fill:'#141c24',stroke:'#ff6b6b','stroke-width':2.5}));
+ // габариты
+ S.appendChild(el('text',{x:X(W/2),y:Y(0)+40,fill:'#ffd166','font-size':15,'font-weight':700,'text-anchor':'middle'},W+' мм'));
+ const vt=el('text',{x:X(0)-44,y:Y(H/2),fill:'#ffd166','font-size':15,'font-weight':700,'text-anchor':'middle','transform':`rotate(-90 ${X(0)-44} ${Y(H/2)})`},H+' мм');S.appendChild(vt);
+ if(d.lines){
+  [['#7fd1ff',LOW,'низ 15°'],['#9ccf7a',UPP,'верх 10°']].forEach(([c,pts,lab])=>{
+   let path='M'+pts.map(p=>X(p[0])+','+Y(p[1])).join(' L');
+   S.appendChild(el('path',{d:path,stroke:c,'stroke-width':2.5,fill:'none'}));
+   pts.forEach(p=>{S.appendChild(el('circle',{cx:X(p[0]),cy:Y(p[1]),r:4,fill:c}));
+    S.appendChild(el('text',{x:X(p[0]),y:Y(p[1])-8,fill:c,'font-size':11,'text-anchor':'middle','font-weight':700},p[0]+';'+p[1]));});
+   S.appendChild(el('text',{x:X(pts[4][0])+6,y:Y(pts[4][1])+4,fill:c,'font-size':12,'font-weight':700},lab));
+  });
+  // РАЗМЕРНЫЕ ВЫНОСКИ к крайним точкам (откуда отмерять)
+  // слева: отступ 25 от переда (снизу) + высоты 42 и 330
+  dimH(Y(0)-18, 0, 25, '25', '#ffb86b');            // отступ переда
+  dimV(X(25)-16, 0, 42, '42', '#7fd1ff');           // высота низ-старт
+  dimV(X(25)-40, 0, 330, '330', '#9ccf7a');         // высота верх-старт
+  // справа: отступы и высоты концов
+  dimH(Y(390)+16, 565, 590, '25', '#ffb86b');       // от правого края до низ-конца (565)
+  dimH(Y(390)+34, 534, 590, '56', '#ffb86b');       // до верх-конца (534)
+  dimV(X(590)+16, 0, 187, '187', '#7fd1ff');        // высота низ-конец
+  dimV(X(590)+40, 0, 240, '240', '#9ccf7a');        // высота верх-конец
+ }
+}
+function render(step){
+ [...document.getElementById('steps').children].forEach((b,i)=>b.classList.toggle('on',i===step));
+ draw(step);
+ const d=STEPS[step], c=document.getElementById('card');
+ let html='<h2>'+d.t+(d.qty?'  · '+d.qty:'')+'</h2><ol>'+d.txt.map(t=>'<li>'+t+'</li>').join('')+'</ol>';
+ if(d.tab){html+='<div class="note"><b>Точки разметки (целые мм)</b><table><tr><th>длина (от переда)</th><th class="blue">низ выс.</th><th style="color:#9ccf7a">верх выс.</th></tr>';
+  for(let i=0;i<5;i++)html+='<tr><td>'+LOW[i][0]+'</td><td class="blue">'+LOW[i][1]+'</td><td style="color:#9ccf7a">'+UPP[i][1]+'</td></tr>';
+  html+='</table>5 точек нижней линии соедини линейкой → наклон 15°. То же для верхней → 10°.</div>';}
+ c.innerHTML=html;
+}
+STEPS.forEach((d,i)=>{const b=document.createElement('button');b.textContent=(i+1);b.title=d.t;b.onclick=()=>{location.hash='s'+(i+1);render(i);};document.getElementById('steps').appendChild(b);});
+const hh=(location.hash.match(/s(\d)/)||[])[1];
+render(hh?Math.min(STEPS.length-1,+hh-1):0);
+</script></body></html>

@@ -1,0 +1,390 @@
+{
+  "variant": "V11-C",
+  "name": "Опрокидывающаяся люлька",
+  "status": "REJECTED_DO_NOT_PRINT",
+  "principle": "rear edge isolates queue before front stop drops and releases the loaded can",
+  "parameters_mm": {
+    "can_length": 70.0,
+    "can_diameter_nominal": 47.0,
+    "can_diameter_design": 48.0,
+    "lane_clear": 75.0,
+    "lane_pitch": 79.0,
+    "sheet_thickness": 4.0,
+    "lower_slope_deg": 15.0,
+    "shelf_overhang_nominal": 150.0,
+    "servo_motion_deg": 50.0,
+    "cradle_axis_y": -2.0,
+    "cradle_axis_z": -8.0,
+    "cradle_rear_y": -28.0,
+    "cradle_front_y": 24.0,
+    "cradle_width": 60.0,
+    "frame_outer_width": 78.4,
+    "frame_inner_width": 72.4,
+    "attachment_hole_pitch": 50.0
+  },
+  "simplicity": {
+    "functional_printed_parts_per_channel": 2,
+    "calibration_coupons_once": 1,
+    "fasteners_per_channel_excluding_stock_horn_screw": 5,
+    "assembly_operations": 4,
+    "attachment_operations": 2,
+    "supports": "cradle: none; frame: one simple local support under the upper cheek"
+  },
+  "kinematic_checks": {
+    "rear_edge_height_at_minus10_deg_mm": 4.39,
+    "front_stop_top_at_minus10_deg_mm": 19.98,
+    "eject_rear_edge_height_mm": 17.06,
+    "eject_front_stop_top_mm": -6.71,
+    "eject_front_stop_bottom_mm": -22.77,
+    "sequence_overlap": true,
+    "first_can_static_gravity_torque_Nm": 0.001,
+    "note": "масса 200 г, центр банки в HOME в 0.5 мм от вертикали оси; динамика проверяется физически"
+  },
+  "print_bed_220_ok": true,
+  "print_meshes_ok": true,
+  "print_parts": [
+    {
+      "file": "C01_рама_крепление.stl",
+      "extents_mm": [
+        77.0,
+        125.0,
+        78.4
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 67.42
+    },
+    {
+      "file": "C02_люлька_одной_банки.stl",
+      "extents_mm": [
+        44.0,
+        52.0,
+        60.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 25.18
+    },
+    {
+      "file": "T01_КУПОН_штатной_качалки.stl",
+      "extents_mm": [
+        118.0,
+        30.0,
+        3.2
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 9.39
+    }
+  ],
+  "assembly_parts": [
+    {
+      "file": "C_HOME_frame.stl",
+      "extents_mm": [
+        78.4,
+        125.0,
+        77.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 67.42
+    },
+    {
+      "file": "C_HOME_cradle.stl",
+      "extents_mm": [
+        60.0,
+        52.0,
+        44.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 25.18
+    },
+    {
+      "file": "C_HOME_servo.stl",
+      "extents_mm": [
+        16.2,
+        32.5,
+        30.9
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 8.22
+    },
+    {
+      "file": "C_HOME_stock_horn.stl",
+      "extents_mm": [
+        2.0,
+        7.4,
+        35.6
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 0.45
+    },
+    {
+      "file": "C_HOME_lower_sheet.stl",
+      "extents_mm": [
+        75.0,
+        115.0,
+        4.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 34.5
+    },
+    {
+      "file": "C_HOME_can_1.stl",
+      "extents_mm": [
+        70.0,
+        48.8,
+        48.8
+      ],
+      "watertight": false,
+      "components": 7,
+      "volume_cm3": 126.61
+    },
+    {
+      "file": "C_HOME_can_2.stl",
+      "extents_mm": [
+        70.0,
+        48.8,
+        48.8
+      ],
+      "watertight": false,
+      "components": 5,
+      "volume_cm3": 126.61
+    },
+    {
+      "file": "C_HOME_can_3.stl",
+      "extents_mm": [
+        70.0,
+        48.8,
+        48.8
+      ],
+      "watertight": false,
+      "components": 4,
+      "volume_cm3": 126.61
+    },
+    {
+      "file": "C_HOME_complete.stl",
+      "extents_mm": [
+        78.4,
+        212.0,
+        91.4
+      ],
+      "watertight": false,
+      "components": 21,
+      "volume_cm3": 515.61
+    },
+    {
+      "file": "C_TRANSFER_frame.stl",
+      "extents_mm": [
+        78.4,
+        125.0,
+        77.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 67.42
+    },
+    {
+      "file": "C_TRANSFER_cradle.stl",
+      "extents_mm": [
+        60.0,
+        61.62,
+        33.17
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 25.18
+    },
+    {
+      "file": "C_TRANSFER_servo.stl",
+      "extents_mm": [
+        16.2,
+        32.5,
+        30.9
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 8.22
+    },
+    {
+      "file": "C_TRANSFER_stock_horn.stl",
+      "extents_mm": [
+        2.0,
+        14.84,
+        34.52
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 0.45
+    },
+    {
+      "file": "C_TRANSFER_lower_sheet.stl",
+      "extents_mm": [
+        75.0,
+        115.0,
+        4.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 34.5
+    },
+    {
+      "file": "C_TRANSFER_can_1.stl",
+      "extents_mm": [
+        70.0,
+        48.8,
+        48.8
+      ],
+      "watertight": false,
+      "components": 9,
+      "volume_cm3": 126.61
+    },
+    {
+      "file": "C_TRANSFER_can_2.stl",
+      "extents_mm": [
+        70.0,
+        48.8,
+        48.8
+      ],
+      "watertight": false,
+      "components": 5,
+      "volume_cm3": 126.61
+    },
+    {
+      "file": "C_TRANSFER_can_3.stl",
+      "extents_mm": [
+        70.0,
+        48.8,
+        48.8
+      ],
+      "watertight": false,
+      "components": 4,
+      "volume_cm3": 126.61
+    },
+    {
+      "file": "C_TRANSFER_complete.stl",
+      "extents_mm": [
+        78.4,
+        212.0,
+        91.4
+      ],
+      "watertight": false,
+      "components": 23,
+      "volume_cm3": 515.61
+    },
+    {
+      "file": "C_EJECT_frame.stl",
+      "extents_mm": [
+        78.4,
+        125.0,
+        77.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 67.42
+    },
+    {
+      "file": "C_EJECT_cradle.stl",
+      "extents_mm": [
+        60.0,
+        67.13,
+        41.76
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 25.18
+    },
+    {
+      "file": "C_EJECT_servo.stl",
+      "extents_mm": [
+        16.2,
+        32.5,
+        30.9
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 8.22
+    },
+    {
+      "file": "C_EJECT_stock_horn.stl",
+      "extents_mm": [
+        2.0,
+        28.64,
+        25.6
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 0.45
+    },
+    {
+      "file": "C_EJECT_lower_sheet.stl",
+      "extents_mm": [
+        75.0,
+        115.0,
+        4.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 34.5
+    },
+    {
+      "file": "C_EJECT_can_1.stl",
+      "extents_mm": [
+        70.0,
+        48.8,
+        48.8
+      ],
+      "watertight": false,
+      "components": 11,
+      "volume_cm3": 126.61
+    },
+    {
+      "file": "C_EJECT_can_2.stl",
+      "extents_mm": [
+        70.0,
+        48.8,
+        48.8
+      ],
+      "watertight": false,
+      "components": 5,
+      "volume_cm3": 126.61
+    },
+    {
+      "file": "C_EJECT_can_3.stl",
+      "extents_mm": [
+        70.0,
+        48.8,
+        48.8
+      ],
+      "watertight": false,
+      "components": 4,
+      "volume_cm3": 126.61
+    },
+    {
+      "file": "C_EJECT_complete.stl",
+      "extents_mm": [
+        78.4,
+        239.23,
+        91.4
+      ],
+      "watertight": false,
+      "components": 25,
+      "volume_cm3": 515.61
+    }
+  ],
+  "rejection_reasons": [
+    "effective rear stop contacts the approaching Ø48 can only about 5.6 mm above the road at -50 deg",
+    "reliable dumping over the 25 mm front wall would require about 80 deg and makes full-queue return torque unsafe for SG90",
+    "mesh audit found cradle/frame, frame/servo and sheet/frame collisions plus a 26 mm unsupported road gap"
+  ],
+  "risks": [
+    "actual horn pocket must be selected with T01 because clone horns vary",
+    "front outlet needs at least 55 mm free height below/forward of the chute",
+    "the first physical channel must be tested with the heaviest full queue for 300 cycles",
+    "the existing box window coordinates are not yet measured"
+  ]
+}

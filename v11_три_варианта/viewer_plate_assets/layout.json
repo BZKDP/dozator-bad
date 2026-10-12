@@ -1,0 +1,501 @@
+{
+  "note": "Только облегчённые STL для интерактивного просмотра готовых 3MF-плит; печатать исходные 3MF.",
+  "variants": {
+    "A": {
+      "plate_count": 1,
+      "plates": [
+        {
+          "source_3mf": "A_верхнее_коромысло/A_ПЛИТА_220x220_1_канал.3mf",
+          "plate_number": 1,
+          "bounds_mm": [
+            [
+              5.0,
+              5.0,
+              0.0
+            ],
+            [
+              128.026,
+              179.0,
+              68.0
+            ]
+          ],
+          "extents_mm": [
+            123.026,
+            174.0,
+            68.0
+          ],
+          "items": [
+            {
+              "file": "viewer_plate_assets/A/plate_01_part_01.stl",
+              "name": "A01_frame",
+              "bounds_mm": [
+                [
+                  5.0,
+                  5.0,
+                  0.0
+                ],
+                [
+                  111.141,
+                  104.892,
+                  68.0
+                ]
+              ]
+            },
+            {
+              "file": "viewer_plate_assets/A/plate_01_part_02.stl",
+              "name": "A03_link",
+              "bounds_mm": [
+                [
+                  110.0,
+                  115.0,
+                  0.0
+                ],
+                [
+                  128.026,
+                  121.4,
+                  2.0
+                ]
+              ]
+            },
+            {
+              "file": "viewer_plate_assets/A/plate_01_part_03.stl",
+              "name": "A04_clamp",
+              "bounds_mm": [
+                [
+                  75.0,
+                  115.0,
+                  0.0
+                ],
+                [
+                  95.0,
+                  179.0,
+                  4.8
+                ]
+              ]
+            },
+            {
+              "file": "viewer_plate_assets/A/plate_01_part_04.stl",
+              "name": "A02_rocker",
+              "bounds_mm": [
+                [
+                  5.0,
+                  115.0,
+                  0.0
+                ],
+                [
+                  61.108,
+                  152.678,
+                  23.6
+                ]
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "B": {
+      "plate_count": 5,
+      "plates": [
+        {
+          "source_3mf": "B_роторная_кассета/PLATES_3MF/B11_plate_01_ротор_собачка_coupon.3mf",
+          "plate_number": 1,
+          "bounds_mm": [
+            [
+              12.277,
+              6.277,
+              0.0
+            ],
+            [
+              204.2,
+              206.0,
+              71.95
+            ]
+          ],
+          "extents_mm": [
+            191.923,
+            199.723,
+            71.95
+          ],
+          "items": [
+            {
+              "file": "viewer_plate_assets/B/plate_01_part_01.stl",
+              "name": "B01_rotor",
+              "bounds_mm": [
+                [
+                  12.277,
+                  6.277,
+                  0.0
+                ],
+                [
+                  119.723,
+                  113.723,
+                  71.95
+                ]
+              ]
+            },
+            {
+              "file": "viewer_plate_assets/B/plate_01_part_02.stl",
+              "name": "T01_coupon",
+              "bounds_mm": [
+                [
+                  60.0,
+                  184.0,
+                  0.0
+                ],
+                [
+                  160.0,
+                  206.0,
+                  4.0
+                ]
+              ]
+            },
+            {
+              "file": "viewer_plate_assets/B/plate_01_part_03.stl",
+              "name": "B03_pawl",
+              "bounds_mm": [
+                [
+                  135.8,
+                  74.335,
+                  0.0
+                ],
+                [
+                  204.2,
+                  165.665,
+                  1.55
+                ]
+              ]
+            },
+            {
+              "file": "viewer_plate_assets/B/plate_01_part_04.stl",
+              "name": "B01_indexer",
+              "bounds_mm": [
+                [
+                  144.0,
+                  14.0,
+                  0.0
+                ],
+                [
+                  196.0,
+                  66.0,
+                  6.55
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "source_3mf": "B_роторная_кассета/PLATES_3MF/B11_plate_02_левая_рама.3mf",
+          "plate_number": 2,
+          "bounds_mm": [
+            [
+              36.117,
+              13.521,
+              0.0
+            ],
+            [
+              183.883,
+              204.734,
+              29.5
+            ]
+          ],
+          "extents_mm": [
+            147.765,
+            191.213,
+            29.5
+          ],
+          "items": [
+            {
+              "file": "viewer_plate_assets/B/plate_02_part_01.stl",
+              "name": "B02I_inlet_clamp",
+              "bounds_mm": [
+                [
+                  72.5,
+                  13.521,
+                  0.0
+                ],
+                [
+                  147.5,
+                  34.479,
+                  29.5
+                ]
+              ]
+            },
+            {
+              "file": "viewer_plate_assets/B/plate_02_part_02.stl",
+              "name": "B02L_left_cheek",
+              "bounds_mm": [
+                [
+                  36.117,
+                  59.266,
+                  0.0
+                ],
+                [
+                  183.883,
+                  204.734,
+                  10.35
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "source_3mf": "B_роторная_кассета/PLATES_3MF/B11_plate_03_правая_рама.3mf",
+          "plate_number": 3,
+          "bounds_mm": [
+            [
+              36.117,
+              37.266,
+              0.0
+            ],
+            [
+              183.883,
+              182.734,
+              6.15
+            ]
+          ],
+          "extents_mm": [
+            147.765,
+            145.467,
+            6.15
+          ],
+          "items": [
+            {
+              "file": "viewer_plate_assets/B/plate_03_part_01.stl",
+              "name": "B02R_right_cheek",
+              "bounds_mm": [
+                [
+                  36.117,
+                  37.266,
+                  0.0
+                ],
+                [
+                  183.883,
+                  182.734,
+                  6.15
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "source_3mf": "B_роторная_кассета/PLATES_3MF/B11_plate_04_левая_направляющая_лоток.3mf",
+          "plate_number": 4,
+          "bounds_mm": [
+            [
+              47.126,
+              14.5,
+              0.0
+            ],
+            [
+              172.874,
+              212.309,
+              6.4
+            ]
+          ],
+          "extents_mm": [
+            125.748,
+            197.809,
+            6.4
+          ],
+          "items": [
+            {
+              "file": "viewer_plate_assets/B/plate_04_part_01.stl",
+              "name": "B02O_outlet",
+              "bounds_mm": [
+                [
+                  47.126,
+                  14.5,
+                  0.0
+                ],
+                [
+                  172.874,
+                  89.5,
+                  3.0
+                ]
+              ]
+            },
+            {
+              "file": "viewer_plate_assets/B/plate_04_part_02.stl",
+              "name": "B02GL_left_guide",
+              "bounds_mm": [
+                [
+                  56.751,
+                  103.691,
+                  0.0
+                ],
+                [
+                  163.249,
+                  212.309,
+                  6.4
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "source_3mf": "B_роторная_кассета/PLATES_3MF/B11_plate_05_правая_направляющая.3mf",
+          "plate_number": 5,
+          "bounds_mm": [
+            [
+              56.751,
+              55.691,
+              0.0
+            ],
+            [
+              163.249,
+              164.309,
+              6.4
+            ]
+          ],
+          "extents_mm": [
+            106.498,
+            108.618,
+            6.4
+          ],
+          "items": [
+            {
+              "file": "viewer_plate_assets/B/plate_05_part_01.stl",
+              "name": "B02GR_right_guide",
+              "bounds_mm": [
+                [
+                  56.751,
+                  55.691,
+                  0.0
+                ],
+                [
+                  163.249,
+                  164.309,
+                  6.4
+                ]
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "C": {
+      "plate_count": 1,
+      "plates": [
+        {
+          "source_3mf": "C_верхние_линейные_ножи/STL_ПЕЧАТЬ/C2_ПЛИТА_1_КАНАЛ_готовая_220x220.3mf",
+          "plate_number": 1,
+          "bounds_mm": [
+            [
+              7.0,
+              7.0,
+              0.0
+            ],
+            [
+              208.2,
+              208.4,
+              74.4
+            ]
+          ],
+          "extents_mm": [
+            201.2,
+            201.4,
+            74.4
+          ],
+          "items": [
+            {
+              "file": "viewer_plate_assets/C/plate_01_part_01.stl",
+              "name": "C01_frame",
+              "bounds_mm": [
+                [
+                  7.0,
+                  7.0,
+                  0.0
+                ],
+                [
+                  129.0,
+                  140.3,
+                  74.4
+                ]
+              ]
+            },
+            {
+              "file": "viewer_plate_assets/C/plate_01_part_02.stl",
+              "name": "T01_horn_coupon",
+              "bounds_mm": [
+                [
+                  7.0,
+                  151.0,
+                  0.0
+                ],
+                [
+                  125.0,
+                  181.0,
+                  3.2
+                ]
+              ]
+            },
+            {
+              "file": "viewer_plate_assets/C/plate_01_part_03.stl",
+              "name": "C05_servo_bracket",
+              "bounds_mm": [
+                [
+                  137.0,
+                  151.0,
+                  0.0
+                ],
+                [
+                  192.0,
+                  165.8,
+                  8.7
+                ]
+              ]
+            },
+            {
+              "file": "viewer_plate_assets/C/plate_01_part_04.stl",
+              "name": "C04_rocker",
+              "bounds_mm": [
+                [
+                  7.0,
+                  192.0,
+                  0.0
+                ],
+                [
+                  80.566,
+                  208.4,
+                  5.4
+                ]
+              ]
+            },
+            {
+              "file": "viewer_plate_assets/C/plate_01_part_05.stl",
+              "name": "C03_rear_blade",
+              "bounds_mm": [
+                [
+                  137.0,
+                  78.0,
+                  0.0
+                ],
+                [
+                  208.2,
+                  144.0,
+                  14.65
+                ]
+              ]
+            },
+            {
+              "file": "viewer_plate_assets/C/plate_01_part_06.stl",
+              "name": "C02_front_blade",
+              "bounds_mm": [
+                [
+                  137.0,
+                  7.0,
+                  0.0
+                ],
+                [
+                  208.2,
+                  73.0,
+                  18.85
+                ]
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,642 @@
+{
+  "project": "V11-B rotary cassette",
+  "status": "physical prototype; validate one lane before five-lane production",
+  "revision": "V11-B-PROTOTYPE-R1",
+  "parameters_mm": {
+    "revision": "V11-B-PROTOTYPE-R1",
+    "lane_count": 5,
+    "lane_clear": 75.0,
+    "lane_pitch": 79.0,
+    "can_length": 70.0,
+    "can_diameter_nominal": 47.0,
+    "can_diameter_envelope": 48.0,
+    "lower_slope_deg": 15.0,
+    "sheet_thickness": 4.0,
+    "sheet_front_y": -67.0,
+    "rotor_center_y": 0.0,
+    "rotor_center_z": -75.8,
+    "pocket_offset": 42.0,
+    "pocket_clear_radius": 24.8,
+    "rotor_outer_radius": 69.8,
+    "rotor_shell_inner_radius": 66.8,
+    "blocking_shell_inner_radius": 64.0,
+    "blocking_shell_outer_radius": 67.2,
+    "rotor_axial_clear": 71.2,
+    "rotor_end_wall": 1.2,
+    "rotor_angle_deg": 84.0,
+    "frame_inner_x": 37.2,
+    "frame_outer_x": 38.65,
+    "module_envelope_width": 77.3,
+    "guide_inner_radius": 70.8,
+    "guide_outer_radius": 76.0,
+    "guide_angle_start": 27.0,
+    "guide_angle_end": 69.0,
+    "servo_body_length": 28.5,
+    "servo_body_width": 12.2,
+    "servo_body_height": 22.8,
+    "servo_axis_x": -31.0,
+    "servo_belly_offset_z": -5.4,
+    "servo_web_x0": -36.8,
+    "servo_web_thickness": 3.4,
+    "servo_horn_arm_radius": 15.8,
+    "horn_pocket_clearance": 0.35,
+    "right_neck_radius": 5.0,
+    "right_bearing_clearance": 0.35,
+    "edge_clamp_screws": 2,
+    "bed_x": 220.0,
+    "bed_y": 220.0
+  },
+  "mechanism": {
+    "actuator": "one SG90/MG90S per lane, stock double horn",
+    "power": "5 V servo supply separate from ESP32; common GND; PWM from ESP32",
+    "kinematics": "direct coaxial 84 degree rotation; servo body nested in hollow rotor",
+    "cell": "one full-length cell for one 70 x Ø47 can",
+    "blocking": "continuous 90 degree axial shell plus longitudinal spars blocks the next can with 1.4 mm lift",
+    "opposite_support": "printed rotating neck in frame bearing, flush M4 retainer"
+  },
+  "main_printed_parts_per_lane": 3,
+  "main_printed_parts_for_five_lanes": 15,
+  "main_part_codes": [
+    "B01",
+    "B02L",
+    "B02R"
+  ],
+  "threaded_fasteners_per_lane": {
+    "added_total": 5,
+    "included_servo_center_screw": 1,
+    "items": [
+      "2 x M2x8 servo mounting screws",
+      "1 x M4x12 flush right-axis retainer",
+      "2 x M4x14 bottom edge-clamp screws",
+      "1 x stock horn centre screw included with servo"
+    ],
+    "heat_set_inserts_M4": 1
+  },
+  "supports": {
+    "B01": "local painted support only under upper right M4 hub; drive web is on bed",
+    "B02L": "none",
+    "B02R": "none",
+    "T01": "none"
+  },
+  "assembly_steps": [
+    "Install one M4 heat-set insert in the right rotor hub.",
+    "Run the two M4 clamp screws once through their printed 3.3 mm pilots, then remove them.",
+    "Mount SG90/MG90S in B02L with two M2x8 screws, belly down.",
+    "Command HOME electrically, then remove PWM signal.",
+    "Install the stock double horn horizontal and tighten its stock centre screw.",
+    "Key B01 onto the horn pocket and place its right neck in B02R.",
+    "Fit the flush M4 retainer without axial preload; close B02L/B02R on printed pins."
+  ],
+  "attachment_points_per_lane": 2,
+  "attachment_steps": [
+    "Slide the integral C-clip over the common front edge of A02.",
+    "Use dividers only to centre the lane; do not load them.",
+    "Tighten two M4 screws from below through soft pads; do not drill A02 roadway."
+  ],
+  "exact_manual_actions_per_lane_from_prints_to_mounted": 10,
+  "coupon": {
+    "file": "STL_ПЕЧАТЬ/T01_coupon_рожок_020_035_050.stl",
+    "frequency": "one per servo batch, not one per lane",
+    "pocket_clearances_mm": [
+      0.2,
+      0.35,
+      0.5
+    ],
+    "identification": "one/two/three witness holes from left to right"
+  },
+  "print_reports": [
+    {
+      "file": "B01_ротор_лёгкая_клетка.stl",
+      "extents_mm": [
+        129.95,
+        138.9,
+        75.35
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 38.54,
+      "min_z_mm": 0.0,
+      "fits_220x220": true
+    },
+    {
+      "file": "B02L_полурама_SG90_клипса_A02.stl",
+      "extents_mm": [
+        120.09,
+        198.0,
+        43.75
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 20.79,
+      "min_z_mm": 0.0,
+      "fits_220x220": true
+    },
+    {
+      "file": "B02R_полурама_M4_клипса_A02.stl",
+      "extents_mm": [
+        120.09,
+        198.0,
+        38.65
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 18.82,
+      "min_z_mm": 0.0,
+      "fits_220x220": true
+    },
+    {
+      "file": "T01_coupon_рожок_020_035_050.stl",
+      "extents_mm": [
+        120.0,
+        25.0,
+        4.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 10.59,
+      "min_z_mm": 0.0,
+      "fits_220x220": true
+    }
+  ],
+  "assembly_state_reports": [
+    {
+      "file": "assembly_HOME_with_3_cans.stl",
+      "extents_mm": [
+        77.3,
+        319.03,
+        196.27
+      ],
+      "watertight": true,
+      "components": 14,
+      "volume_cm3": 498.35,
+      "min_z_mm": -145.6
+    },
+    {
+      "file": "assembly_MID_with_3_cans.stl",
+      "extents_mm": [
+        77.3,
+        319.03,
+        197.32
+      ],
+      "watertight": true,
+      "components": 14,
+      "volume_cm3": 498.35,
+      "min_z_mm": -145.2458
+    },
+    {
+      "file": "assembly_EJECT_with_3_cans.stl",
+      "extents_mm": [
+        77.3,
+        319.03,
+        197.32
+      ],
+      "watertight": true,
+      "components": 14,
+      "volume_cm3": 498.35,
+      "min_z_mm": -145.2489
+    }
+  ],
+  "analytical_clearances": {
+    "can_radial_clearance_in_pocket_mm": 0.8,
+    "can_axial_clearance_total_mm": 1.2,
+    "rotor_to_stationary_guide_radial_mm": 1.0,
+    "module_to_79mm_pitch_total_mm": 1.7,
+    "inlet_window_chord_mm": 69.8,
+    "inlet_window_minus_can_envelope_mm": 21.8,
+    "servo_body_to_home_can_vertical_min_mm": 17.3,
+    "attachment_points_per_lane": 2,
+    "roadway_drilling_required": false,
+    "rotation_deg": 84.0
+  },
+  "collision_sweep": [
+    {
+      "angle_deg": 0.0,
+      "rotor_vs_frame_mm3": 0.0,
+      "rotor_vs_servo_mm3": 0.0,
+      "rotor_vs_can_mm3": 0.0,
+      "rotor_vs_waiting_can_mm3": 0.0
+    },
+    {
+      "angle_deg": 10.0,
+      "rotor_vs_frame_mm3": 0.0,
+      "rotor_vs_servo_mm3": 0.0,
+      "rotor_vs_can_mm3": 0.0,
+      "rotor_vs_waiting_can_mm3": 0.0
+    },
+    {
+      "angle_deg": 21.0,
+      "rotor_vs_frame_mm3": 0.0,
+      "rotor_vs_servo_mm3": 0.0,
+      "rotor_vs_can_mm3": 0.0,
+      "rotor_vs_waiting_can_mm3": 0.0
+    },
+    {
+      "angle_deg": 32.0,
+      "rotor_vs_frame_mm3": 0.0,
+      "rotor_vs_servo_mm3": 0.0,
+      "rotor_vs_can_mm3": 0.0,
+      "rotor_vs_waiting_can_mm3": 27.84278
+    },
+    {
+      "angle_deg": 42.0,
+      "rotor_vs_frame_mm3": 0.0,
+      "rotor_vs_servo_mm3": 0.0,
+      "rotor_vs_can_mm3": 0.0,
+      "rotor_vs_waiting_can_mm3": 41.68222
+    },
+    {
+      "angle_deg": 53.0,
+      "rotor_vs_frame_mm3": 0.0,
+      "rotor_vs_servo_mm3": 0.0,
+      "rotor_vs_can_mm3": 0.0,
+      "rotor_vs_waiting_can_mm3": 39.8004
+    },
+    {
+      "angle_deg": 63.0,
+      "rotor_vs_frame_mm3": 0.0,
+      "rotor_vs_servo_mm3": 0.0,
+      "rotor_vs_can_mm3": 0.0,
+      "rotor_vs_waiting_can_mm3": 40.68845
+    },
+    {
+      "angle_deg": 74.0,
+      "rotor_vs_frame_mm3": 0.0,
+      "rotor_vs_servo_mm3": 0.0,
+      "rotor_vs_can_mm3": 0.0,
+      "rotor_vs_waiting_can_mm3": 37.49941
+    },
+    {
+      "angle_deg": 84.0,
+      "rotor_vs_frame_mm3": 0.0,
+      "rotor_vs_servo_mm3": 0.0,
+      "rotor_vs_can_mm3": 0.0,
+      "rotor_vs_waiting_can_mm3": 37.49746
+    }
+  ],
+  "force_torque_audit": {
+    "method": "static gravity + direct queue load + friction allowance, then dynamic factor",
+    "assumptions": {
+      "PETG_density_g_cm3": 1.27,
+      "roadway_slope_deg": 15.0,
+      "friction_allowance_fraction_of_loaded_torque": 0.12,
+      "bearing_and_seal_floor_Nm": 0.01,
+      "dynamic_factor": 1.25,
+      "assumed_stall_torque_kgf_cm": {
+        "SG90_at_5V": 1.8,
+        "MG90S_at_5V": 2.0
+      },
+      "maximum_design_fraction_of_stall": 0.4,
+      "warning": "catalogue stall torque is not a continuous holding rating; measure the actual servo batch"
+    },
+    "rotor": {
+      "volume_cm3": 38.539,
+      "estimated_PETG_mass_g": 48.94,
+      "centre_of_mass_mm": [
+        -3.344,
+        -35.998,
+        -67.35
+      ],
+      "gravity_eccentricity_mm": 36.976,
+      "maximum_gravity_torque_Nm": 0.01775
+    },
+    "servo_design_limits_kgf_cm": {
+      "SG90_at_5V": 0.72,
+      "MG90S_at_5V": 0.8
+    },
+    "direct_queue_cases": [
+      {
+        "queue_can_count": 11,
+        "can_mass_g": 100,
+        "queue_downslope_force_N": 2.7929,
+        "rotor_gravity_Nm": 0.01775,
+        "captured_can_Nm": 0.0412,
+        "queue_on_shell_Nm": 0.18129,
+        "friction_allowance_Nm": 0.0367,
+        "design_torque_Nm": 0.34618,
+        "design_torque_kgf_cm": 3.53
+      },
+      {
+        "queue_can_count": 11,
+        "can_mass_g": 200,
+        "queue_downslope_force_N": 5.5858,
+        "rotor_gravity_Nm": 0.01775,
+        "captured_can_Nm": 0.0824,
+        "queue_on_shell_Nm": 0.36258,
+        "friction_allowance_Nm": 0.0634,
+        "design_torque_Nm": 0.65767,
+        "design_torque_kgf_cm": 6.71
+      },
+      {
+        "queue_can_count": 22,
+        "can_mass_g": 100,
+        "queue_downslope_force_N": 5.5858,
+        "rotor_gravity_Nm": 0.01775,
+        "captured_can_Nm": 0.0412,
+        "queue_on_shell_Nm": 0.36258,
+        "friction_allowance_Nm": 0.05845,
+        "design_torque_Nm": 0.59998,
+        "design_torque_kgf_cm": 6.12
+      },
+      {
+        "queue_can_count": 22,
+        "can_mass_g": 200,
+        "queue_downslope_force_N": 11.1717,
+        "rotor_gravity_Nm": 0.01775,
+        "captured_can_Nm": 0.0824,
+        "queue_on_shell_Nm": 0.72516,
+        "friction_allowance_Nm": 0.10691,
+        "design_torque_Nm": 1.16528,
+        "design_torque_kgf_cm": 11.88
+      }
+    ],
+    "isolated_upstream_max_captured_can_mass_g": {
+      "SG90_at_5V": 62.3,
+      "MG90S_at_5V": 75.9
+    },
+    "verdict": "REJECT for a directly loaded 11- or 22-can queue with SG90/MG90S. Use B only as a one-lane experiment with the upstream stack mechanically isolated; otherwise choose a mechanism that unloads the servo.",
+    "self_hold_and_power": {
+      "PWM": "must remain active while queue load reaches the rotor; detach is not self-locking",
+      "power_loss": "geartrain may back-drive; this geometry is not a fail-safe brake",
+      "supply": "external regulated 5 V, common GND with ESP32; never use ESP32 5 V pin for five servos",
+      "conservative_peak_supply_budget": "5 V / 5 A minimum for five channels, then verify stall current of the actual batch"
+    }
+  },
+  "viewer_assets": {
+    "HOME": {
+      "frame_left": {
+        "path": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/HOME/frame_left.stl",
+        "role": "printed_frame",
+        "color": "#d6a45f"
+      },
+      "frame_right": {
+        "path": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/HOME/frame_right.stl",
+        "role": "printed_frame",
+        "color": "#d6a45f"
+      },
+      "rotor": {
+        "path": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/HOME/rotor.stl",
+        "role": "moving_rotor",
+        "color": "#f28c28"
+      },
+      "servo_body": {
+        "path": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/HOME/servo_body.stl",
+        "role": "SG90_MG90S",
+        "color": "#276ca8"
+      },
+      "servo_shaft": {
+        "path": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/HOME/servo_shaft.stl",
+        "role": "metal",
+        "color": "#c5ced8"
+      },
+      "servo_horn": {
+        "path": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/HOME/servo_horn.stl",
+        "role": "stock_horn",
+        "color": "#f0f2f5"
+      },
+      "servo_center_screw": {
+        "path": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/HOME/servo_center_screw.stl",
+        "role": "fastener",
+        "color": "#7d8794"
+      },
+      "right_M4_retainer": {
+        "path": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/HOME/right_M4_retainer.stl",
+        "role": "fastener",
+        "color": "#7d8794"
+      },
+      "clamp_screw_left": {
+        "path": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/HOME/clamp_screw_left.stl",
+        "role": "fastener",
+        "color": "#7d8794"
+      },
+      "clamp_screw_right": {
+        "path": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/HOME/clamp_screw_right.stl",
+        "role": "fastener",
+        "color": "#7d8794"
+      },
+      "lower_sheet_A02": {
+        "path": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/HOME/lower_sheet_A02.stl",
+        "role": "cassette_A02",
+        "color": "#b98a55"
+      },
+      "can_captured": {
+        "path": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/HOME/can_captured.stl",
+        "role": "can",
+        "color": "#42c986"
+      },
+      "can_queue_1": {
+        "path": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/HOME/can_queue_1.stl",
+        "role": "can",
+        "color": "#42c986"
+      },
+      "can_queue_2": {
+        "path": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/HOME/can_queue_2.stl",
+        "role": "can",
+        "color": "#42c986"
+      },
+      "wire_brown": {
+        "path": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/HOME/wire_brown.stl",
+        "role": "wire_GND",
+        "color": "#6b3f24"
+      },
+      "wire_red": {
+        "path": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/HOME/wire_red.stl",
+        "role": "wire_5V",
+        "color": "#e94242"
+      },
+      "wire_orange": {
+        "path": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/HOME/wire_orange.stl",
+        "role": "wire_PWM",
+        "color": "#f29a2e"
+      }
+    },
+    "MID": {
+      "frame_left": {
+        "path": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/MID/frame_left.stl",
+        "role": "printed_frame",
+        "color": "#d6a45f"
+      },
+      "frame_right": {
+        "path": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/MID/frame_right.stl",
+        "role": "printed_frame",
+        "color": "#d6a45f"
+      },
+      "rotor": {
+        "path": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/MID/rotor.stl",
+        "role": "moving_rotor",
+        "color": "#f28c28"
+      },
+      "servo_body": {
+        "path": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/MID/servo_body.stl",
+        "role": "SG90_MG90S",
+        "color": "#276ca8"
+      },
+      "servo_shaft": {
+        "path": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/MID/servo_shaft.stl",
+        "role": "metal",
+        "color": "#c5ced8"
+      },
+      "servo_horn": {
+        "path": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/MID/servo_horn.stl",
+        "role": "stock_horn",
+        "color": "#f0f2f5"
+      },
+      "servo_center_screw": {
+        "path": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/MID/servo_center_screw.stl",
+        "role": "fastener",
+        "color": "#7d8794"
+      },
+      "right_M4_retainer": {
+        "path": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/MID/right_M4_retainer.stl",
+        "role": "fastener",
+        "color": "#7d8794"
+      },
+      "clamp_screw_left": {
+        "path": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/MID/clamp_screw_left.stl",
+        "role": "fastener",
+        "color": "#7d8794"
+      },
+      "clamp_screw_right": {
+        "path": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/MID/clamp_screw_right.stl",
+        "role": "fastener",
+        "color": "#7d8794"
+      },
+      "lower_sheet_A02": {
+        "path": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/MID/lower_sheet_A02.stl",
+        "role": "cassette_A02",
+        "color": "#b98a55"
+      },
+      "can_captured": {
+        "path": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/MID/can_captured.stl",
+        "role": "can",
+        "color": "#42c986"
+      },
+      "can_queue_1": {
+        "path": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/MID/can_queue_1.stl",
+        "role": "can",
+        "color": "#42c986"
+      },
+      "can_queue_2": {
+        "path": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/MID/can_queue_2.stl",
+        "role": "can",
+        "color": "#42c986"
+      },
+      "wire_brown": {
+        "path": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/MID/wire_brown.stl",
+        "role": "wire_GND",
+        "color": "#6b3f24"
+      },
+      "wire_red": {
+        "path": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/MID/wire_red.stl",
+        "role": "wire_5V",
+        "color": "#e94242"
+      },
+      "wire_orange": {
+        "path": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/MID/wire_orange.stl",
+        "role": "wire_PWM",
+        "color": "#f29a2e"
+      }
+    },
+    "EJECT": {
+      "frame_left": {
+        "path": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/EJECT/frame_left.stl",
+        "role": "printed_frame",
+        "color": "#d6a45f"
+      },
+      "frame_right": {
+        "path": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/EJECT/frame_right.stl",
+        "role": "printed_frame",
+        "color": "#d6a45f"
+      },
+      "rotor": {
+        "path": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/EJECT/rotor.stl",
+        "role": "moving_rotor",
+        "color": "#f28c28"
+      },
+      "servo_body": {
+        "path": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/EJECT/servo_body.stl",
+        "role": "SG90_MG90S",
+        "color": "#276ca8"
+      },
+      "servo_shaft": {
+        "path": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/EJECT/servo_shaft.stl",
+        "role": "metal",
+        "color": "#c5ced8"
+      },
+      "servo_horn": {
+        "path": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/EJECT/servo_horn.stl",
+        "role": "stock_horn",
+        "color": "#f0f2f5"
+      },
+      "servo_center_screw": {
+        "path": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/EJECT/servo_center_screw.stl",
+        "role": "fastener",
+        "color": "#7d8794"
+      },
+      "right_M4_retainer": {
+        "path": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/EJECT/right_M4_retainer.stl",
+        "role": "fastener",
+        "color": "#7d8794"
+      },
+      "clamp_screw_left": {
+        "path": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/EJECT/clamp_screw_left.stl",
+        "role": "fastener",
+        "color": "#7d8794"
+      },
+      "clamp_screw_right": {
+        "path": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/EJECT/clamp_screw_right.stl",
+        "role": "fastener",
+        "color": "#7d8794"
+      },
+      "lower_sheet_A02": {
+        "path": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/EJECT/lower_sheet_A02.stl",
+        "role": "cassette_A02",
+        "color": "#b98a55"
+      },
+      "can_captured": {
+        "path": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/EJECT/can_captured.stl",
+        "role": "can",
+        "color": "#42c986"
+      },
+      "can_queue_1": {
+        "path": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/EJECT/can_queue_1.stl",
+        "role": "can",
+        "color": "#42c986"
+      },
+      "can_queue_2": {
+        "path": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/EJECT/can_queue_2.stl",
+        "role": "can",
+        "color": "#42c986"
+      },
+      "wire_brown": {
+        "path": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/EJECT/wire_brown.stl",
+        "role": "wire_GND",
+        "color": "#6b3f24"
+      },
+      "wire_red": {
+        "path": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/EJECT/wire_red.stl",
+        "role": "wire_5V",
+        "color": "#e94242"
+      },
+      "wire_orange": {
+        "path": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/EJECT/wire_orange.stl",
+        "role": "wire_PWM",
+        "color": "#f29a2e"
+      }
+    }
+  },
+  "hard_failures": [
+    "collision rotor_vs_waiting_can_mm3 at 32.0 deg = 27.84278 mm3",
+    "collision rotor_vs_waiting_can_mm3 at 42.0 deg = 41.68222 mm3",
+    "collision rotor_vs_waiting_can_mm3 at 53.0 deg = 39.8004 mm3",
+    "collision rotor_vs_waiting_can_mm3 at 63.0 deg = 40.68845 mm3",
+    "collision rotor_vs_waiting_can_mm3 at 74.0 deg = 37.49941 mm3",
+    "collision rotor_vs_waiting_can_mm3 at 84.0 deg = 37.49746 mm3"
+  ],
+  "warnings": [
+    "Prototype: measure the real can including lid/bottom rims before printing all five lanes.",
+    "1.2 mm total axial clearance assumes the real can including seams is at most 70.0 mm; measure it before five-lane printing.",
+    "Run a 300-cycle one-lane endurance test with the heaviest real can.",
+    "B is rejected for a directly loaded 11/22-can queue with either SG90 or MG90S; see FORCE_AUDIT_V11_B.csv.",
+    "Never power five servos from the ESP32 5 V pin."
+  ]
+}

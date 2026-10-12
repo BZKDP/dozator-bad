@@ -1,0 +1,103 @@
+{
+  "version": "V15-integer-manual-layout",
+  "nominal_material_mm": {
+    "cardboard": 5,
+    "HDPE": 4
+  },
+  "slot_vertices_integer": true,
+  "sheet_cut_dimensions_mm": {
+    "lower": [
+      559,
+      405,
+      4
+    ],
+    "upper": [
+      517,
+      405,
+      4
+    ]
+  },
+  "sheet_fits": {
+    "lower": {
+      "contained": true,
+      "minimum_geometric_clearance_mm": 0.26010124882821245
+    },
+    "upper": {
+      "contained": true,
+      "minimum_geometric_clearance_mm": 0.2882670304316876
+    }
+  },
+  "part_intersections_mm3": {
+    "wall_1_lower": 0.0,
+    "wall_1_upper": 0.0,
+    "wall_1_rear": 0.0,
+    "wall_2_lower": 0.0,
+    "wall_2_upper": 0.0,
+    "wall_2_rear": 0.0,
+    "wall_3_lower": 0.0,
+    "wall_3_upper": 0.0,
+    "wall_3_rear": 0.0,
+    "wall_4_lower": 0.0,
+    "wall_4_upper": 0.0,
+    "wall_4_rear": 0.0,
+    "wall_5_lower": 0.0,
+    "wall_5_upper": 0.0,
+    "wall_5_rear": 0.0,
+    "wall_6_lower": 0.0,
+    "wall_6_upper": 0.0,
+    "wall_6_rear": 0.0
+  },
+  "dock_intersections_mm3": {
+    "wall_1": 0.0,
+    "wall_2": 0.0,
+    "wall_3": 0.0,
+    "wall_4": 0.0,
+    "wall_5": 0.0,
+    "wall_6": 0.0,
+    "rear": 0.0,
+    "rear_wing_left": 0.0,
+    "rear_wing_right": 0.0,
+    "lower": 0.0,
+    "upper": 0.0,
+    "clip_left": 0.0,
+    "clip_right": 0.0
+  },
+  "original_file_hashes": {
+    "v14_кассета_ПНД4/generate_cassette.py": "12cd25a316c2cc839280fec82ffe76d00d1bb29ba05a359cd112cad8dc285dab",
+    "v14_кассета_ПНД4/make_dock_full_3d.py": "4f834f745714723f027c14222e19e409f257e38b76d6540ea372533805e9823e",
+    "v14_кассета_ПНД4/ПЕЧАТЬ_ДОКА/1 ПЕЧАТЬ (блок каналы 1-2 + 8 вкладышей).stl": "f34199b5f3ce8e662d7fec67a3105d5159c1643c2a6552ee47c37f87aca2298a",
+    "v14_кассета_ПНД4/ПЕЧАТЬ_ДОКА/2 ПЕЧАТЬ (блок каналы 3-4 + 8 вкладышей).stl": "7c45518434681ddd12509edf5555a4affceb69c2791380e7892d42d45ff22d9f",
+    "v14_кассета_ПНД4/ПЕЧАТЬ_ДОКА/3 ПЕЧАТЬ (канал 5 + 2 щёчки + 8 вкладышей).stl": "520c18a0cdb63c966342335bc7bb7c6edab9896365da4e2ca63039a42411bef7",
+    "v14_кассета_ПНД4/ПЕЧАТЬ_ДОКА/4 ПЕЧАТЬ (коромысла, тяги, втулки, замки).stl": "d86979bcc4a58617e154cd9819890fd8f325123de4dd66284fb12929ac521331",
+    "v14_кассета_ПНД4/ПЕЧАТЬ_ДОКА/5 ПЕЧАТЬ (5 держателей серв).stl": "a88eeb5c477fc517e7610b2f7e6d05706735000c5bb35f5c5158f8c47d22947b",
+    "v14_кассета_ПНД4/ПЕЧАТЬ_ДОКА/ТЕСТ_ОДИН_КАНАЛ (проверить проход банки).stl": "cf00a02c6e16842f8fb1adc00a4f47923d6263dd43d07e38cbbb77bdbf9317a2"
+  },
+  "closed_front_ligament_min_mm": 23,
+  "rear_passage_mm": 50.85439169268852,
+  "lower_front_running_surface_mm": [
+    25,
+    42
+  ],
+  "wall_near_faces_mm": [
+    0,
+    80,
+    160,
+    240,
+    320,
+    400
+  ],
+  "rear_half_lap_side_clearance_mm": 1,
+  "rear_notch_depth_clearance_mm": 1,
+  "static_125_jars": {
+    "checked": 125,
+    "diameter_mm": 47,
+    "length_mm": 67,
+    "capacity_candidate_per_lane": 26,
+    "lower": 14,
+    "transition": 1,
+    "upper": 11,
+    "structure_collisions": [],
+    "scope": "nominal static upright geometry; not a dynamic feeding or strength certification"
+  },
+  "original_files_unchanged": true
+}

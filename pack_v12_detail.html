@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:,">
+<title>Упаковка — В1 и В2 детально (3+3 варианта)</title>
+<style>
+  :root{--bg:#0e1117;--panel:#171b22;--line:#2d3442;--text:#eef2f7;--muted:#9aa5b8;--accent:#4aa8ff;--ok:#66d9a8}
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font-family:Inter,-apple-system,"Segoe UI",Arial,sans-serif}
+  #app{display:grid;grid-template-columns:minmax(560px,1fr) 530px;height:100vh;overflow:hidden}
+  #scene{position:relative;min-width:0;background:#0b0e14}
+  canvas{display:block}
+  #hud{position:absolute;left:14px;top:14px;max-width:620px;padding:10px 12px;border:1px solid rgba(255,255,255,.12);background:rgba(10,13,19,.72);backdrop-filter:blur(8px);border-radius:8px;color:var(--muted);font-size:12px;line-height:1.45}
+  #hud b{color:var(--text)}
+  #inspector{position:absolute;left:14px;bottom:14px;max-width:600px;min-width:340px;padding:12px 14px;border:1px solid #3a71b0;background:rgba(10,16,26,.92);backdrop-filter:blur(8px);border-radius:10px;font-size:12.5px;line-height:1.55;color:#cfd9ea;display:none}
+  #inspector b{color:#8fc6ff;font-size:13.5px}
+  #inspector .cls{position:absolute;right:8px;top:6px;cursor:pointer;color:#68738a;font-weight:800}
+  #side{background:var(--panel);border-left:1px solid var(--line);overflow:auto}
+  .head{padding:16px 18px 12px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#1b2029,#171b22)}
+  h1{font-size:16px;margin:0 0 6px;font-weight:800}
+  .sub{margin:0;color:var(--muted);font-size:12px;line-height:1.5}
+  .bar{display:flex;gap:8px;padding:10px 18px;border-bottom:1px solid var(--line);align-items:center;flex-wrap:wrap}
+  button{height:32px;border:1px solid var(--line);background:#202633;color:var(--text);border-radius:7px;font-weight:700;cursor:pointer;padding:0 12px;font-size:12px}
+  button:hover{border-color:#455066}
+  button.on{border-color:var(--accent);color:#bfe1ff;background:#162435}
+  input[type=range]{width:110px}
+  .grp{padding:8px 18px 4px;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#7fa8d8;border-bottom:1px solid rgba(255,255,255,.05)}
+  .v{border-bottom:1px solid rgba(255,255,255,.06);cursor:pointer}
+  .v .hd{display:grid;grid-template-columns:26px 1fr;gap:10px;padding:10px 18px;align-items:center}
+  .v.sel{background:#131a24}
+  .vn{width:24px;height:24px;border-radius:6px;background:#202633;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;color:#bfe1ff}
+  .v.sel .vn{background:var(--accent);color:#06131f;border-color:transparent}
+  .vt{font-size:13px;font-weight:700;line-height:1.25}
+  .price{display:inline-block;font-size:10px;font-weight:800;padding:1px 7px;border-radius:4px;margin-left:6px;background:#153322;color:#8fe0b6}
+  .card{display:none;padding:0 18px 12px 54px;font-size:11.5px;color:var(--muted);line-height:1.55}
+  .v.sel .card{display:block}
+  .card b{color:#dfe8f5}
+  .card .ok{color:var(--ok)} .card .warn{color:#ffcf6b}
+  .foot{padding:14px 18px;font-size:12px;color:var(--muted);line-height:1.55}
+  .foot b{color:#fff}
+</style>
+</head>
+<body>
+<div id="app">
+  <main id="scene">
+    <div id="hud"><b>В1 (полуручной, верхний ряд) и В2 (полуавтомат, нижний ряд) — по 3 исполнения.</b><br>
+      <b style="color:#8fe0b6">КЛИК ПО ДЕТАЛИ</b> — карточка: модель, цена, крепление, зачем. Масштаб настоящий: стол 750 мм.<br>
+      ЛКМ поворот · колесо зум · ПКМ сдвиг · W/S/A/D + Space/Ctrl полёт, Shift быстрее. Клик по варианту справа — подлёт.</div>
+    <div id="inspector"><span class="cls" onclick="this.parentElement.style.display='none'">✕</span><div id="insBody"></div></div>
+  </main>
+  <aside id="side">
+    <div class="head">
+      <h1>Воронка + рукав: 6 исполнений станции</h1>
+      <p class="sub">Общая база: банки из жёлоба падают в печатную воронку на трубе ПВХ Ø110, на которой гармошкой сидит рукав ПВД 200 мм / 100 мкм (низ запаян). Различается — КАК тянуть и КАК паять.</p>
+    </div>
+    <div class="bar">
+      <button id="over" class="on">Обзор всех</button>
+      <button id="play" class="on">Пауза</button>
+      <span style="color:var(--muted);font-size:11px">Скорость</span><input id="speed" type="range" min="0.3" max="2" step="0.1" value="1">
+    </div>
+    <div id="list"></div>
+    <div class="foot" id="foot"></div>
+  </aside>
+</div>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+}}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+addEventListener('error', ev=>{const d=document.getElementById('hud');d.innerHTML='<b style="color:#f88">Ошибка:</b> '+(ev.message||ev.error);});
+
+const clamp=THREE.MathUtils.clamp, lerp=THREE.MathUtils.lerp;
+const seg=(p,a,b)=>clamp((p-a)/(b-a),0,1);
+const sm=(p,a,b)=>{const t=seg(p,a,b);return t*t*(3-2*t);};
+const V=(x,y,z)=>new THREE.Vector3(x,y,z);
+
+// ---------- сцена ----------
+const host=document.getElementById('scene');
+const scene=new THREE.Scene(); scene.background=new THREE.Color(0x0b0e14);
+const camera=new THREE.PerspectiveCamera(45,host.clientWidth/host.clientHeight,1,40000);
+camera.position.set(900,1500,4200);
+const renderer=new THREE.WebGLRenderer({antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2)); renderer.setSize(host.clientWidth,host.clientHeight);
+renderer.shadowMap.enabled=true; host.appendChild(renderer.domElement);
+const controls=new OrbitControls(camera,renderer.domElement);
+controls.target.set(0,700,-900); controls.enableDamping=true; controls.maxDistance=15000;
+scene.add(new THREE.HemisphereLight(0xcfdcff,0x24212a,1.1));
+const sun=new THREE.DirectionalLight(0xffffff,1.1); sun.position.set(1500,2600,1800); sun.castShadow=true;
+sun.shadow.mapSize.set(2048,2048);
+sun.shadow.camera.left=-3400; sun.shadow.camera.right=3400; sun.shadow.camera.top=2600; sun.shadow.camera.bottom=-2600; sun.shadow.camera.far=9000;
+scene.add(sun);
+const ground=new THREE.Mesh(new THREE.PlaneGeometry(16000,10000),new THREE.MeshStandardMaterial({color:0x10141b,roughness:1}));
+ground.rotation.x=-Math.PI/2; ground.receiveShadow=true; scene.add(ground);
+const grid=new THREE.GridHelper(16000,80,0x273246,0x1a2130); grid.position.y=0.5; scene.add(grid);
+
+// ---------- материалы ----------
+const woodMat  =new THREE.MeshStandardMaterial({color:0x9a7a52,roughness:.8});
+const steelMat =new THREE.MeshStandardMaterial({color:0x49525f,roughness:.55,metalness:.35});
+const aluMat   =new THREE.MeshStandardMaterial({color:0x8f99a6,roughness:.45,metalness:.5});
+const pvcMat   =new THREE.MeshStandardMaterial({color:0xb8bfc7,roughness:.65});
+const printMat =new THREE.MeshStandardMaterial({color:0xe07840,roughness:.6});
+const chuteMat =new THREE.MeshStandardMaterial({color:0x2f6dab,roughness:.7,transparent:true,opacity:.5,side:THREE.DoubleSide});
+const filmMat  =new THREE.MeshPhysicalMaterial({color:0xe8eef2,roughness:.25,transparent:true,opacity:.32,side:THREE.DoubleSide});
+const jarMat   =new THREE.MeshStandardMaterial({color:0xf7f8fa,roughness:.4});
+const capMat   =new THREE.MeshStandardMaterial({color:0xdfe4ec,roughness:.5});
+const devBlue  =new THREE.MeshStandardMaterial({color:0x2b5fae,roughness:.55});
+const devBlue2 =new THREE.MeshStandardMaterial({color:0x3f79cf,roughness:.5});
+const rubberMat=new THREE.MeshStandardMaterial({color:0x24292f,roughness:.95});
+const basketMat=new THREE.MeshStandardMaterial({color:0x22303f,roughness:.85});
+
+function box(w,h,d,mat,par){const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);m.castShadow=m.receiveShadow=true;(par||scene).add(m);return m;}
+function cyl(r,h,mat,par,s=28,open=false){const m=new THREE.Mesh(new THREE.CylinderGeometry(r,r,h,s,1,open),mat);m.castShadow=true;(par||scene).add(m);return m;}
+function cone(rt,rb,h,mat,par,s=28){const m=new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,h,s,1,true),mat);m.castShadow=true;(par||scene).add(m);return m;}
+function torus(R,r,mat,par){const m=new THREE.Mesh(new THREE.TorusGeometry(R,r,10,32),mat);m.castShadow=true;(par||scene).add(m);return m;}
+function label(text,pos,par,sw=260,border='#4aa8ff'){
+  const c=document.createElement('canvas'); c.width=640; c.height=84; const x=c.getContext('2d');
+  x.fillStyle='rgba(10,14,21,.85)'; x.fillRect(0,0,640,84);
+  x.strokeStyle=border; x.lineWidth=5; x.strokeRect(3,3,634,78);
+  x.fillStyle='#eef5ff'; x.font='800 30px Segoe UI,Arial'; x.textAlign='center'; x.textBaseline='middle'; x.fillText(text,320,42);
+  const s=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),transparent:true,depthTest:false}));
+  s.scale.set(sw,sw*84/640,1); s.position.copy(pos); (par||scene).add(s); return s;
+}
+function mkJar(par){
+  const g=new THREE.Group(); (par||scene).add(g);
+  const b=cyl(23.5,54,jarMat,g,20); b.rotation.z=Math.PI/2;
+  for(const s of [-1,1]){const c=cyl(23.5,8,capMat,g,20); c.rotation.z=Math.PI/2; c.position.x=s*31;}
+  return g;
+}
+function reg(o,name,desc){ o.traverse ? o.traverse(m=>{ if(!m.userData.info) m.userData.info={name,desc}; }) : 0; o.userData.info={name,desc}; return o; }
+
+// ---------- общие узлы ----------
+const TH=750;
+function mkTable(M){
+  const t=reg(box(1300,40,650,woodMat,M),'Стол 1300×650, столешница 40 мм','Обычный верстак. Всё крепится к нему: стойка воронки — 4 саморезами через пластину-подошву, запайщик — просто стоит. Высота 750 — стандарт.');
+  t.position.set(0,TH-20,0);
+  for(const sx of [-1,1]) for(const sz of [-1,1]){
+    const l=box(50,TH-40,50,steelMat,M); l.position.set(sx*600,(TH-40)/2,sz*(275));
+    reg(l,'Нога стола','Профиль 50×50.');
+  }
+}
+function mkChute(M,exitY,exitZ){
+  const g=new THREE.Group(); M.add(g);
+  g.position.set(0,exitY+170,exitZ-330); g.rotation.x=-0.45;
+  reg(box(100,6,420,chuteMat,g),'Жёлоб от дозатора','Конец V-жёлоба: банки заказа (1–3) прилетают сюда после шестерён. Жёлоб висит на раме полки дозатора, к станции НЕ крепится — просто целится в воронку.');
+  for(const s of [-1,1]){const w=box(6,46,420,chuteMat,g); w.position.set(s*53,26,0);}
+}
+// стойка + воронка + труба + рукав; возвращает координаты ключевых точек
+function mkFunnelAssy(M,tubeZ){
+  const baseP=reg(box(160,12,160,steelMat,M),'Подошва стойки','Стальная/фанерная пластина, 4 самореза в столешницу. Держит всю колонну.');
+  baseP.position.set(190,TH+6,tubeZ-190);
+  const col=reg(box(40,560,40,aluMat,M),'Колонна — алюм. профиль 40×40','Конструкционный профиль (300–500₽/м). Несёт кронштейн трубы. Паз профиля позволяет двигать кронштейн по высоте.');
+  col.position.set(190,TH+12+280,tubeZ-190);
+  const arm=reg(box(40,40,230,aluMat,M),'Кронштейн-вылет','Тот же профиль 40×40 + 2 уголка. Выносит трубу за габарит, чтобы пакет висел свободно и не тёрся о стол.');
+  arm.position.set(190,TH+540,tubeZ-75);
+  const clampR=reg(torus(64,8,printMat,M),'Хомут трубы (печать, 2 полукольца)','Два печатных полукольца стягиваются винтами М4 вокруг трубы и прикручены к кронштейну. Труба вынимается за минуту для перезарядки рукава.');
+  clampR.rotation.x=Math.PI/2; clampR.position.set(190- (190-0)+190*0+0,TH+540,tubeZ); clampR.position.x=95;
+  const clampArm=box(90,16,16,printMat,M); clampArm.position.set(150,TH+540,tubeZ); reg(clampArm,'Лапа хомута','Соединяет хомут с профилем.');
+  const funnel=reg(cone(125,58,140,printMat,M),'Воронка (печать на Ender, 2 части)','Ловит банки из жёлоба (горло Ø250) и сужает в трубу. Печатается двумя половинами, склейка. Садится на трубу сверху с фиксацией винтом.');
+  funnel.position.set(0,TH+640,tubeZ);
+  const tube=reg(cyl(55,280,pvcMat,M,30,true),'Труба ПВХ Ø110 (канализационная, ~300₽)','Сердце станции: снаружи — запас рукава, внутри пролетают банки. Периметр 345 мм < периметра рукава 400 мм — рукав сидит свободно.');
+  tube.position.set(0,TH+430,tubeZ);
+  const folds=new THREE.Group(); M.add(folds);
+  for(let k=0;k<6;k++){ const f=torus(63,5,filmMat,folds); f.rotation.x=Math.PI/2; f.position.set(0,TH+320+k*16,tubeZ); }
+  reg(folds,'Запас рукава «гармошкой»','4–6 м рукава ПВД собраны складками, как кишка на мясорубке: ~30 пакетов. Кончился — снял трубу с хомута, надел новую бухту, 1 минута.');
+  return {tubeBot:TH+290, tubeZ};
+}
+function mkBag(M,tubeZ,topY){
+  const g=new THREE.Group(); M.add(g); g.position.set(0,topY,tubeZ);
+  const body=cyl(52,260,filmMat,g,24,true); body.position.y=-130;
+  const bot=new THREE.Mesh(new THREE.CircleGeometry(52,24),filmMat); bot.rotation.x=Math.PI/2; bot.position.y=-260; g.add(bot);
+  reg(g,'Пакет (низ запаян прошлым циклом)','Рукав ПВД 200 мм/100 мкм: «РУКАВ ПВД 200мм 100мкм» на Ozon/WB, ~250₽/кг → ~2₽ на пакет. Плёнка тянется и гасит удар банок; шов держит 3–5 кг.');
+  const j1=mkJar(g), j2=mkJar(g);
+  j1.position.set(0,-215,0); j2.position.set(6,-160,4); j2.rotation.y=.4;
+  return {g,j1,j2};
+}
+function mkBasket(M,x,z,name,desc){
+  const g=new THREE.Group(); M.add(g); g.position.set(x,0,z);
+  reg(g,name||'Корзина готовых',desc||'Готовые пакеты падают сюда.');
+  const b=box(260,12,220,basketMat,g); b.position.y=50;
+  for(const [w,h,d,px,pz] of [[260,110,10,0,105],[260,110,10,0,-105],[10,110,220,125,0],[10,110,220,-125,0]]){
+    const s=box(w,h,d,basketMat,g); s.position.set(px,105,pz);
+  }
+  return g;
+}
+// нихромовая линия
+function heatLine(len,par){
+  const m=new THREE.Mesh(new THREE.BoxGeometry(len,4,5),new THREE.MeshStandardMaterial({color:0xff7744}));
+  par.add(m); return m;
+}
+
+// ---------- карточки вариантов ----------
+const KINDS=[
+ {grp:'В1 — ПОЛУРУЧНОЙ (тянешь сам)',id:'a',t:'1А. Настольный запайщик на столе',price:'~3.5 тыс',card:
+  '<b>Сборка:</b> стойка с воронкой у края стола, рядом на столе — обычный настольный импульсный запайщик С НОЖОМ. Цикл: кнопка → банки в рукаве → потянул пакет вниз-вбок, положил горловину в створ → прижал крышку → шов+рез (низ = верх пакета, верх = дно следующего) → пакет в корзину. 6–8 сек.<br>'+
+  '<b>Купить:</b> <b>FS-300C (он же PFS-300C, «импульсный запайщик 300 мм с обрезкой»)</b> — 2.5–3.5 т.р. Ozon/WB. Твой PFS-300A не подойдёт — у него НЕТ ножа.<br>'+
+  '<span class="ok">Самый простой старт: ноль доработок.</span> <span class="warn">Минус: горловину надо прицеливать в створ каждый раз.</span>'},
+ {id:'b',t:'1Б. Педальный напольный запайщик',price:'~15 тыс',card:
+  '<b>Сборка:</b> напольный педальный запайщик ставится СТВОРОМ ВОКРУГ висящего рукава — рукав всегда в створе, никуда прицеливаться не надо. Цикл: кнопка → потянул пакет вниз двумя руками → нажал ПЕДАЛЬ → шов+рез. 4–5 сек, руки всегда на пакете.<br>'+
+  '<b>Купить:</b> <b>педальный импульсный запайщик 400–600 мм с обрезкой (FRN-400/FRN-600, PFS-450F)</b> — 12–18 т.р.<br>'+
+  '<span class="ok">Самый быстрый из ручных, эргономика идеальная.</span> <span class="warn">Минус: цена и место на полу.</span>'},
+ {id:'c',t:'1В. Рычажная планка на раме (из донора)',price:'~4 тыс',card:
+  '<b>Сборка:</b> запайщик ВСТРОЕН в стойку воронки: сзади рукава — неподвижная губка (планка+нихром+трансформатор из разобранного PFS-300A, у тебя уже есть!), спереди — рычаг с ручкой на пружинах. Цикл: кнопка → потянул → качнул ручку на себя-вниз → шов+рез. 4–6 сек, всё на одной оси.<br>'+
+  '<b>Купить:</b> донор PFS-300A (есть) + ролик-нож (300₽) + пружины + печать рычагов.<br>'+
+  '<span class="ok">Компактно, дёшево, шов всегда в одном месте.</span> <span class="warn">Минус: повозиться день со сборкой рычага.</span>'},
+ {grp:'В2 — ПОЛУАВТОМАТ (машина тянет и паяет)',id:'d',t:'2А. Ролики протяжки + планка с эксцентриком',price:'~15 тыс',card:
+  '<b>Классика VFFS:</b> пара обрезиненных роликов прижимает рукав к трубе и стягивает его вниз ровно на длину пакета; ниже — планка на эксцентрике: прижим → импульс 0.8 с → выдержка 2 с → нож. Сотрудник жмёт «заказ» и забирает пакеты. 1 оператор на ВСЮ линию.<br>'+
+  '<b>Купить:</b> 2× мотор-редуктор JGB37-520 12В (по 700₽), силиконовые ролики (печать+трубка), 2 донора PFS-300A (планки+трансформаторы), MG996R/эксцентрик, ESP32 (тот же, что дозатор!), БП 12В 5А, ИК-пара.<br>'+
+  '<span class="ok">Полный цикл с кнопки, стандартная схема.</span> <span class="warn">Ролики надо отрегулировать (прижим/проскальзывание).</span>'},
+ {id:'e',t:'2Б. Каретка-прищепка на ремне',price:'~16 тыс',card:
+  '<b>Точная альтернатива роликам:</b> каретка на двух валах 8 мм с серво-прищепкой: схватила рукав ниже шва → уехала вниз по ремню GT2 ровно на 260 мм (шаговый мотор — точность 0.1 мм) → планка сварила-отрезала → прищепка отпустила, уехала вверх. НЕ мнёт и НЕ проскальзывает — длина пакета всегда одинаковая.<br>'+
+  '<b>Купить:</b> NEMA17 + GT2 ремень/шкивы (1.5 т.р.), валы 8 мм + LM8UU (800₽), MG90S на прищепку, планка-донор, ESP32.<br>'+
+  '<span class="ok">Идеально ровные пакеты, детали как у 3D-принтера (у тебя есть опыт и запчасти).</span> <span class="warn">Чуть сложнее прошивка (шаговик).</span>'},
+ {id:'f',t:'2В. Полный автомат ПОД дозатором (0 операторов)',price:'~18 тыс',card:
+  '<b>Максимальная автоматизация:</b> станция вообще без стола — рама из профиля 20×20 подвешена к полке дозатора, жёлоб входит прямо в воронку. Протяжка+запайка как в 2А, готовый пакет падает на наклонный лоток и съезжает в ящик. Человек нужен только пополнять рукав (раз в ~30 заказов) и забирать ящик.<br>'+
+  '<b>Купить:</b> всё из 2А + профиль 20×20 (~1 т.р.) + печатные уголки.<br>'+
+  '<span class="ok">Заказ упаковывается сам от кнопки до ящика. Конечная цель.</span> <span class="warn">Ставить после отладки 2А на столе.</span>'},
+];
+
+// ---------- станции ----------
+const modules=[];
+const colX=i=>(i%3-1)*1750, rowZ=i=>i<3?0:-2100;
+
+function stationBase(M,withTable=true){
+  if(withTable) mkTable(M);
+  const tubeZ=430;
+  const fa=mkFunnelAssy(M,tubeZ);
+  mkChute(M,TH+640,tubeZ);
+  const bag=mkBag(M,tubeZ,fa.tubeBot);
+  mkBasket(M,0,tubeZ+330);
+  return {tubeZ,bag,topY:fa.tubeBot};
+}
+function jarsFly(bag,p){
+  bag.j1.visible=bag.j2.visible = p>.26 && bag.g.visible;
+}
+
+// 1А: настольный FS-300C на столе
+function buildA(M){
+  const S=stationBase(M);
+  const sl=new THREE.Group(); M.add(sl); sl.position.set(430,TH+14,180);
+  reg(sl,'Запайщик FS-300C (300 мм, С НОЖОМ) — 2.5–3.5 т.р.','Импульсный, шов 8 мм + роликовый нож ПО ЦЕНТРУ шва. Именно «C»-версия! Стоит на столе, никуда не крепится. Поиск: «импульсный запайщик 300 мм с обрезкой».');
+  const base=box(430,70,180,devBlue,sl);
+  base.position.y=35;
+  const armP=new THREE.Group(); armP.position.set(0,70,-70); sl.add(armP);
+  const arm=box(430,26,60,devBlue2,armP); arm.position.set(0,14,50);
+  reg(arm,'Прижимная крышка','Опускается рукой; таймер сам отсекает импульс, светодиод погас — открывай.');
+  const hl=heatLine(390,sl); hl.position.set(0,72,20);
+  reg(hl,'Нихром + нож','Одно нажатие: шов 8 мм и рез по центру = верх готового пакета + дно следующего.');
+  label('СОТРУДНИК: потянул пакет к запайщику', V(220,TH+320,320), M, 320, '#ffd479');
+  return p=>{
+    const b=S.bag; jarsFly(b,p);
+    const mv=sm(p,.36,.52);
+    b.g.position.set(lerp(0,430,mv), lerp(S.topY,TH+330,mv), lerp(S.tubeZ,220,mv));
+    b.g.rotation.z=mv*0.5;
+    armP.rotation.x=(sm(p,.55,.6)-sm(p,.68,.73))*-0.5;
+    hl.material.color.setHex(p>.58&&p<.68?0xff2200:0xff7744);
+    const drop=sm(p,.74,.9);
+    if(p>.72){ b.g.position.set(lerp(430,60,drop),lerp(TH+330,170,drop),lerp(220,S.tubeZ+320,drop)); b.g.rotation.z=.5-drop*.5; }
+    b.g.visible=p<.93; if(p>=.97){ b.g.visible=true; b.g.rotation.z=0; b.g.position.set(0,S.topY,S.tubeZ); }
+  };
+}
+// 1Б: педальный напольный
+function buildB(M){
+  const S=stationBase(M);
+  const col=reg(box(90,1050,90,steelMat,M),'Колонна педального запайщика','Напольная стойка машины. Ставится так, чтобы створ губок обнимал висящий рукав. К полу можно не крепить — масса ~20 кг.');
+  col.position.set(-360,525,S.tubeZ);
+  const lower=reg(box(560,36,46,devBlue,M),'Нижняя губка (неподвижная)','Силиконовая опора + нихром 400–600 мм. Рукав ВСЕГДА лежит в створе — прицеливаться не надо.');
+  lower.position.set(-90,TH+120,S.tubeZ+50);
+  const hl=heatLine(520,M); hl.position.set(-90,TH+140,S.tubeZ+50);
+  reg(hl,'Нихром + нож','Шов и рез за одно нажатие педали.');
+  const upperP=new THREE.Group(); upperP.position.set(-360,TH+320,S.tubeZ); M.add(upperP);
+  const upper=box(560,32,42,devBlue2,upperP); upper.position.set(270,0,50);
+  reg(upper,'Верхняя губка на рычаге','Связана тягой в колонне с педалью: нажал ногой — губка опустилась, прижала, импульс.');
+  const pedal=reg(box(300,26,180,devBlue,M),'ПЕДАЛЬ','Обе руки остаются на пакете — жмёшь ногой. Самый быстрый ручной темп: 4–5 сек на заказ.');
+  pedal.position.set(-360,20,S.tubeZ+240);
+  label('Модель: FRN-400/600 педальный, 12–18 т.р.', V(-360,1150,S.tubeZ), M, 340);
+  return p=>{
+    const b=S.bag; jarsFly(b,p);
+    const pull=sm(p,.36,.48)*140;
+    b.g.position.set(0,S.topY-pull,S.tubeZ);
+    const press=sm(p,.52,.58)-sm(p,.66,.72);
+    upperP.position.y=TH+320-press*160;
+    pedal.position.y=20-press*12;
+    hl.material.color.setHex(p>.56&&p<.66?0xff2200:0xff7744);
+    const drop=sm(p,.72,.88);
+    if(p>.7){ b.g.position.set(0,S.topY-pull-drop*(S.topY-260),S.tubeZ+drop*300); }
+    b.g.visible=p<.92; if(p>=.96){ b.g.visible=true; b.g.position.set(0,S.topY,S.tubeZ); }
+  };
+}
+// 1В: рычажная планка на раме
+function buildC(M){
+  const S=stationBase(M);
+  for(const s of [-1,1]){
+    const plate=reg(box(18,340,120,printMat,M),'Щека рамы (печать/фанера)','Две щеки идут от кронштейна колонны вниз по бокам рукава. Несут заднюю губку и ось рычага.');
+    plate.position.set(s*170,TH+280,S.tubeZ);
+  }
+  const back=reg(box(330,40,26,devBlue,M),'Задняя губка из ДОНОРА PFS-300A (у тебя есть!)','Раскручиваешь свой запайщик: планка с нихромом, силикон и трансформатор переезжают сюда. Губка неподвижна за рукавом.');
+  back.position.set(0,TH+180,S.tubeZ-62);
+  const hl=heatLine(300,M); hl.position.set(0,TH+180,S.tubeZ-46);
+  reg(hl,'Нихром + ролик-нож (300₽)','Нож — покупной ролик от FS-C, ездит по пазу планки.');
+  const levP=new THREE.Group(); levP.position.set(0,TH+120,S.tubeZ+90); M.add(levP);
+  for(const s of [-1,1]){ const l=box(14,30,150,printMat,levP); l.position.set(s*160,0,-40); }
+  const bar=box(330,36,24,devBlue2,levP); bar.position.set(0,60,-90);
+  reg(levP,'Рычаг с прижимной планкой','Качается на оси в щеках. Потянул ручку — планка прижала рукав к задней губке, концевик пустил импульс. Отпустил — пружины вернули.');
+  const handle=reg(cyl(9,340,aluMat,levP,14),'Ручка','Труба/ручка поперёк — удобно тянуть тем же движением, каким тянул пакет.');
+  handle.rotation.z=Math.PI/2; handle.position.set(0,64,-104+80);
+  for(const s of [-1,1]){ const spr=reg(cyl(6,70,steelMat,M,10),'Пружина возврата','Возвращает рычаг. Две дверные пружины.'); spr.position.set(s*150,TH+150,S.tubeZ+40); }
+  return p=>{
+    const b=S.bag; jarsFly(b,p);
+    const pull=sm(p,.36,.48)*140;
+    b.g.position.set(0,S.topY-pull,S.tubeZ);
+    const lev=sm(p,.52,.58)-sm(p,.66,.72);
+    levP.rotation.x=-lev*0.55;
+    hl.material.color.setHex(p>.56&&p<.66?0xff2200:0xff7744);
+    const drop=sm(p,.72,.88);
+    if(p>.7){ b.g.position.set(0,S.topY-pull-drop*(S.topY-260),S.tubeZ+drop*300); }
+    b.g.visible=p<.92; if(p>=.96){ b.g.visible=true; b.g.position.set(0,S.topY,S.tubeZ); }
+  };
+}
+// каркас В2 из профиля 20×20
+function mkFrame2020(M,tubeZ){
+  for(const s of [-1,1]){
+    const c=reg(box(20,620,20,aluMat,M),'Рама — алюм. профиль 20×20','Каркас автоматики. Крепление печатными уголками, всё двигается по пазам при наладке.');
+    c.position.set(s*190,TH+310,tubeZ);
+  }
+  for(const y of [TH+140,TH+600]){
+    const b=box(400,20,20,aluMat,M); b.position.set(0,y,tubeZ); reg(b,'Поперечина','Профиль 20×20.');
+  }
+}
+function mkJawModule(M,tubeZ,y){
+  const g=new THREE.Group(); M.add(g);
+  const fixed=box(340,40,24,devBlue,g); fixed.position.set(0,y,tubeZ-58);
+  reg(fixed,'Неподвижная губка (донор PFS-300A №1)','Планка с нихромом и силиконом из разобранного запайщика + его же трансформатор в блоке снизу.');
+  const hl=heatLine(300,g); hl.position.set(0,y,tubeZ-42);
+  reg(hl,'Нихром + нож','Импульс 0.8 с через MOSFET, выдержка 2 с прижатым — шов остывает под давлением (это важно для прочности).');
+  const mov=box(340,40,24,devBlue2,g); mov.position.set(0,y,tubeZ+58);
+  reg(mov,'Подвижная губка (донор №2)','Ездит на двух валах Ø8. Прижим ~1 кг.');
+  for(const s of [-1,1]){ const rod=cyl(4,150,steelMat,g,10); rod.rotation.x=Math.PI/2; rod.position.set(s*140,y,tubeZ+35); reg(rod,'Вал Ø8 + LM8UU','Направляющие хода губки, как в 3D-принтере.'); }
+  const ecc=cyl(26,16,steelMat,g,20); ecc.rotation.x=Math.PI/2; ecc.position.set(0,y,tubeZ+128);
+  reg(ecc,'Эксцентрик на мотор-редукторе JGB37','Полоборота = прижим, ещё полоборота = отпуск. Концевик считает обороты. Можно MG996R с рычагом.');
+  const mot=box(60,36,36,rubberMat,g); mot.position.set(70,y,tubeZ+128); reg(mot,'JGB37-520 12В (~700₽)','30–60 об/мин, момента за глаза.');
+  return {mov,hl,fixedZ:tubeZ-58};
+}
+function mkRollers(M,tubeZ,y){
+  const g=new THREE.Group(); M.add(g);
+  const rolls=[];
+  for(const s of [-1,1]){
+    const r=cyl(28,110,rubberMat,g,22); r.rotation.z=Math.PI/2;
+    r.position.set(0,y,tubeZ+s*66);
+    reg(r,'Ролик протяжки (силикон)','Пара роликов сжимает рукав ПОВЕРХ трубы? Нет — ниже трубы, за плёнку с двух сторон. Печатная втулка + силиконовая трубка сверху. Тянут вниз на длину пакета за ~2 с.');
+    rolls.push(r);
+  }
+  const mot=box(70,40,40,rubberMat,g); mot.position.set(120,y,tubeZ+66);
+  reg(mot,'JGB37-520 + шестерни синхронизации','Один мотор крутит оба ролика через пару печатных шестерён — плёнка идёт ровно.');
+  return rolls;
+}
+function mkEsp(M,x,z){
+  const e=reg(box(110,70,40,printMat,M),'Блок ESP32 + БП 12В 5А + 2 MOSFET','ТОТ ЖЕ контроллер, что рулит шестернями дозатора: одна прошивка ведёт заказ от выдачи банок до готового пакета. Кнопка «заказ» и светодиод статуса на корпусе.');
+  e.position.set(x,TH+120,z);
+  const btn=cyl(16,10,new THREE.MeshStandardMaterial({color:0x2fae5f}),M,16); btn.rotation.x=Math.PI/2;
+  btn.position.set(x,TH+120,z+22); reg(btn,'Кнопка «ЗАКАЗ»','Единственное действие сотрудника в 2А/2Б.');
+  return e;
+}
+function mkIR(M,tubeZ){
+  for(const s of [-1,1]){ const ir=reg(box(16,16,26,steelMat,M),'ИК-датчик прохода банок (50₽ пара)','Луч поперёк горла воронки. Считает упавшие банки; протяжка стартует, только когда счёт = заказу. Защита от «закуса» банки швом.');
+    ir.position.set(s*70,TH+600,tubeZ); }
+}
+// 2А
+function buildD(M){
+  const S=stationBase(M);
+  mkFrame2020(M,S.tubeZ);
+  const rolls=mkRollers(M,S.tubeZ,TH+250);
+  const jaw=mkJawModule(M,S.tubeZ,TH+120);
+  mkEsp(M,320,S.tubeZ-140); mkIR(M,S.tubeZ);
+  return p=>{
+    const b=S.bag; jarsFly(b,p);
+    const feed=sm(p,.34,.5);
+    rolls.forEach(r=>r.rotation.x=feed*6);
+    b.g.position.set(0,S.topY-feed*140,S.tubeZ);
+    const jm=sm(p,.54,.6)-sm(p,.7,.76);
+    jaw.mov.position.z=S.tubeZ+58-jm*72;
+    jaw.hl.material.color.setHex(p>.58&&p<.66?0xff2200:0xff7744);
+    const drop=sm(p,.78,.92);
+    if(p>.76){ b.g.position.set(0,S.topY-140-drop*(S.topY-280),S.tubeZ+drop*300); }
+    b.g.visible=p<.95; if(p>=.98){ b.g.visible=true; b.g.position.set(0,S.topY,S.tubeZ); }
+  };
+}
+// 2Б
+function buildE(M){
+  const S=stationBase(M);
+  mkFrame2020(M,S.tubeZ);
+  for(const s of [-1,1]){ const rod=reg(cyl(5,420,steelMat,M,12),'Вал Ø8 калёный','Направляющие каретки, LM8UU — всё из мира 3D-принтеров, у тебя есть.'); rod.position.set(s*130,TH+330,S.tubeZ+95); }
+  const belt=reg(box(6,420,2,rubberMat,M),'Ремень GT2 + NEMA17 сверху','Шаговый мотор позиционирует каретку с точностью 0.1 мм — длина пакета всегда одинаковая.');
+  belt.position.set(170,TH+330,S.tubeZ+95);
+  const nema=box(52,52,52,rubberMat,M); nema.position.set(170,TH+560,S.tubeZ+95); reg(nema,'NEMA17','Стандартный шаговик.');
+  const car=new THREE.Group(); M.add(car); car.position.set(0,TH+420,S.tubeZ+95);
+  const plate=box(300,50,16,printMat,car); reg(plate,'Каретка (печать) на LM8UU','Несёт прищепку.');
+  const f1=box(240,14,10,printMat,car), f2=box(240,14,10,printMat,car);
+  f1.position.set(0,-24,-38); f2.position.set(0,-24,-58);
+  reg(f1,'Прищепка (серво MG90S)','Пальцы смыкаются на рукаве ниже будущего шва: тянем ЗА ПЛЁНКУ, не трогая банки.'); reg(f2,'Прищепка — ответный палец','Смыкается навстречу.');
+  const jaw=mkJawModule(M,S.tubeZ,TH+150);
+  mkEsp(M,320,S.tubeZ-140); mkIR(M,S.tubeZ);
+  return p=>{
+    const b=S.bag; jarsFly(b,p);
+    const grab=sm(p,.32,.36);
+    f2.position.z=-58+grab*14;
+    const down=sm(p,.38,.54);
+    car.position.y=TH+420-down*260;
+    b.g.position.set(0,S.topY-down*140,S.tubeZ);
+    const jm=sm(p,.56,.62)-sm(p,.72,.78);
+    jaw.mov.position.z=S.tubeZ+58-jm*72;
+    jaw.hl.material.color.setHex(p>.6&&p<.68?0xff2200:0xff7744);
+    const rel=sm(p,.7,.74);
+    f2.position.z=-58+ (grab-rel>0?14:0);
+    const up=sm(p,.74,.9);
+    car.position.y=TH+420-260+up*260;
+    const drop=sm(p,.78,.92);
+    if(p>.76){ b.g.position.set(0,S.topY-140-drop*(S.topY-280),S.tubeZ+drop*300); }
+    b.g.visible=p<.95; if(p>=.98){ b.g.visible=true; b.g.position.set(0,S.topY,S.tubeZ); }
+  };
+}
+// 2В: автомат под дозатором
+function buildF(M){
+  const shelf=reg(box(700,45,360,woodMat,M),'Полка дозатора (существующая)','Та самая полка с 28 дорожками — станция подвешена ПОД ней, стол не нужен вообще.');
+  shelf.position.set(0,1650,430-80);
+  for(const s of [-1,1]){
+    const hang=reg(box(20,20,20,printMat,M),'Печатный уголок подвеса','Крепит раму 20×20 к полке саморезами.');
+    hang.position.set(s*190,1610,430);
+    const c=reg(box(20,900,20,aluMat,M),'Рама подвесная 20×20','От полки вниз. Вся станция висит на дозаторе — пол свободен.');
+    c.position.set(s*190,1160,430);
+  }
+  const tubeZ=430;
+  // короткий жёлоб прямо в воронку
+  const g=new THREE.Group(); M.add(g); g.position.set(0,1560,tubeZ-190); g.rotation.x=-0.5;
+  reg(box(100,6,260,chuteMat,g),'Жёлоб — сразу в воронку','Банки из V-жёлоба падают прямо в горло: нет ни одного ручного звена.');
+  for(const s of [-1,1]){const w=box(6,44,260,chuteMat,g); w.position.set(s*53,25,0);}
+  const funnel=reg(cone(125,58,140,printMat,M),'Воронка (печать)','Как в остальных.');
+  funnel.position.set(0,1380,tubeZ);
+  const tube=reg(cyl(55,280,pvcMat,M,30,true),'Труба Ø110 с рукавом','Перезарядка: отщёлкнул хомут, снял трубу, надел бухту. Раз в ~30 заказов.');
+  tube.position.set(0,1170,tubeZ);
+  const folds=new THREE.Group(); M.add(folds);
+  for(let k=0;k<6;k++){ const f=torus(63,5,filmMat,folds); f.rotation.x=Math.PI/2; f.position.set(0,1060+k*16,tubeZ); }
+  reg(folds,'Запас рукава','4–6 м гармошкой.');
+  const bag=mkBag(M,tubeZ,1030);
+  const rolls=mkRollers(M,tubeZ,TH+250+240);
+  const jaw=mkJawModule(M,tubeZ,TH+120+240);
+  mkEsp(M,320,tubeZ-140);
+  for(const s of [-1,1]){ const ir=reg(box(16,16,26,steelMat,M),'ИК-датчик','Счёт банок.'); ir.position.set(s*70,1340,tubeZ); }
+  const ramp=reg(box(420,10,330,chuteMat,M),'Наклонный лоток сброса','Готовый пакет падает и съезжает в ящик — сотрудник не нужен.');
+  ramp.rotation.x=0.42; ramp.position.set(0,480,tubeZ+330);
+  mkBasket(M,0,tubeZ+620,'Ящик готовых заказов','Забирается раз в час.');
+  label('0 ОПЕРАТОРОВ: кнопка → пакет в ящике', V(0,2050,430), M, 360, '#8fe0b6');
+  return p=>{
+    jarsFly(bag,p);
+    const feed=sm(p,.34,.5);
+    rolls.forEach(r=>r.rotation.x=feed*6);
+    bag.g.position.set(0,1030-feed*140,tubeZ);
+    const jm=sm(p,.54,.6)-sm(p,.7,.76);
+    jaw.mov.position.z=tubeZ+58-jm*72;
+    jaw.hl.material.color.setHex(p>.58&&p<.66?0xff2200:0xff7744);
+    const drop=sm(p,.78,.96);
+    if(p>.76){ bag.g.position.set(0,1030-140-drop*520,tubeZ+drop*560); bag.g.rotation.x=drop*1.1; }
+    bag.g.visible=p<.98; if(p>=.99){ bag.g.visible=true; bag.g.rotation.x=0; bag.g.position.set(0,1030,tubeZ); }
+  };
+}
+
+const builders=[buildA,buildB,buildC,buildD,buildE,buildF];
+builders.forEach((b,i)=>{
+  const M=new THREE.Group(); M.position.set(colX(i),0,rowZ(i)); scene.add(M);
+  try{
+    const upd=b(M);
+    label(['1А','1Б','1В','2А','2Б','2В'][i]+'. '+KINDS[i].t.split('. ')[1], V(0,i<3?1500:2300,300), M, 330);
+    modules.push({root:M,update:upd});
+  }catch(e){ console.error('station',i+1,e); modules.push({root:M,update:null});
+    document.getElementById('hud').innerHTML='<b style="color:#f88">Станция '+(i+1)+':</b> '+(e.message||e); }
+});
+
+// ---------- клик по деталям ----------
+const ray=new THREE.Raycaster(), mouse=new THREE.Vector2();
+let downXY=null;
+const hl=new THREE.BoxHelper(undefined,0x66d9a8); hl.visible=false; scene.add(hl);
+renderer.domElement.addEventListener('pointerdown',e=>{ downXY=[e.clientX,e.clientY]; });
+renderer.domElement.addEventListener('pointerup',e=>{
+  if(!downXY) return;
+  const dx=e.clientX-downXY[0], dy=e.clientY-downXY[1]; downXY=null;
+  if(dx*dx+dy*dy>25) return;
+  const r=renderer.domElement.getBoundingClientRect();
+  mouse.set(((e.clientX-r.left)/r.width)*2-1, -((e.clientY-r.top)/r.height)*2+1);
+  ray.setFromCamera(mouse,camera);
+  const hits=ray.intersectObjects(scene.children,true);
+  for(const h of hits){
+    let o=h.object;
+    while(o && !(o.userData&&o.userData.info)) o=o.parent;
+    if(o){
+      const inf=o.userData.info;
+      document.getElementById('insBody').innerHTML='<b>'+inf.name+'</b><br>'+inf.desc;
+      document.getElementById('inspector').style.display='block';
+      hl.setFromObject(o); hl.visible=true;
+      return;
+    }
+  }
+  hl.visible=false; document.getElementById('inspector').style.display='none';
+});
+
+// ---------- список / камера ----------
+const list=document.getElementById('list');
+KINDS.forEach((k,i)=>{
+  if(k.grp) list.insertAdjacentHTML('beforeend','<div class="grp">'+k.grp+'</div>');
+  list.insertAdjacentHTML('beforeend',
+   '<div class="v" data-i="'+i+'"><div class="hd"><div class="vn">'+['1А','1Б','1В','2А','2Б','2В'][i]+'</div><div class="vt">'+k.t.split('. ')[1]+'<span class="price">'+k.price+'</span></div></div><div class="card">'+k.card+'</div></div>');
+});
+document.getElementById('foot').innerHTML=
+ '<b>Мой порядок действий:</b> купить FS-300C (~3 т.р.) и запустить 1А за вечер → собрать 1В из твоего PFS-300A как удобную рабочую станцию → '+
+ 'после отладки дозатора перенести всё в 2А, а затем подвесить как 2В (0 операторов). 2Б — если захочешь идеально ровные пакеты (детали от 3D-принтера у тебя есть). '+
+ '<b>Расходник один на всех:</b> «рукав ПВД 200 мм, 100 мкм».';
+
+let camT=null;
+function flyTo(pos,tgt){ camT={p0:camera.position.clone(),t0:controls.target.clone(),p1:pos,t1:tgt,s:performance.now()/1000}; }
+function select(i){
+  document.querySelectorAll('.v').forEach(el=>el.classList.toggle('sel',+el.dataset.i===i));
+  document.getElementById('over').classList.remove('on');
+  flyTo(V(colX(i)+900,1250,rowZ(i)+1750), V(colX(i),800,rowZ(i)+250));
+}
+list.addEventListener('click',e=>{ const v=e.target.closest('.v'); if(v) select(+v.dataset.i); });
+document.getElementById('over').onclick=e=>{
+  document.querySelectorAll('.v').forEach(el=>el.classList.remove('sel'));
+  e.target.classList.add('on'); flyTo(V(900,1500,4200),V(0,700,-900));
+};
+
+// ---------- управление ----------
+let playing=true, speed=1, acc=0, last=performance.now()/1000;
+const PERIOD=8.0;
+document.getElementById('play').onclick=e=>{ playing=!playing; e.target.textContent=playing?'Пауза':'Пуск'; e.target.classList.toggle('on',playing); };
+document.getElementById('speed').oninput=e=>speed=parseFloat(e.target.value);
+addEventListener('resize',()=>{ camera.aspect=host.clientWidth/host.clientHeight; camera.updateProjectionMatrix(); renderer.setSize(host.clientWidth,host.clientHeight); });
+
+const keys={};
+addEventListener('keydown',e=>{ if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space'].includes(e.code)) e.preventDefault(); keys[e.code]=true; });
+addEventListener('keyup',e=>{ keys[e.code]=false; });
+addEventListener('blur',()=>{ for(const k in keys) keys[k]=false; });
+const _fwd=new THREE.Vector3(), _rt=new THREE.Vector3(), _mv=new THREE.Vector3();
+function flyCamera(dt){
+  let f=0,s=0,u=0;
+  if(keys['ArrowUp']||keys['KeyW']) f+=1;
+  if(keys['ArrowDown']||keys['KeyS']) f-=1;
+  if(keys['ArrowRight']||keys['KeyD']) s+=1;
+  if(keys['ArrowLeft']||keys['KeyA']) s-=1;
+  if(keys['Space']||keys['KeyE']) u+=1;
+  if(keys['ControlLeft']||keys['ControlRight']||keys['KeyC']||keys['KeyQ']) u-=1;
+  if(!f&&!s&&!u) return false;
+  const spd=(keys['ShiftLeft']||keys['ShiftRight']?6000:2200)*dt;
+  _fwd.subVectors(controls.target,camera.position).normalize();
+  _rt.crossVectors(_fwd,camera.up).normalize();
+  _mv.set(0,0,0).addScaledVector(_fwd,f*spd).addScaledVector(_rt,s*spd).addScaledVector(camera.up,u*spd);
+  camera.position.add(_mv); controls.target.add(_mv);
+  return true;
+}
+
+function loop(){
+  requestAnimationFrame(loop);
+  const now=performance.now()/1000, dt=Math.min(now-last,0.1); last=now;
+  if(playing) acc+=dt*speed;
+  const p=(acc%PERIOD)/PERIOD;
+  for(const m of modules){ if(m.update){ try{ m.update(p); }catch(e){ m.update=null; console.error(e); } } }
+  if(flyCamera(dt)) camT=null;
+  if(camT){ const u=Math.min(1,(now-camT.s)/0.9), e2=u*u*(3-2*u);
+    camera.position.lerpVectors(camT.p0,camT.p1,e2); controls.target.lerpVectors(camT.t0,camT.t1,e2);
+    if(u>=1) camT=null; }
+  controls.update(); renderer.render(scene,camera);
+}
+loop();
+</script>
+</body>
+</html>

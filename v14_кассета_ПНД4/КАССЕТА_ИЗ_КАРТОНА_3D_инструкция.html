@@ -1,0 +1,159 @@
+<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Кассета из картона — 3D инструкция, резка и разметка</title>
+<style>
+ html,body{margin:0;height:100%;background:#0f1216;color:#e6edf5;font-family:Segoe UI,Arial,sans-serif;overflow:hidden}
+ #ui{position:fixed;top:10px;left:10px;z-index:10;background:rgba(18,23,30,.95);padding:12px 14px;border-radius:13px;width:380px;max-height:94vh;overflow-y:auto}
+ #ui h1{font-size:16px;margin:0 0 6px;color:#ffd27f}
+ #ui p{font-size:12px;color:#aebccb;line-height:1.45;margin:5px 0}
+ .tab{display:flex;gap:5px;margin:8px 0}
+ .tab button{flex:1;padding:7px;border:1px solid #37414f;background:#1b2330;color:#cfe0ef;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600}
+ .tab button.on{background:#b5822f;border-color:#e0b25a;color:#fff}
+ .sec{display:none} .sec.on{display:block}
+ table{border-collapse:collapse;width:100%;font-size:12.5px;margin:6px 0} td,th{border:1px solid #2a3340;padding:5px 7px;text-align:center}
+ th{background:#1d2732;color:#ffd27f} b.g{color:#ffd166}
+ ol{margin:5px 0;padding-left:20px} li{margin:7px 0;font-size:13px;line-height:1.5}
+ .note{background:#20303a;border-radius:8px;padding:8px 10px;font-size:12px;color:#cfe3f5;margin:8px 0}
+ .leg{display:flex;align-items:center;gap:7px;margin:4px 0;font-size:12.5px}
+ .sw{width:15px;height:15px;border-radius:3px}
+ #card{position:fixed;top:10px;right:10px;z-index:11;width:290px;background:rgba(24,30,40,.97);border:1px solid #4a5a70;border-radius:12px;padding:12px 14px;display:none}
+ #card h2{font-size:13.5px;margin:0 20px 6px 0;color:#ffd27f} #card .d{font-size:12.3px;line-height:1.5}
+ #card .close{position:absolute;top:6px;right:9px;cursor:pointer;color:#8aa;font-size:16px}
+ #help{position:fixed;bottom:9px;left:10px;z-index:10;background:rgba(18,23,30,.75);padding:6px 10px;border-radius:9px;font-size:11px;color:#9fb2c6}
+</style></head><body>
+<div id="ui">
+ <h1>Кассета из картона — на 1 штуку</h1>
+ <p>Всё из твоего гофрокартона Т23С (~4 мм), листы 800×600. Банки катятся по двум наклонным
+ картонкам: верх — склад, низ — выдача. <b>Кликни деталь в 3D</b> — покажу её размеры.</p>
+ <div class="tab">
+  <button class="on" data-s="det">Детали</button>
+  <button data-s="raz">Разметка наклона</button>
+  <button data-s="sb">Сборка</button>
+ </div>
+
+ <div class="sec on" id="det">
+  <div class="leg"><span class="sw" style="background:#c99552"></span> стенки и перегородки (вертикальные)</div>
+  <div class="leg"><span class="sw" style="background:#7fb2d8"></span> нижний скат (выдача, 15°)</div>
+  <div class="leg"><span class="sw" style="background:#9ccf7a"></span> верхний скат (склад, 10°)</div>
+  <div class="leg"><span class="sw" style="background:#b67b3b"></span> задняя стенка</div>
+  <table>
+   <tr><th>Деталь</th><th>Размер, мм</th><th>Шт</th></tr>
+   <tr><td>Боковина</td><td><b class="g">590 × 390</b></td><td>2</td></tr>
+   <tr><td>Перегородка</td><td><b class="g">590 × 390</b></td><td>4</td></tr>
+   <tr><td>Нижний скат</td><td><b class="g">559 × 405</b></td><td>1</td></tr>
+   <tr><td>Верхний скат</td><td><b class="g">517 × 405</b></td><td>1</td></tr>
+   <tr><td>Задняя стенка</td><td><b class="g">405 × 390</b></td><td>1</td></tr>
+  </table>
+  <div class="note">Всего 9 картонок. Все размеры — ЦЕЛЫЕ мм, режь прямым ножом по линейке
+  (картон режется легко, в отличие от ПНД). Из листа 800×600 выходит по 1 крупной детали
+  (боковина/скат/перегородка). На кассету ~9 листов — у тебя их хватает.</div>
+ </div>
+
+ <div class="sec" id="raz">
+  <p><b>Главное — наклон.</b> На КАЖДОЙ из 6 вертикальных картонок (2 боковины + 4 перегородки)
+  рисуешь ОДИНАКОВО две наклонные линии — на них лягут скаты. Чтобы точно попасть в наклон,
+  отмечай высоту в 5 точках по глубине и соединяй.</p>
+  <p style="color:#ffd166">Отмеряй: по ДЛИНЕ (590) — от переднего края; ВЫСОТУ — от низа.</p>
+  <table>
+   <tr><th>От переда, мм</th><th>Низ (выдача)<br>высота, мм</th><th>Верх (склад)<br>высота, мм</th></tr>
+   <tr><td>25</td><td><b class="g">42</b></td><td><b class="g">330</b></td></tr>
+   <tr><td>165</td><td>80</td><td>305</td></tr>
+   <tr><td>305</td><td>117</td><td>281</td></tr>
+   <tr><td>445</td><td>155</td><td>256</td></tr>
+   <tr><td>565</td><td><b class="g">187</b></td><td>240</td></tr>
+  </table>
+  <div class="note">• Поставь 5 точек нижней линии, соедини по линейке — получишь наклон 15° (линия выдачи).<br>
+  • То же для верхней (5 точек) — наклон 10° (линия склада).<br>
+  • Перенеси эту разметку на все 6 картонок (приложи первую как шаблон и обведи, или отмерь заново).<br>
+  • Передний край ската (точка на «25») ляжет на высоту 42 — это стык с доком, там банка переходит на полку. Не сдвигай эту точку!</div>
+ </div>
+
+ <div class="sec" id="sb">
+  <ol>
+   <li>Вырежи 9 картонок по таблице «Детали» (прямым ножом по линейке).</li>
+   <li>На всех 6 вертикальных (боковины+перегородки) нанеси две наклонные линии по таблице «Разметка».</li>
+   <li>Разметь дно/основание: 5 каналов, перегородки через <b class="g">80 мм</b> (отметь от левого края: 80, 160, 240, 320; боковины — по краям).</li>
+   <li>Поставь 2 боковины и 4 перегородки вертикально, параллельно, шаг 80. Скрепи сверху и снизу поперечной полоской картона или термоклеем — чтобы держали строй.</li>
+   <li>Вложи НИЖНИЙ скат (559×405) на нижние наклонные линии (15°), передним краем к доку. Приклей термоклеем по линиям к каждой перегородке.</li>
+   <li>Вложи ВЕРХНИЙ скат (517×405) на верхние линии (10°). Приклей.</li>
+   <li>Приклей ЗАДНЮЮ стенку (405×390) сзади — она держит строй и не даёт банкам выпасть назад.</li>
+   <li>Готово. Передние торцы стенок вставляются в щели дока, нижний скат ложится на полку — банка едет без ступеньки.</li>
+  </ol>
+  <div class="note">Клей: термопистолет (у тебя есть) по наклонным линиям. Перед вложили верхнего ската
+  убедись, что между скатами остаётся просвет для банки (банка Ø47 переваливает с верхнего склада
+  на нижнюю выдачу в заднем проёме).</div>
+ </div>
+</div>
+<div id="card"><span class="close" onclick="card.style.display='none'">✕</span><h2 id="ct"></h2><div class="d" id="cd"></div></div>
+<div id="help">🖱 вращать · колесо — зум · ПКМ — панорама · клик по детали — размеры</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// координаты кассеты: X глубина 0..590 (0=перёд), Y ширина 0..405, Z высота 0..390
+document.querySelectorAll('.tab button').forEach(b=>b.onclick=()=>{
+ document.querySelectorAll('.tab button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+ document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));document.getElementById(b.dataset.s).classList.add('on');});
+let scene,camera,renderer,root; const clickable=[];
+const TH=4; // картон 4мм
+function zL(x){return 42+(x-25)*Math.tan(15*Math.PI/180);}  // низ скат
+function zU(x){return 330-(x-25)*Math.tan(10*Math.PI/180);} // верх скат
+function panelXZ(pts,y,th,col,t,d){ // вертикальная панель в плоскости XZ, толщина по Y
+ const shape=new THREE.Shape(); pts.forEach((p,i)=>i?shape.lineTo(p[0],p[1]):shape.moveTo(p[0],p[1]));
+ const g=new THREE.ExtrudeGeometry(shape,{depth:th,bevelEnabled:false});
+ const m=new THREE.Mesh(g,new THREE.MeshStandardMaterial({color:col,roughness:.9}));
+ m.rotation.x=0; m.position.set(0,y,0); m.geometry.rotateY(0);
+ // extrude по Z -> повернём: shape в XZ, extrude по Y
+ m.geometry.rotateX(-Math.PI/2); m.position.y=y;
+ m.userData={t,d}; clickable.push(m); return m;}
+function slab(x0,x1,y0,y1,zf,col,t,d){ // наклонный скат: прямоугольник XY на высоте zf(x)
+ const g=new THREE.BufferGeometry();
+ const v=[[x0,y0,zf(x0)],[x1,y0,zf(x1)],[x1,y1,zf(x1)],[x0,y1,zf(x0)]];
+ const top=v.map(p=>[p[0],p[1],p[2]+TH]);
+ const all=[...v,...top];
+ const idx=[0,1,2,0,2,3, 4,6,5,4,7,6, 0,4,5,0,5,1, 1,5,6,1,6,2, 2,6,7,2,7,3, 3,7,4,3,4,0];
+ g.setAttribute('position',new THREE.Float32BufferAttribute(all.flat(),3)); g.setIndex(idx); g.computeVertexNormals();
+ const m=new THREE.Mesh(g,new THREE.MeshStandardMaterial({color:col,roughness:.85,transparent:true,opacity:.62,side:THREE.DoubleSide}));
+ m.userData={t,d}; clickable.push(m); return m;}
+function wall(y,col,t,d){ // стенка 590x390 с наклонными линиями (просто панель)
+ return panelXZ([[0,0],[590,0],[590,390],[0,390]],y,TH,col,t,d);}
+function init(){
+ scene=new THREE.Scene(); scene.background=new THREE.Color(0x0f1216);
+ camera=new THREE.PerspectiveCamera(45,innerWidth/innerHeight,1,8000);
+ renderer=new THREE.WebGLRenderer({antialias:true}); renderer.setPixelRatio(devicePixelRatio);
+ renderer.setSize(innerWidth,innerHeight); document.body.appendChild(renderer.domElement);
+ scene.add(new THREE.AmbientLight(0xffffff,.6));
+ const d1=new THREE.DirectionalLight(0xffffff,.8); d1.position.set(400,600,500); scene.add(d1);
+ root=new THREE.Group(); scene.add(root);
+ // боковины y=0 и y=405
+ root.add(wall(0,0xc99552,'Боковина (картон)','590 × 390 мм. 2 шт. На ней — две наклонные линии опоры скатов (см. вкладку «Разметка»).'));
+ root.add(wall(405-TH,0xc99552,'Боковина (картон)','590 × 390 мм. 2 шт.'));
+ // 4 перегородки (шаг 80: y=80..320, полупрозрачные)
+ for(let i=1;i<=4;i++){const w=wall(i*80-TH/2,0xd6ae72,'Перегородка (картон)','590 × 390 мм. 4 шт. Размечается так же, как боковина. Делит на каналы шагом 80 мм.');
+  w.children?.forEach;w.material.transparent=true;w.material.opacity=.55; root.add(w);}
+ // скаты
+ root.add(slab(25,565,2,403,zL,0x7fb2d8,'Нижний скат — ВЫДАЧА (15°)','559 × 405 мм. Банка катится вниз к доку. Передний торец на высоте 42 — стык с полкой дока.'));
+ root.add(slab(25,534,2,403,zU,0x9ccf7a,'Верхний скат — СКЛАД (10°)','517 × 405 мм. Банки лежат наверху и сползают назад, потом переваливают на нижний скат.'));
+ // задняя стенка x=585..590
+ const back=panelXZ([[585,0],[590,0],[590,390],[585,390]],0,405,0xb67b3b,'Задняя стенка','405 × 390 мм. Держит строй и не даёт банкам выпасть назад.');
+ root.add(back);
+ setup();
+ addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
+}
+const ray=new THREE.Raycaster(),ndc=new THREE.Vector2();
+function pick(x,y){ndc.x=x/innerWidth*2-1;ndc.y=-(y/innerHeight)*2+1;ray.setFromCamera(ndc,camera);
+ const h=ray.intersectObjects(clickable,false); if(h.length){const u=h[0].object.userData;if(!u.t)return;
+  document.getElementById('ct').textContent=u.t;document.getElementById('cd').textContent=u.d;card.style.display='block';}}
+let tgt=new THREE.Vector3(295,200,195),radius=1350,theta=0.62,phi=1.17;
+function setup(){const el=renderer.domElement;let drag=false,pan=false,px=0,py=0,mv=0;
+ el.addEventListener('contextmenu',e=>e.preventDefault());
+ el.addEventListener('pointerdown',e=>{drag=true;pan=(e.button===2||e.shiftKey);px=e.clientX;py=e.clientY;mv=0;});
+ addEventListener('pointerup',e=>{if(drag&&mv<6)pick(e.clientX,e.clientY);drag=false;});
+ addEventListener('pointermove',e=>{if(!drag)return;const dx=e.clientX-px,dy=e.clientY-py;mv+=Math.abs(dx)+Math.abs(dy);
+  if(pan){const f=new THREE.Vector3().subVectors(tgt,camera.position).normalize();const r=new THREE.Vector3().crossVectors(f,camera.up).normalize();const up=new THREE.Vector3().crossVectors(r,f);
+   tgt.addScaledVector(r,-dx*radius*0.0012);tgt.addScaledVector(up,dy*radius*0.0012);}
+  else{theta-=dx*.005;phi-=dy*.005;phi=Math.max(.1,Math.min(Math.PI-.1,phi));}px=e.clientX;py=e.clientY;});
+ el.addEventListener('wheel',e=>{e.preventDefault();radius*=(1+Math.sign(e.deltaY)*.08);radius=Math.max(200,Math.min(5000,radius));},{passive:false});}
+function anim(){requestAnimationFrame(anim);
+ camera.position.set(tgt.x+radius*Math.sin(phi)*Math.cos(theta),tgt.y+radius*Math.cos(phi),tgt.z+radius*Math.sin(phi)*Math.sin(theta));
+ camera.up.set(0,0,1); camera.lookAt(tgt); renderer.render(scene,camera);}
+init(); requestAnimationFrame(anim);
+</script></body></html>

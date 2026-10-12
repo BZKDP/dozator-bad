@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:,">
+<title>Дозатор БАД — 10 вариаций штифтового затвора</title>
+<style>
+  :root{--bg:#0e1117;--panel:#171b22;--line:#2d3442;--text:#eef2f7;--muted:#9aa5b8;--accent:#4aa8ff;--ok:#66d9a8}
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font-family:Inter,-apple-system,"Segoe UI",Arial,sans-serif}
+  #app{display:grid;grid-template-columns:minmax(560px,1fr) 520px;height:100vh;overflow:hidden}
+  #scene{position:relative;min-width:0;background:#0b0e14}
+  canvas{display:block}
+  #hud{position:absolute;left:14px;top:14px;max-width:560px;padding:10px 12px;border:1px solid rgba(255,255,255,.12);background:rgba(10,13,19,.72);backdrop-filter:blur(8px);border-radius:8px;color:var(--muted);font-size:12px;line-height:1.45}
+  #hud b{color:var(--text)}
+  #err{display:none;position:absolute;left:14px;bottom:14px;max-width:560px;padding:10px 12px;border:1px solid #a33;background:rgba(60,10,10,.85);border-radius:8px;color:#ffb3b3;font-size:12px}
+  #side{background:var(--panel);border-left:1px solid var(--line);overflow:auto}
+  .head{padding:16px 18px 12px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#1b2029,#171b22)}
+  h1{font-size:16px;margin:0 0 6px;font-weight:800}
+  .sub{margin:0;color:var(--muted);font-size:12px;line-height:1.5}
+  .bar{display:flex;gap:8px;padding:10px 18px;border-bottom:1px solid var(--line);align-items:center;flex-wrap:wrap}
+  button{height:32px;border:1px solid var(--line);background:#202633;color:var(--text);border-radius:7px;font-weight:700;cursor:pointer;padding:0 12px;font-size:12px}
+  button:hover{border-color:#455066}
+  button.on{border-color:var(--accent);color:#bfe1ff;background:#162435}
+  input[type=range]{width:110px}
+  .v{border-bottom:1px solid rgba(255,255,255,.06);cursor:pointer}
+  .v .hd{display:grid;grid-template-columns:26px 1fr;gap:10px;padding:10px 18px;align-items:center}
+  .v.sel{background:#131a24}
+  .vn{width:24px;height:24px;border-radius:6px;background:#202633;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;color:#bfe1ff}
+  .v.sel .vn{background:var(--accent);color:#06131f;border-color:transparent}
+  .vt{font-size:13px;font-weight:700;line-height:1.25}
+  .tag{display:inline-block;font-size:10px;font-weight:800;padding:1px 7px;border-radius:4px;margin-left:6px;vertical-align:1px;background:#16233a;color:#8fc0ff}
+  .tag.star{background:#3a2f12;color:#ffd479}
+  .card{display:none;padding:0 18px 12px 54px;font-size:11.5px;color:var(--muted);line-height:1.5}
+  .v.sel .card{display:block}
+  .card b{color:#dfe8f5}
+  .card .ok{color:var(--ok)} .card .warn{color:#ffcf6b}
+  .foot{padding:14px 18px;font-size:12px;color:var(--muted);line-height:1.55}
+  .foot b{color:#fff}
+</style>
+</head>
+<body>
+<div id="app">
+  <main id="scene">
+    <div id="hud"><b>10 вариаций штифтового затвора (твой фаворит №5).</b> Все приводы СВЕРХУ на мостиках, габарит 80 мм.<br>Мышь: ЛКМ — поворот · колесо — зум · ПКМ — сдвиг. <b>Полёт: W/↑ вперёд, S/↓ назад, A/D вбок, Space вверх, Ctrl/C вниз, Shift быстрее.</b> Клик по варианту — подлёт.</div>
+    <div id="err"></div>
+  </main>
+  <aside id="side">
+    <div class="head">
+      <h1>Штифтовой затвор — 10 доработок</h1>
+      <p class="sub">База: Г2 — передний стопор (ход 36), Г1 — разделитель в V-щель между банками 1–2 (ход 26). Варьирую: форму штифта (круглый/плоский/широкий/вилка), направляющую (трубка/щель/конверт) и привод (тяга/коромысло/трос/рейка/кулачок/прямой).</p>
+    </div>
+    <div class="bar">
+      <button id="over" class="on">Обзор всех</button>
+      <button id="play" class="on">Пауза</button>
+      <span style="color:var(--muted);font-size:11px">Скорость</span><input id="speed" type="range" min="0.3" max="2" step="0.1" value="1">
+      <button id="ghost">Прозрачный картон</button>
+    </div>
+    <div id="list"></div>
+    <div class="foot" id="foot"></div>
+  </aside>
+</div>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+}}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+addEventListener('error', ev=>{const d=document.getElementById('err');d.style.display='block';d.textContent='Ошибка: '+(ev.message||ev.error);});
+
+// ---------- константы ----------
+const R=23.5, LANE=75, WALL=5, LANEW=LANE+2*WALL, WALLH=58;
+const LEN=330, H0=170, SLOPE=0.185, TAN=0.187;
+const ZG2=-9.5, ZG1=-56.5, ZPOCKET=-33;
+const yD = z => H0 + (-z)*TAN;
+const slotZ = i => ZPOCKET - 47*i;
+const clamp=THREE.MathUtils.clamp, lerp=THREE.MathUtils.lerp;
+const seg=(p,a,b)=>clamp((p-a)/(b-a),0,1);
+const sm=(p,a,b)=>{const t=seg(p,a,b);return t*t*(3-2*t);};
+const V=(x,y,z)=>new THREE.Vector3(x,y,z);
+
+// ---------- сцена ----------
+const host=document.getElementById('scene');
+const scene=new THREE.Scene(); scene.background=new THREE.Color(0x0b0e14);
+const camera=new THREE.PerspectiveCamera(45,host.clientWidth/host.clientHeight,1,12000);
+camera.position.set(1000,760,1300);
+const renderer=new THREE.WebGLRenderer({antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2)); renderer.setSize(host.clientWidth,host.clientHeight);
+renderer.shadowMap.enabled=true; host.appendChild(renderer.domElement);
+const controls=new OrbitControls(camera,renderer.domElement);
+controls.target.set(0,150,-320); controls.enableDamping=true; controls.maxDistance=6000;
+scene.add(new THREE.HemisphereLight(0xcfdcff,0x24212a,1.15));
+const sun=new THREE.DirectionalLight(0xffffff,1.05); sun.position.set(700,1300,900); sun.castShadow=true;
+sun.shadow.mapSize.set(2048,2048);
+sun.shadow.camera.left=-1600; sun.shadow.camera.right=1600; sun.shadow.camera.top=1600; sun.shadow.camera.bottom=-1600; sun.shadow.camera.far=4500;
+scene.add(sun);
+const ground=new THREE.Mesh(new THREE.PlaneGeometry(7000,7000),new THREE.MeshStandardMaterial({color:0x0f131b,roughness:1}));
+ground.rotation.x=-Math.PI/2; ground.receiveShadow=true; scene.add(ground);
+const grid=new THREE.GridHelper(7000,70,0x273246,0x1a2130); grid.position.y=0.3; scene.add(grid);
+
+// ---------- материалы ----------
+const cardMat=new THREE.MeshStandardMaterial({color:0xcda578,roughness:.95,side:THREE.DoubleSide});
+const baseMat=new THREE.MeshStandardMaterial({color:0x1a212c,roughness:.9});
+const trayMat=new THREE.MeshStandardMaterial({color:0x22303f,roughness:.85});
+const bladeMat=new THREE.MeshStandardMaterial({color:0xf2f4f6,roughness:.5});
+const woodMat=new THREE.MeshStandardMaterial({color:0xc79c60,roughness:.8});
+const servoMat=new THREE.MeshStandardMaterial({color:0x232c3a,roughness:.6});
+const hornMat=new THREE.MeshStandardMaterial({color:0xeef1f4,roughness:.5});
+const brassMat=new THREE.MeshStandardMaterial({color:0xc9a24a,roughness:.35,metalness:.7});
+const jarMat=new THREE.MeshStandardMaterial({color:0xf7f8fa,roughness:.45});
+const capMat=new THREE.MeshStandardMaterial({color:0xe2e6ee,roughness:.5});
+const labMat=new THREE.MeshStandardMaterial({color:0xefe6d4,roughness:.6});
+const slotMat=new THREE.MeshStandardMaterial({color:0x101318,roughness:1});
+const cordMat=new THREE.LineBasicMaterial({color:0xe8edf5});
+const elastMat=new THREE.LineBasicMaterial({color:0xd0524a});
+const edgeMat=new THREE.LineBasicMaterial({color:0x9c7c4e});
+
+function box(w,h,d,mat,par,edges=true){
+  const g=new THREE.BoxGeometry(w,h,d);
+  const m=new THREE.Mesh(g,mat); m.castShadow=m.receiveShadow=true;
+  if(edges&&mat===cardMat) m.add(new THREE.LineSegments(new THREE.EdgesGeometry(g),edgeMat));
+  (par||scene).add(m); return m;
+}
+function cyl(r,h,mat,par,seg2=20){
+  const m=new THREE.Mesh(new THREE.CylinderGeometry(r,r,h,seg2),mat);
+  m.castShadow=true; (par||scene).add(m); return m;
+}
+function marker(par,x,y,z){ const o=new THREE.Object3D(); o.position.set(x,y,z); par.add(o); return o; }
+
+// ---------- серво ----------
+function makeServo(kind,par){
+  const s = kind==='std'
+    ? {W:19.7,H:37,L:40.7,so:10.2,hr:25,shR:2.8}
+    : {W:12.3,H:24,L:23.0,so:5.8, hr:19,shR:2.2};
+  const g=new THREE.Group(); par.add(g);
+  const body=box(s.W,s.H,s.L,servoMat,g,false); body.position.y=-s.H/2-4;
+  const fl=box(s.W,2.6,s.L+9,servoMat,g,false); fl.position.y=-6;
+  const zo=-(s.L/2-s.so);
+  const hub=cyl(s.W*0.42,5,servoMat,g); hub.position.set(0,-2,zo);
+  const shaft=cyl(s.shR,6,brassMat,g); shaft.position.set(0,1,zo);
+  const horn=new THREE.Group(); horn.position.set(0,3.5,zo); g.add(horn);
+  cyl(3.4,3,hornMat,horn);
+  const arm=box(4.5,2.6,s.hr,hornMat,horn,false); arm.position.set(0,0,-s.hr/2+2);
+  const tip=marker(horn,0,0,-s.hr+2);
+  return {g,horn,tip,hr:s.hr};
+}
+
+// ---------- банка / подпись / тяга ----------
+function makeJar(par){
+  const g=new THREE.Group(); par.add(g);
+  const b=cyl(R,54,jarMat,g,26); b.rotation.z=Math.PI/2;
+  for(const s of [-1,1]){const c=cyl(R,8,capMat,g,26); c.rotation.z=Math.PI/2; c.position.x=s*31;}
+  const l=cyl(R+0.3,30,labMat,g,26); l.rotation.z=Math.PI/2;
+  return g;
+}
+function label(text,pos,par,sw=210){
+  const c=document.createElement('canvas'); c.width=512; c.height=84; const x=c.getContext('2d');
+  x.fillStyle='rgba(10,14,21,.85)'; x.fillRect(0,0,512,84);
+  x.strokeStyle='#4aa8ff'; x.lineWidth=5; x.strokeRect(3,3,506,78);
+  x.fillStyle='#eef5ff'; x.font='800 28px Segoe UI,Arial'; x.textAlign='center'; x.textBaseline='middle'; x.fillText(text,256,42);
+  const s=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),transparent:true,depthTest:false}));
+  s.scale.set(sw,sw*84/512,1); s.position.copy(pos); par.add(s); return s;
+}
+function makeRod(par){ const m=new THREE.Mesh(new THREE.CylinderGeometry(1.3,1.3,1,10),brassMat); par.add(m); return m; }
+const _up=V(0,1,0), _d=new THREE.Vector3(), _a=new THREE.Vector3(), _b=new THREE.Vector3();
+function linkRod(M,rod,objA,objB){
+  objA.getWorldPosition(_a); objB.getWorldPosition(_b);
+  M.worldToLocal(_a); M.worldToLocal(_b);
+  const len=Math.max(_a.distanceTo(_b),1); rod.scale.set(1,len,1);
+  rod.position.copy(_a).add(_b).multiplyScalar(.5);
+  _d.copy(_b).sub(_a).normalize(); rod.quaternion.setFromUnitVectors(_up,_d);
+}
+
+// ---------- общие узлы штифтовой концепции ----------
+function bridgePlate(zb,M,w=30){
+  const y=yD(zb)+WALLH+2;
+  const pl=box(LANEW-1,4,w,cardMat,M); pl.position.set(0,y,zb);
+  return y;
+}
+// параметры гейтов: Г1 — в V-щель, Г2 — полный стопор
+function gGeom(zb,kind){
+  const yb=yD(zb);
+  return kind==='g1' ? {yb, closedBot:yb+32, stroke:26} : {yb, closedBot:yb+13, stroke:36};
+}
+// направляющие
+function tubeRound(zb,plY,M){ const t=cyl(3.4,26,trayMat,M); t.position.set(0,plY+6,zb); return t; }
+function guideFlat(zb,plY,M,w){
+  for(const dz of [-3.4,3.4]){ const p=box(w+12,26,2.5,cardMat,M); p.position.set(0,plY+6,zb+dz); }
+  for(const sx of [-1,1]){ const c=box(4,26,9,cardMat,M); c.position.set(sx*(w/2+4),plY+6,zb); }
+}
+// штифты
+function pinRound(len,M){ const p=cyl(1.6,len,woodMat,M,10); return p; }
+function pinFlat(wid,len,M){ const p=box(wid,len,3,bladeMat,M,false); return p; }
+
+// ---------- хореография ----------
+function jarStack(mod,adv,nudge){
+  for(let i=1;i<5;i++){
+    const j=mod.jars[i], z=slotZ(i)+adv+nudge;
+    j.position.set(0,yD(z)+R,z); j.rotation.x=-(adv+nudge)/R;
+  }
+}
+function jarExitRoll(j0,pz,pf){
+  const z=lerp(ZPOCKET,55,pz);
+  const yTop=yD(Math.min(z,0))+R;
+  j0.position.set(0,lerp(yTop,45.5,pf*pf),z);
+  j0.rotation.x=-(z-ZPOCKET)/R;
+}
+function choreTwoGate(mod,p,setG1,setG2){
+  setG1(sm(p,0,.10)-sm(p,.55,.65));
+  setG2(sm(p,.12,.22)-sm(p,.45,.55));
+  const nudge=-2*(sm(p,0,.10)-sm(p,.65,.80));
+  const adv=47*sm(p,.65,.88);
+  jarExitRoll(mod.jars[0],sm(p,.22,.46),sm(p,.40,.56));
+  jarStack(mod,adv,nudge);
+}
+function choreAlt(mod,p,setT){
+  const t=sm(p,0,.15)-sm(p,.42,.58);
+  setT(t);
+  const adv=47*sm(p,.58,.85);
+  jarExitRoll(mod.jars[0],sm(p,.17,.40),sm(p,.36,.52));
+  jarStack(mod,adv,-2*t);
+}
+
+// ---------- 10 вариаций ----------
+const KINDS=[
+ {id:'base',t:'Базовый: шпажки Ø3 в трубках + тяги',card:
+  '<b>Как в галерее, вылизанный.</b> Трубка — жёсткая соломинка/корпус ручки, вклеена в мостик. Шпажку натереть свечкой. Тяга — скрепка Ø1,2 от рога 19 мм.<br>'+
+  '<b>Улучшение:</b> взять шпажку Ø5 (палочка для шашлыка) + трубку Ø7 — жёстче, не гнётся при ударе стопки.<br>'+
+  '<b>Расчёт:</b> усилия <1 Н, ходы 26/36 мм — MG90S с запасом 10×+.<br>'+
+  '<span class="ok">Плюсы: минимум деталей, всё сверху.</span> <span class="warn">Риски: круглый штифт может вращаться и гнуться; точечный контакт с банкой.</span> ★★★☆☆'},
+ {id:'flat',t:'Плоские ножи 20 мм в щелевых направляющих',card:
+  '<b>То, что ты просил вместо трубок.</b> Штифт — полоска ПВХ/фанеры 20×3; направляющая — «щель» из двух картонных пластин с боковыми щёчками (зазор 4 мм).<br>'+
+  '<b>Чем лучше трубки:</b> нож не вращается, контакт с банкой 20 мм вместо точки, направляющая клеится из того же картона 5 минут.<br>'+
+  '<b>Расчёт:</b> трение больше, чем у шпажки — натереть парафином; усилие ~1,5 Н — запас 8×.<br>'+
+  '<span class="ok">Плюсы: технологично, надёжный контакт, нет токарки.</span> <span class="warn">Риски: перекос при слишком плотной щели — держать зазор 0,5–1 мм.</span> ★★☆☆☆'},
+ {id:'wide',t:'Широкая мини-гильотина 40 мм в конверте',card:
+  '<b>Ещё шире:</b> пластина 40×3 в картонном «конверте»-кармане (две пластины + щёчки). Почти полноценная гильотина, но лёгкая (~5 г) и короткая.<br>'+
+  '<b>Зачем:</b> банку держит по трети длины — никакого перекоса и проскока; Г1 давит на обе банки при врезании равномерно.<br>'+
+  '<b>Расчёт:</b> усилие до 2 Н с трением — запас MG90S 5×.<br>'+
+  '<span class="ok">Плюсы: максимально надёжное перекрытие из «плоской» серии.</span> <span class="warn">Риски: тяжелее — тягу делать жёсткую; конверт клеить ровно.</span> ★★★☆☆'},
+ {id:'fork',t:'Вилка-двузубец: 2 шпажки на одной штанге',card:
+  '<b>Два зуба Ø3 с шагом 36 мм на общей перекладине</b>, каждая в своей трубке. Банку держит в ДВУХ точках ближе к краям — не может перекоситься и провернуться.<br>'+
+  '<b>Г1-вилка</b> входит в V-щель двумя зубьями — стопка отжимается ровно, без перекоса на одну сторону.<br>'+
+  '<b>Расчёт:</b> усилие как у базового; жёсткость выше вдвое.<br>'+
+  '<span class="ok">Плюсы: надёжность базового ×2 почти без усложнения.</span> <span class="warn">Риски: две трубки должны быть строго параллельны — клеить по кондуктору (кусок картона с двумя отверстиями).</span> ★★★☆☆'},
+ {id:'seesaw',t:'Коромысло: ОДНО серво на оба штифта',star:true,card:
+  '<b>Главный кандидат.</b> Над двумя штифтами — качающаяся балка на оси (шпажка в стойках). Концы балки тягами связаны со штифтами: Г2 вниз ↔ Г1 вверх и наоборот. <b>Серво одно</b>, сидит на оси балки.<br>'+
+  '<b>Механическая гарантия:</b> оба штифта открыть одновременно НЕВОЗМОЖНО — балка жёсткая. 28 серво на весь дозатор вместо 56.<br>'+
+  '<b>Расчёт:</b> плечи 23,5 мм, усилие суммарно ~2 Н → 4,7 Н·см — запас MG90S 4×.<br>'+
+  '<span class="ok">Плюсы: экономия серво ×2, отказобезопасность, все плюсы штифтов.</span> <span class="warn">Риски: анти-фаза строгая (нет паузы «оба закрыты») — проверить на прототипе, что банка не проскакивает в момент переключения.</span> ★★★★☆'},
+ {id:'cord',t:'Тросик вверх + резинка-возврат вниз',card:
+  '<b>Вместо тяг:</b> серво лежит на мостике, барабан Ø16 наматывает нить и ПОДНИМАЕТ штифт; вниз штифт возвращает резинка (банковская), натянутая к мостику.<br>'+
+  '<b>Зачем:</b> ноль шарниров, серво можно ставить плашмя как угодно, нить прощает несоосность.<br>'+
+  '<b>Расчёт:</b> резинка ~1 Н + штифт: момент на барабане 1,6 Н·см — запас 12×.<br>'+
+  '<span class="ok">Плюсы: сборка проще всех «тяговых», самоустановка.</span> <span class="warn">Риски: резинка стареет (менять раз в полгода); нить настроить по длине.</span> ★★☆☆☆'},
+ {id:'rack',t:'Рейка-шестерня (печать на Ender 3)',card:
+  '<b>Плоский нож 20 мм с зубчатой рейкой</b> на лицевой стороне; на роге серво — шестерня Ø16 m1 (напечатать, 10 минут печати). Щелевая направляющая как в №2.<br>'+
+  '<b>Зачем:</b> абсолютно жёсткий и точный ход в обе стороны, позиционирование до градуса, ничего не болтается.<br>'+
+  '<b>Расчёт:</b> ход 36 мм = 260° поворота; нагрузки мизерные.<br>'+
+  '<span class="ok">Плюсы: самый точный и «промышленный» вариант.</span> <span class="warn">Риски: печатать 56 шестерён (2 часа на все); зацепление настроить прокладками.</span> ★★★★☆'},
+ {id:'cam',t:'Кулачок-эксцентрик под пятку штифта',card:
+  '<b>Без тяг и шарниров вообще:</b> на роге серво — эксцентриковый диск (Ø44, смещение 18); штифт пяткой лежит на диске. Поворот на 180° = подъём 36 мм. Вниз — весом (грузик 10 г).<br>'+
+  '<b>Зачем:</b> одна деталь передачи, никаких люфтов тяг, плавный синусоидальный ход.<br>'+
+  '<b>Расчёт:</b> момент на кулачке ≈1 Н × 1,8 см = 1,8 Н·см — запас 10×.<br>'+
+  '<span class="ok">Плюсы: минимальная кинематика, легко печатать/резать из фанеры.</span> <span class="warn">Риски: пятка должна скользить по диску — шлифануть/навощить; возврат только весом.</span> ★★★☆☆'},
+ {id:'tilt',t:'Наклонный Г1-штифт «в клин» 20°',card:
+  '<b>Доработка слабого места — врезания Г1.</b> Трубка Г1 наклонена на 20° (низ к стопке): опускаясь, штифт работает клином вдоль щели — плавно отжимает стопку назад и заходит ГЛУБЖЕ (до высоты +26 мм вместо +32).<br>'+
+  '<b>Г2 обычный вертикальный.</b> Привод обоих — тяги, как в базовом.<br>'+
+  '<b>Расчёт:</b> осевое усилие врезания падает ~на треть (клин); глубже зашёл — надёжнее держит.<br>'+
+  '<span class="ok">Плюсы: надёжнее всех держит стопку при ударе.</span> <span class="warn">Риски: наклонную трубку выставить по шаблону-уголку.</span> ★★★☆☆'},
+ {id:'swing',t:'Штифт-маятник прямо на роге (без направляющих)',card:
+  '<b>Максимальное упрощение:</b> к рогу серво жёстко приклеена штанга 40 мм с поперечным пальцем на конце. Подшипник серво = направляющая. Палец качается по дуге: вниз — блокирует, вверх-в-гору — открыл.<br>'+
+  '<b>Деталей:</b> серво + палочка. Всё.<br>'+
+  '<b>Расчёт:</b> момент от стопки на плече 4 см ≈ 10 Н·см — MG90S на пределе (21 стоп), лучше MG996R на Г2.<br>'+
+  '<span class="ok">Плюсы: самый дешёвый и быстрый в сборке (5 минут на гейт).</span> <span class="warn">Риски: дуга — палец гуляет по z на ±4 мм (заложить зазор); серво держит удар напрямую.</span> ★★☆☆☆'},
+];
+
+// ---------- модуль ----------
+const modules=[];
+const colX=i=>(i%5-2)*430, rowZ=i=>i<5?0:-820;
+
+function buildLaneBase(M){
+  const base=box(190,10,470,baseMat,M,false); base.position.set(0,5,-155);
+  const ramp=new THREE.Group(); ramp.position.set(0,H0,0); ramp.rotation.x=SLOPE; M.add(ramp);
+  const f=box(LANEW,5,LEN,cardMat,ramp); f.position.set(0,-2.5,-LEN/2);
+  for(const s of [-1,1]){const w=box(WALL,WALLH,LEN,cardMat,ramp); w.position.set(s*(LANE/2+WALL/2),WALLH/2,-LEN/2);}
+  const fp=box(LANEW+10,H0-35,5,cardMat,M); fp.position.set(0,(H0-35)/2,1);
+  for(const s of [-1,1]){const leg=box(8,H0+LEN*TAN-10,8,baseMat,M,false); leg.position.set(s*38,(H0+LEN*TAN-10)/2,-LEN+8);}
+  const tr=box(96,12,80,trayMat,M,false); tr.position.set(0,16,55);
+}
+
+// стандартный узел: гейт со штифтом + серво + тяга (возвращает setOpen)
+function stdGate(M,zb,kind,pinKind){
+  const G=gGeom(zb,kind), plY=bridgePlate(zb,M);
+  let pin, pinLen;
+  if(pinKind==='round'){ pinLen=(kind==='g1')?34:48; tubeRound(zb,plY,M); pin=pinRound(pinLen,M); }
+  else if(pinKind==='flat20'){ pinLen=(kind==='g1')?36:50; guideFlat(zb,plY,M,20); pin=pinFlat(20,pinLen,M); }
+  else if(pinKind==='flat40'){ pinLen=(kind==='g1')?36:50; guideFlat(zb,plY,M,40); pin=pinFlat(40,pinLen,M); }
+  const yClosed=G.closedBot+pinLen/2;
+  pin.position.set(0,yClosed,zb);
+  const top=marker(pin,0,pinLen/2,0);
+  const sv=makeServo('micro',M); sv.g.rotation.z=Math.PI/2; sv.g.position.set(8,plY+14,zb);
+  const rod=makeRod(M);
+  return { pin, setOpen(o){
+      pin.position.y=yClosed+o*G.stroke;
+      sv.horn.rotation.y=lerp(-1.1,1.1,o);
+      linkRod(M,rod,sv.tip,top);
+  }};
+}
+
+function buildModule(i){
+  const kind=KINDS[i];
+  const M=new THREE.Group(); M.position.set(colX(i),0,rowZ(i)); scene.add(M);
+  const mod={root:M,update:null,jars:[],i};
+  buildLaneBase(M);
+  for(let k=0;k<5;k++){const j=makeJar(M); const z=slotZ(k); j.position.set(0,yD(z)+R,z); mod.jars.push(j);}
+  label((i+1)+'. '+kind.t.split(':')[0].split(' (')[0], V(0,330,-150), M, 235);
+
+  const K=kind.id;
+  if(K==='base'){
+    const g1=stdGate(M,ZG1,'g1','round'), g2=stdGate(M,ZG2,'g2','round');
+    mod.update=p=>choreTwoGate(mod,p, c=>g1.setOpen(1-c), o=>g2.setOpen(o));
+  }
+  else if(K==='flat'){
+    const g1=stdGate(M,ZG1,'g1','flat20'), g2=stdGate(M,ZG2,'g2','flat20');
+    mod.update=p=>choreTwoGate(mod,p, c=>g1.setOpen(1-c), o=>g2.setOpen(o));
+  }
+  else if(K==='wide'){
+    const g1=stdGate(M,ZG1,'g1','flat40'), g2=stdGate(M,ZG2,'g2','flat40');
+    mod.update=p=>choreTwoGate(mod,p, c=>g1.setOpen(1-c), o=>g2.setOpen(o));
+  }
+  else if(K==='fork'){
+    const mk=(zb,gk)=>{
+      const G=gGeom(zb,gk), plY=bridgePlate(zb,M);
+      const pinLen=(gk==='g1')?34:48;
+      const yoke=new THREE.Group(); M.add(yoke);
+      const bar=box(44,5,4,bladeMat,yoke,false); bar.position.set(0,pinLen/2+2,0);
+      for(const sx of [-1,1]){
+        const t=cyl(3.4,26,trayMat,M); t.position.set(sx*18,plY+6,zb);
+        const p=cyl(1.6,pinLen,woodMat,yoke,10); p.position.set(sx*18,0,0);
+      }
+      const yClosed=G.closedBot+pinLen/2;
+      yoke.position.set(0,yClosed,zb);
+      const top=marker(yoke,0,pinLen/2+4,0);
+      const sv=makeServo('micro',M); sv.g.rotation.z=Math.PI/2; sv.g.position.set(8,plY+14,zb);
+      const rod=makeRod(M);
+      return { setOpen(o){ yoke.position.y=yClosed+o*G.stroke; sv.horn.rotation.y=lerp(-1.1,1.1,o); linkRod(M,rod,sv.tip,top); } };
+    };
+    const g1=mk(ZG1,'g1'), g2=mk(ZG2,'g2');
+    mod.update=p=>choreTwoGate(mod,p, c=>g1.setOpen(1-c), o=>g2.setOpen(o));
+  }
+  else if(K==='seesaw'){
+    // общий длинный мостик над обоими гейтами
+    const plY=yD(ZPOCKET)+WALLH+2;
+    const pl=box(LANEW-1,4,84,cardMat,M); pl.position.set(0,plY,ZPOCKET);
+    const G1=gGeom(ZG1,'g1'), G2=gGeom(ZG2,'g2');
+    const l1=34,l2=48;
+    const t1=cyl(3.4,26,trayMat,M); t1.position.set(0,plY+6,ZG1);
+    const t2=cyl(3.4,26,trayMat,M); t2.position.set(0,plY+6,ZG2);
+    const p1=pinRound(l1,M), p2=pinRound(l2,M);
+    const y1c=G1.closedBot+l1/2, y2c=G2.closedBot+l2/2;
+    p1.position.set(0,y1c+G1.stroke,ZG1); p2.position.set(0,y2c,ZG2);
+    const m1=marker(p1,0,l1/2,0), m2=marker(p2,0,l2/2,0);
+    // стойки + ось + балка
+    for(const sx of [-1,1]){const up=box(4,16,6,cardMat,M); up.position.set(sx*10,plY+10,ZPOCKET);}
+    const beam=new THREE.Group(); beam.position.set(0,plY+18,ZPOCKET); M.add(beam);
+    const bb=box(5,4,56,bladeMat,beam,false);
+    const axle=cyl(1.6,30,woodMat,beam,10); axle.rotation.z=Math.PI/2;
+    const e1=marker(beam,0,0,-23.5), e2=marker(beam,0,0,23.5);
+    const sv=makeServo('micro',M); sv.g.rotation.z=Math.PI/2; sv.g.position.set(6,plY+18,ZPOCKET);
+    const r1=makeRod(M), r2=makeRod(M);
+    mod.update=p=>choreAlt(mod,p,t=>{
+      beam.rotation.x=lerp(0.2,-0.2,t);
+      sv.horn.rotation.y=beam.rotation.x;
+      p1.position.y=y1c+(1-t)*G1.stroke;
+      p2.position.y=y2c+t*G2.stroke;
+      linkRod(M,r1,e1,m1); linkRod(M,r2,e2,m2);
+    });
+  }
+  else if(K==='cord'){
+    const mk=(zb,gk)=>{
+      const G=gGeom(zb,gk), plY=bridgePlate(zb,M,34);
+      const pinLen=(gk==='g1')?34:48;
+      tubeRound(zb,plY,M);
+      const pin=pinRound(pinLen,M);
+      const yClosed=G.closedBot+pinLen/2;
+      pin.position.set(0,yClosed,zb);
+      const sv=makeServo('micro',M); sv.g.rotation.z=Math.PI/2; sv.g.position.set(10,plY+16,zb);
+      const drum=cyl(8,10,trayMat,sv.horn);
+      const anchor=V(0,plY+2,zb+12);
+      const cord=new THREE.Line(new THREE.BufferGeometry(),cordMat); M.add(cord);
+      const elast=new THREE.Line(new THREE.BufferGeometry(),elastMat); M.add(elast);
+      return { setOpen(o){
+        pin.position.y=yClosed+o*G.stroke;
+        sv.horn.rotation.y=o*4.2;
+        const topY=pin.position.y+pinLen/2;
+        cord.geometry.setFromPoints([V(6,plY+10,zb),V(0,topY,zb)]);
+        elast.geometry.setFromPoints([V(0,pin.position.y+4,zb),anchor]);
+      }};
+    };
+    const g1=mk(ZG1,'g1'), g2=mk(ZG2,'g2');
+    mod.update=p=>choreTwoGate(mod,p, c=>g1.setOpen(1-c), o=>g2.setOpen(o));
+  }
+  else if(K==='rack'){
+    const mk=(zb,gk)=>{
+      const G=gGeom(zb,gk), plY=bridgePlate(zb,M);
+      const pinLen=(gk==='g1')?36:50;
+      guideFlat(zb,plY,M,20);
+      const pin=pinFlat(20,pinLen,M);
+      const rk=box(4,pinLen-6,2,slotMat,pin,false); rk.position.set(8,0,2.5);
+      const yClosed=G.closedBot+pinLen/2;
+      pin.position.set(0,yClosed,zb);
+      const sv=makeServo('micro',M); sv.g.rotation.z=Math.PI/2; sv.g.position.set(8,plY+18,zb);
+      const gear=cyl(8,8,trayMat,sv.horn);
+      return { setOpen(o){ pin.position.y=yClosed+o*G.stroke; sv.horn.rotation.y=-o*G.stroke/8; } };
+    };
+    const g1=mk(ZG1,'g1'), g2=mk(ZG2,'g2');
+    mod.update=p=>choreTwoGate(mod,p, c=>g1.setOpen(1-c), o=>g2.setOpen(o));
+  }
+  else if(K==='cam'){
+    const mk=(zb,gk)=>{
+      const G=gGeom(zb,gk), plY=bridgePlate(zb,M,34);
+      const pinLen=(gk==='g1')?34:48, e=G.stroke/2;
+      tubeRound(zb,plY,M);
+      const pin=pinRound(pinLen,M);
+      const heel=box(12,3,14,bladeMat,pin,false); heel.position.set(6,-pinLen/2+2,0);
+      const yClosed=G.closedBot+pinLen/2;
+      pin.position.set(0,yClosed,zb);
+      const wgt=cyl(6,4,brassMat,pin); wgt.rotation.x=Math.PI/2; wgt.position.set(0,pinLen/2-4,0);
+      const sv=makeServo('micro',M); sv.g.rotation.z=Math.PI/2; sv.g.position.set(10,plY+22,zb);
+      const disk=cyl(e+4,6,trayMat,sv.horn); disk.position.set(0,0,-e);
+      return { setOpen(o){ pin.position.y=yClosed+e*(1-Math.cos(o*Math.PI)); sv.horn.rotation.y=o*Math.PI; } };
+    };
+    const g1=mk(ZG1,'g1'), g2=mk(ZG2,'g2');
+    mod.update=p=>choreTwoGate(mod,p, c=>g1.setOpen(1-c), o=>g2.setOpen(o));
+  }
+  else if(K==='tilt'){
+    // Г2 обычный, Г1 наклонён на 20° (низ к стопке)
+    const g2=stdGate(M,ZG2,'g2','round');
+    const G=gGeom(ZG1,'g1'), plY=bridgePlate(ZG1,M,34);
+    const tiltG=new THREE.Group(); tiltG.position.set(0,plY+6,ZG1+16); tiltG.rotation.x=0.35; M.add(tiltG);
+    const tube=cyl(3.4,26,trayMat,tiltG);
+    const pin=cyl(1.6,36,woodMat,M,10);
+    const dir=V(0,Math.cos(0.35),Math.sin(0.35));   // низ штифта смотрит В ГОРУ, к стопке
+    const base=V(0,G.yb+45,ZG1+9);
+    pin.rotation.x=0.35;
+    const top=marker(pin,0,18,0);
+    const sv=makeServo('micro',M); sv.g.rotation.z=Math.PI/2; sv.g.position.set(8,plY+16,ZG1);
+    const rod=makeRod(M);
+    const setG1=(o)=>{
+      const d=o*G.stroke;
+      pin.position.set(base.x+dir.x*d, base.y+dir.y*d, base.z+dir.z*d);
+      sv.horn.rotation.y=lerp(-1.1,1.1,o);
+      linkRod(M,rod,sv.tip,top);
+    };
+    setG1(1);
+    mod.update=p=>choreTwoGate(mod,p, c=>setG1(1-c), o=>g2.setOpen(o));
+  }
+  else if(K==='swing'){
+    const mk=(zb,gk)=>{
+      const plY=bridgePlate(zb,M,26);
+      const sv=makeServo('micro',M); sv.g.rotation.z=Math.PI/2; sv.g.position.set(8,plY+2,zb);
+      const arm=box(4,40,3,woodMat,sv.horn,false);
+      // рука вниз от рога: в локале рога X→мир Y
+      arm.rotation.z=Math.PI/2; arm.position.set(-20,0,0);
+      const poker=cyl(1.6,30,woodMat,sv.horn,10); poker.position.set(-40,0,0);
+      return sv;
+    };
+    const s1=mk(ZG1,'g1'), s2=mk(ZG2,'g2');
+    mod.update=p=>choreTwoGate(mod,p,
+      c=>{ s1.horn.rotation.y=-(1-c)*1.35; },
+      o=>{ s2.horn.rotation.y=-o*1.35; });
+  }
+  modules.push(mod);
+}
+for(let i=0;i<10;i++){ try{ buildModule(i); }catch(e){ console.error('variant',i+1,e);
+  const d=document.getElementById('err'); d.style.display='block'; d.textContent='Вариант '+(i+1)+': '+(e.message||e); } }
+
+// ---------- список / камера ----------
+const list=document.getElementById('list');
+KINDS.forEach((k,i)=>{
+  const tag=k.star?'<span class="tag star">1 СЕРВО</span>':'<span class="tag">ВЕРХ</span>';
+  list.insertAdjacentHTML('beforeend',
+   '<div class="v" data-i="'+i+'"><div class="hd"><div class="vn">'+(i+1)+'</div><div class="vt">'+k.t+tag+'</div></div><div class="card">'+k.card+'</div></div>');
+});
+document.getElementById('foot').innerHTML=
+ '<b>Рекомендация:</b> основной — №5 коромысло (1 серво на дорожку, анти-фаза механически); '+
+ 'форма штифта — №2 плоские в щели (то, что ты просил вместо трубок) или №4 вилка для надёжности. '+
+ 'Идеальная связка: коромысло №5 + плоские ножи №2 + наклонный Г1 №9 — могу собрать её отдельным детальным чертежом.';
+
+let camT=null;
+function flyTo(pos,tgt){ camT={p0:camera.position.clone(),t0:controls.target.clone(),p1:pos,t1:tgt,s:performance.now()/1000}; }
+function select(i){
+  document.querySelectorAll('.v').forEach(el=>el.classList.toggle('sel',+el.dataset.i===i));
+  document.getElementById('over').classList.remove('on');
+  const mx=colX(i), mz=rowZ(i);
+  flyTo(V(mx+300,340,mz+330), V(mx,170,mz-90));
+}
+list.addEventListener('click',e=>{ const v=e.target.closest('.v'); if(v) select(+v.dataset.i); });
+document.getElementById('over').onclick=e=>{
+  document.querySelectorAll('.v').forEach(el=>el.classList.remove('sel'));
+  e.target.classList.add('on'); flyTo(V(1000,760,1300),V(0,150,-320));
+};
+
+// ---------- управление ----------
+let playing=true, speed=1, acc=0, last=performance.now()/1000;
+const PERIOD=5.5;
+document.getElementById('play').onclick=e=>{ playing=!playing; e.target.textContent=playing?'Пауза':'Пуск'; e.target.classList.toggle('on',playing); };
+document.getElementById('speed').oninput=e=>speed=parseFloat(e.target.value);
+document.getElementById('ghost').onclick=e=>{
+  cardMat.transparent=!cardMat.transparent; cardMat.opacity=cardMat.transparent?0.35:1; cardMat.needsUpdate=true;
+  e.target.classList.toggle('on',cardMat.transparent);
+};
+addEventListener('resize',()=>{ camera.aspect=host.clientWidth/host.clientHeight; camera.updateProjectionMatrix(); renderer.setSize(host.clientWidth,host.clientHeight); });
+
+// ---------- полёт камеры ----------
+const keys={};
+addEventListener('keydown',e=>{ if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','PageUp','PageDown','Space'].includes(e.code)) e.preventDefault(); keys[e.code]=true; });
+addEventListener('keyup',e=>{ keys[e.code]=false; });
+addEventListener('blur',()=>{ for(const k in keys) keys[k]=false; });
+const _fwd=new THREE.Vector3(), _rt=new THREE.Vector3(), _mv=new THREE.Vector3();
+function flyCamera(dt){
+  let f=0,s=0,u=0;
+  if(keys['ArrowUp']||keys['KeyW']) f+=1;
+  if(keys['ArrowDown']||keys['KeyS']) f-=1;
+  if(keys['ArrowRight']||keys['KeyD']) s+=1;
+  if(keys['ArrowLeft']||keys['KeyA']) s-=1;
+  if(keys['Space']||keys['KeyE']) u+=1;
+  if(keys['ControlLeft']||keys['ControlRight']||keys['KeyC']||keys['KeyQ']) u-=1;
+  if(!f&&!s&&!u) return false;
+  const spd=(keys['ShiftLeft']||keys['ShiftRight']?2800:1000)*dt;
+  _fwd.subVectors(controls.target,camera.position).normalize();
+  _rt.crossVectors(_fwd,camera.up).normalize();
+  _mv.set(0,0,0).addScaledVector(_fwd,f*spd).addScaledVector(_rt,s*spd).addScaledVector(camera.up,u*spd);
+  camera.position.add(_mv); controls.target.add(_mv);
+  return true;
+}
+
+function loop(){
+  requestAnimationFrame(loop);
+  const now=performance.now()/1000, dt=Math.min(now-last,0.1); last=now;
+  if(playing) acc+=dt*speed;
+  const p=(acc%PERIOD)/PERIOD;
+  for(const m of modules){ if(m.update){ try{ m.update(p); }catch(e){ m.update=null; console.error(e); } } }
+  if(flyCamera(dt)) camT=null;
+  if(camT){ const u=Math.min(1,(now-camT.s)/0.9), e2=u*u*(3-2*u);
+    camera.position.lerpVectors(camT.p0,camT.p1,e2); controls.target.lerpVectors(camT.t0,camT.t1,e2);
+    if(u>=1) camT=null; }
+  controls.update(); renderer.render(scene,camera);
+}
+loop();
+</script>
+</body>
+</html>

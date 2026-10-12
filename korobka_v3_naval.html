@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Навал ×3 канала — рабочая архитектура с размерами</title>
+<style>
+  html,body{margin:0;height:100%;background:#0f1216;color:#e6e6e6;font-family:Segoe UI,Arial,sans-serif;overflow:hidden}
+  #ui{position:fixed;top:12px;left:12px;z-index:10;background:rgba(20,24,30,.85);padding:14px 16px;border-radius:12px;max-width:350px;box-shadow:0 6px 24px rgba(0,0,0,.4);font-size:13px;line-height:1.55}
+  #ui h1{font-size:15px;margin:0 0 8px}
+  #ui b{color:#7fd1ff}
+  #ui .dims{color:#9fb2c6;font-size:12px}
+  #help{position:fixed;bottom:12px;left:12px;z-index:10;background:rgba(20,24,30,.75);padding:8px 12px;border-radius:10px;font-size:12px;color:#9fb2c6}
+</style>
+</head>
+<body>
+<div id="ui">
+  <h1>В·Навал · 3 канала · коробка 400×300×300</h1>
+  <div id="cap"></div>
+</div>
+<div id="help">🖱 ЛКМ — вращать · колесо — зум · <b>стрелки/WASD</b> — лететь · <b>R/F</b> — вверх/вниз</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// ================= параметры =================
+const POD=100;                // подиум (лоток при 15° ныряет вниз — нужен запас)
+const Y0=POD+2.5;             // внутреннее дно коробки
+const IN={w:395,h:295,d:295}, T=2.5;
+const JD=47,JR=23.5,JL=70,LANEW=75,PITCH=78;
+const TILT=15*Math.PI/180, TAN=Math.tan(TILT); // 15°: капсулы внутри демпфируют качение, 10° мало
+const PLATE_X=110, GAPV=55;   // калибр-щиток: позиция и зазор
+const LANE_LEN=220;           // внешний лоток
+const CARD=0xc8a16a, EXITC=0x54c079, PRINT=0xd98a3f;
+const SKU=[0x4e93c8,0xd08a4e,0x9a5fd0];
+
+let scene,camera,renderer,world;
+const matCard=new THREE.MeshStandardMaterial({color:CARD,roughness:.9});
+const matCardT=new THREE.MeshStandardMaterial({color:CARD,roughness:.9,transparent:true,opacity:.3});
+const matPrint=new THREE.MeshStandardMaterial({color:PRINT,roughness:.6});
+
+function floorY(lx){ return Y0+lx*TAN; }          // пол внутри (lx от выходной стенки)
+function laneY(lx){ return Y0+lx*TAN; }           // лоток снаружи (lx<0) — та же линия
+
+function makeJar(color){
+  const g=new THREE.Group();
+  const b=new THREE.Mesh(new THREE.CylinderGeometry(JR,JR,JL-6,20),
+    new THREE.MeshStandardMaterial({color:color,roughness:.5}));
+  b.rotation.x=Math.PI/2; g.add(b);
+  const c=new THREE.Mesh(new THREE.CylinderGeometry(JR*.68,JR*.68,6,16),
+    new THREE.MeshStandardMaterial({color:0xe8ecef,roughness:.6}));
+  c.rotation.x=Math.PI/2; c.position.z=JL/2-3; g.add(c);
+  return g;
+}
+function bx(w,h,d,mat){ return new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat); }
+function frame(w,h,d,color){ return new THREE.LineSegments(
+  new THREE.EdgesGeometry(new THREE.BoxGeometry(w,h,d)),
+  new THREE.LineBasicMaterial({color:color})); }
+function label(txt,x,y,z,sc){
+  const cv=document.createElement('canvas'); cv.width=320; cv.height=64;
+  const g=cv.getContext('2d'); g.font='bold 34px Segoe UI'; g.fillStyle='#a8e29a';
+  g.textAlign='center'; g.fillText(txt,160,44);
+  const s=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(cv),transparent:true,depthTest:false}));
+  s.position.set(x,y,z); s.scale.set(sc||90,(sc||90)/5,1); world.add(s);
+}
+
+function buildChannel(zc,color){
+  let count=0;
+  // ---- пол 10°, низ на дне у выхода ----
+  const fl=bx(IN.w,4,LANEW,matCard);
+  fl.position.set(T+IN.w/2, Y0+IN.w/2*TAN-2, zc);
+  fl.rotation.z=TILT; world.add(fl);
+  const sup=bx(4,IN.w*TAN,LANEW,matCard);                  // опора дальнего края
+  sup.position.set(T+IN.w-2, Y0+IN.w*TAN/2, zc); world.add(sup);
+  // ---- калибр-щиток ----
+  const pb=floorY(PLATE_X)+GAPV;
+  const pl=bx(4,150,LANEW,matCard);
+  pl.position.set(T+PLATE_X, pb+75, zc); world.add(pl);
+  // ---- навал за щитком ----
+  for(let r=0;r<6;r++){
+    for(let i=0;;i++){
+      const lx=PLATE_X+22+JR+JD*i+(r%2)*JR;
+      if(lx>IN.w-26) break;
+      const y=floorY(lx)+2+JR+41*r;
+      if(y+JR>Y0+245) continue;
+      if(r>0 && lx<PLATE_X+40) continue;                    // не лезем над щитком вплотную
+      const j=makeJar(color); j.position.set(T+lx,y,zc); world.add(j); count++;
+    }
+  }
+  // ---- очередь: под щитком → окно → внешний лоток ----
+  for(const lx of [85,38,-9,-56,-103]){
+    const j=makeJar(color); j.position.set(T+lx,floorY(lx)+2+JR,zc); world.add(j); count++;
+  }
+  // ---- окно выхода ----
+  const w1=frame(4,56,77,EXITC); w1.position.set(T,Y0+28,zc); world.add(w1);
+  // ---- внешний лоток ----
+  const lf=bx(LANE_LEN,3,LANEW,matCard);
+  lf.position.set(T-LANE_LEN/2, laneY(-LANE_LEN/2)-1.5, zc);
+  lf.rotation.z=TILT; world.add(lf);
+  for(const s of[-1,1]){
+    const lw=bx(LANE_LEN,47,3,matCard);
+    lw.position.set(T-LANE_LEN/2, laneY(-LANE_LEN/2)+23.5, zc+s*(LANEW/2+1.5));
+    lw.rotation.z=TILT; world.add(lw);
+  }
+  const gh=laneY(-LANE_LEN+30);                            // косынка-подпорка до стола
+  const gus=bx(3,gh,40,matCard);
+  gus.position.set(T-LANE_LEN+30,gh/2,zc); world.add(gus);
+  // ---- gate12 (макет: рама + серво + ножи) ----
+  const gy=laneY(-142);
+  for(const s of[-1,1]){
+    const sd=bx(84,56,3,matPrint);
+    sd.position.set(T-142, gy+47+18, zc+s*(PITCH/2-1.5)); sd.rotation.z=TILT; world.add(sd);
+  }
+  const sv=bx(13,32,24,new THREE.MeshStandardMaterial({color:0x3a66aa,roughness:.6}));
+  sv.position.set(T-142, gy+75, zc); world.add(sv);
+  const g1=bx(4,40,66,matPrint); g1.position.set(T-117, laneY(-117)+52, zc); g1.rotation.z=TILT; world.add(g1); // Г1 открыт
+  const g2=bx(5,44,66,matPrint); g2.position.set(T-180, laneY(-180)+24, zc); g2.rotation.z=TILT; world.add(g2); // Г2 закрыт
+  const jp=makeJar(color); jp.position.set(T-158, laneY(-158)+2+JR, zc); world.add(jp); count++;   // банка в кармане
+  // ---- приёмный лоток + выданная банка ----
+  const tray=frame(110,40,96,EXITC); tray.position.set(T-262,20,zc); world.add(tray);
+  const jt=makeJar(0x5fd08a); jt.position.set(T-262,JR+2,zc); world.add(jt);
+  // ---- загрузочное окно + губа ----
+  const w2=frame(4,55,74,EXITC); w2.position.set(T+IN.w,Y0+240,zc); world.add(w2);
+  const lip=bx(52,3,74,matCard);
+  lip.position.set(T+IN.w+26,Y0+220,zc); lip.rotation.z=-0.26; world.add(lip);
+  return count;
+}
+
+function build(){
+  // подиум и коробка
+  const pod=bx(400,POD,300,new THREE.MeshStandardMaterial({color:0x2a3340,roughness:.9}));
+  pod.position.set(200,POD/2,150); world.add(pod);
+  const box=frame(400,300,300,0x3a5570); box.position.set(200,POD+150,150); world.add(box);
+  // каналы
+  let total=0;
+  for(let k=0;k<3;k++) total+=buildChannel(T+37.5+PITCH*k,SKU[k]);
+  // перегородки (3-я = закрывающая, дальше запас 61)
+  for(let k=0;k<3;k++){
+    const d=bx(IN.w,IN.h,3,matCardT);
+    d.position.set(200,POD+150,T+LANEW+1.5+PITCH*k); world.add(d);
+  }
+  // подписи
+  label('подиум 100',330,50,-10,90);
+  label('пол 15°',300,POD+140,-14,70);
+  label('щиток · зазор 55 (рег. ±4)',T+PLATE_X,POD+330,40,150);
+  label('110',T+55,POD+95,-14,45);
+  label('окно 77×56',-30,POD+40,-20,90);
+  label('лоток 220 · внутр 75 · борта 47',T-110,POD-15,-20,170);
+  label('gate12 штатно · шаг 78',T-142,POD+150,-20,150);
+  label('загрузка 74×55 + губа',430,POD+250,40,150);
+  label('запас 61 (провода)',200,POD+310,265,130);
+  document.getElementById('cap').innerHTML=
+    'Ёмкость (в модели): <b>'+total+' банок</b> · 3 товара<br>'+
+    'Навал давит на <b>щиток</b>, не на затвор (на Г2 &lt;1 Н)<br>'+
+    'Щиток = и дозатор потока, и опрокидыватель стоячих банок<br>'+
+    '<span class="dims">Каналы внутр. 75 · шаг 78 (=рама gate12) · пол 15° (подъём 106; капсулы внутри '+
+    'демпфируют качение — 10° мало! при 12° пол оклеить глянцевым скотчем) · '+
+    'щиток 75×150 на 110 от выхода, зазор 55 в прорезях ±4 мм · окно выхода 77×56 · '+
+    'внешний лоток 220 (картон 3 мм!) · Г2 в 35 мм от конца, свес выдачи 40 · '+
+    'загрузка «почтовый ящик» 74×55 (банка проходит только лёжа) · подиум 100</span>';
+}
+
+// ================= сцена/управление =================
+function init(){
+  scene=new THREE.Scene(); scene.background=new THREE.Color(0x0f1216);
+  scene.fog=new THREE.Fog(0x0f1216,1000,2400);
+  camera=new THREE.PerspectiveCamera(48,innerWidth/innerHeight,1,5000);
+  renderer=new THREE.WebGLRenderer({antialias:true});
+  renderer.setPixelRatio(devicePixelRatio); renderer.setSize(innerWidth,innerHeight);
+  document.body.appendChild(renderer.domElement);
+  scene.add(new THREE.AmbientLight(0xffffff,.55));
+  const d1=new THREE.DirectionalLight(0xffffff,.85); d1.position.set(300,600,500); scene.add(d1);
+  const d2=new THREE.DirectionalLight(0x88aaff,.3); d2.position.set(-400,200,-300); scene.add(d2);
+  const fl=new THREE.Mesh(new THREE.PlaneGeometry(3200,3200),
+    new THREE.MeshStandardMaterial({color:0x161b22,roughness:1}));
+  fl.rotation.x=-Math.PI/2; fl.position.y=-2; scene.add(fl);
+  world=new THREE.Group(); scene.add(world);
+  setupControls();
+  addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
+}
+let tgt=new THREE.Vector3(120,190,150), radius=900, theta=-0.85, phi=1.08;
+const keys={};
+function setupControls(){
+  const el=renderer.domElement; let drag=false,px=0,py=0;
+  el.addEventListener('mousedown',e=>{drag=true;px=e.clientX;py=e.clientY;});
+  addEventListener('mouseup',()=>drag=false);
+  addEventListener('mousemove',e=>{
+    if(!drag)return;
+    theta-=(e.clientX-px)*0.006; phi-=(e.clientY-py)*0.006;
+    phi=Math.max(0.15,Math.min(Math.PI-0.15,phi)); px=e.clientX; py=e.clientY;
+  });
+  el.addEventListener('wheel',e=>{e.preventDefault();
+    radius*=(1+Math.sign(e.deltaY)*0.08); radius=Math.max(160,Math.min(2800,radius));},{passive:false});
+  addEventListener('keydown',e=>{keys[e.code]=true; if(e.code.startsWith('Arrow'))e.preventDefault();});
+  addEventListener('keyup',e=>{keys[e.code]=false;});
+}
+function flyStep(){
+  const st=14;
+  const fwd=new THREE.Vector3().subVectors(tgt,camera.position); fwd.y=0; fwd.normalize();
+  const rt=new THREE.Vector3().crossVectors(fwd,new THREE.Vector3(0,1,0)).normalize();
+  if(keys.KeyW||keys.ArrowUp)tgt.addScaledVector(fwd,st);
+  if(keys.KeyS||keys.ArrowDown)tgt.addScaledVector(fwd,-st);
+  if(keys.KeyD||keys.ArrowRight)tgt.addScaledVector(rt,st);
+  if(keys.KeyA||keys.ArrowLeft)tgt.addScaledVector(rt,-st);
+  if(keys.KeyR||keys.PageUp)tgt.y+=st;
+  if(keys.KeyF||keys.PageDown)tgt.y-=st;
+}
+function animate(){
+  requestAnimationFrame(animate);
+  flyStep();
+  camera.position.set(
+    tgt.x+radius*Math.sin(phi)*Math.cos(theta),
+    tgt.y+radius*Math.cos(phi),
+    tgt.z+radius*Math.sin(phi)*Math.sin(theta));
+  camera.lookAt(tgt);
+  renderer.render(scene,camera);
+}
+
+// запуск строго в конце
+init();
+build();
+animate();
+</script>
+</body>
+</html>

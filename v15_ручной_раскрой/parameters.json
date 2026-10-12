@@ -1,0 +1,97 @@
+{
+  "version": "V15-integer-manual-layout",
+  "can_length": 67.0,
+  "can_diameter_nominal": 47.0,
+  "can_diameter_check": 49.0,
+  "lane_count": 5,
+  "lane_clear": 75.0,
+  "lane_pitch": 80.0,
+  "cardboard_thickness": 5.0,
+  "plastic_thickness": 4.0,
+  "plastic_slot_clearance": 0.6,
+  "rear_slot_clearance": 2.0,
+  "slot_end_clearance": 0.8,
+  "depth": 590.0,
+  "body_width": 405.0,
+  "height": 390.0,
+  "rear_wing": 30.0,
+  "rear_half_lap_height": 195.0,
+  "lower_x0": 25.0,
+  "lower_x1": 564.9525368955892,
+  "lower_z0": 42.0,
+  "lower_angle": 15.0,
+  "upper_x0": 25.0,
+  "upper_x1": 534.1456083073115,
+  "upper_z0": 330.0,
+  "upper_angle": 10.0,
+  "support_tongue_min": 30.0,
+  "lower_length": 559.0,
+  "upper_length": 517.0,
+  "lower_rear_z": 186.67984621230912,
+  "upper_rear_z": 240.22389214619704,
+  "upper_rear_gap": 50.85439169268852,
+  "lower_rear_gap": 20.04746310441078,
+  "rear_blank_width": 465.0,
+  "plastic_slot_width": null,
+  "rear_slot_width": 7.0,
+  "manual_lower_slot_corners": [
+    [
+      24,
+      42
+    ],
+    [
+      566,
+      188
+    ],
+    [
+      567,
+      182
+    ],
+    [
+      25,
+      37
+    ]
+  ],
+  "manual_upper_slot_corners": [
+    [
+      24,
+      331
+    ],
+    [
+      535,
+      241
+    ],
+    [
+      535,
+      235
+    ],
+    [
+      23,
+      326
+    ]
+  ],
+  "manual_rear_slot_edges": [
+    [
+      109,
+      116
+    ],
+    [
+      189,
+      196
+    ],
+    [
+      269,
+      276
+    ],
+    [
+      349,
+      356
+    ]
+  ],
+  "manual_internal_rear_notch": [
+    584,
+    195,
+    590,
+    390
+  ]
+}

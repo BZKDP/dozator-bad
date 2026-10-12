@@ -1,0 +1,352 @@
+{
+  "version": "V11 internal two-point cassette lock V2",
+  "legacy_lock_status": "reference only; do not print or install",
+  "legacy_lock_sha256": {
+    "upper": "929fb2c27e55848c9656a41a12369007971a6b76c486d170bd842de5072d6211",
+    "lower": "11e6a5aef512e5f9fe68ecbbc3f0a4ba25526e5df2ad5e5bcef32425eff0a344"
+  },
+  "mechanical_connection": {
+    "divider_fastener": "1 x M4x16 bolt + self-locking nut per bracket",
+    "divider_hole_mm": 4.4,
+    "sheet_locator": "integral peg 3.80 mm",
+    "existing_sheet_hole_mm": 4.2
+  },
+  "divider_hole_centres_mm": {
+    "upper": [
+      15.035672,
+      347.434868
+    ],
+    "lower": [
+      574.924124,
+      160.262112
+    ]
+  },
+  "print_stl": {
+    "upper": "STL_ПЕЧАТЬ\\cassette_xlock_upper_14deg_v2_PRINT.stl",
+    "lower": "STL_ПЕЧАТЬ\\cassette_xlock_lower_15deg_v2_PRINT.stl"
+  },
+  "assembly_stl": {
+    "upper": "STL_ЗАМКИ_СБОРКА\\cassette_xlocks_upper_4_world_v2.stl",
+    "lower": "STL_ЗАМКИ_СБОРКА\\cassette_xlocks_lower_4_world_v2.stl"
+  },
+  "divider_v2_stl": "STL_ЗАМКИ_СБОРКА\\cassette_divider_v2_with_2_M4_holes.stl",
+  "plate_3mf": "PLATES_3MF\\КАССЕТА_8_X_ЗАМКОВ_готовая_220x220.3mf",
+  "plate_objects": 8,
+  "plate_bounds_mm": [
+    [
+      39.0,
+      86.0,
+      0.0
+    ],
+    [
+      175.0,
+      127.3,
+      11.7
+    ]
+  ],
+  "world_lock_bounds_mm": [
+    [
+      2.497012,
+      81.3,
+      153.209493
+    ],
+    [
+      587.472865,
+      325.6,
+      353.539907
+    ]
+  ],
+  "box_depth_check": {
+    "nominal_inside_depth_mm": 595.0,
+    "lock_bounds_inside_nominal_edges": true
+  },
+  "frame_to_world": {
+    "upper": [
+      {
+        "divider_y_mm": 79.0,
+        "matrix_row_major": [
+          [
+            0.970295726,
+            0.0,
+            0.241921896,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            79.0
+          ],
+          [
+            -0.241921896,
+            0.0,
+            0.970295726,
+            345.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      {
+        "divider_y_mm": 158.0,
+        "matrix_row_major": [
+          [
+            0.970295726,
+            0.0,
+            0.241921896,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            158.0
+          ],
+          [
+            -0.241921896,
+            0.0,
+            0.970295726,
+            345.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      {
+        "divider_y_mm": 237.0,
+        "matrix_row_major": [
+          [
+            0.970295726,
+            0.0,
+            0.241921896,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            237.0
+          ],
+          [
+            -0.241921896,
+            0.0,
+            0.970295726,
+            345.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      {
+        "divider_y_mm": 316.0,
+        "matrix_row_major": [
+          [
+            0.970295726,
+            0.0,
+            0.241921896,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            316.0
+          ],
+          [
+            -0.241921896,
+            0.0,
+            0.970295726,
+            345.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      }
+    ],
+    "lower": [
+      {
+        "divider_y_mm": 79.0,
+        "matrix_row_major": [
+          [
+            -0.965925826,
+            0.0,
+            -0.258819045,
+            590.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            79.0
+          ],
+          [
+            -0.258819045,
+            0.0,
+            0.965925826,
+            158.090023534
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      {
+        "divider_y_mm": 158.0,
+        "matrix_row_major": [
+          [
+            -0.965925826,
+            0.0,
+            -0.258819045,
+            590.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            158.0
+          ],
+          [
+            -0.258819045,
+            0.0,
+            0.965925826,
+            158.090023534
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      {
+        "divider_y_mm": 237.0,
+        "matrix_row_major": [
+          [
+            -0.965925826,
+            0.0,
+            -0.258819045,
+            590.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            237.0
+          ],
+          [
+            -0.258819045,
+            0.0,
+            0.965925826,
+            158.090023534
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      {
+        "divider_y_mm": 316.0,
+        "matrix_row_major": [
+          [
+            -0.965925826,
+            0.0,
+            -0.258819045,
+            590.0
+          ],
+          [
+            0.0,
+            -1.0,
+            0.0,
+            316.0
+          ],
+          [
+            -0.258819045,
+            0.0,
+            0.965925826,
+            158.090023534
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      }
+    ]
+  },
+  "collision_checks": [
+    {
+      "kind": "upper",
+      "divider_y_mm": 79.0,
+      "sheet_intersection_mm3": 0.0,
+      "divider_intersection_mm3": 0.0
+    },
+    {
+      "kind": "upper",
+      "divider_y_mm": 158.0,
+      "sheet_intersection_mm3": 0.0,
+      "divider_intersection_mm3": 0.0
+    },
+    {
+      "kind": "upper",
+      "divider_y_mm": 237.0,
+      "sheet_intersection_mm3": 0.0,
+      "divider_intersection_mm3": 0.0
+    },
+    {
+      "kind": "upper",
+      "divider_y_mm": 316.0,
+      "sheet_intersection_mm3": 0.0,
+      "divider_intersection_mm3": 0.0
+    },
+    {
+      "kind": "lower",
+      "divider_y_mm": 79.0,
+      "sheet_intersection_mm3": 0.0,
+      "divider_intersection_mm3": 0.0
+    },
+    {
+      "kind": "lower",
+      "divider_y_mm": 158.0,
+      "sheet_intersection_mm3": 0.0,
+      "divider_intersection_mm3": 0.0
+    },
+    {
+      "kind": "lower",
+      "divider_y_mm": 237.0,
+      "sheet_intersection_mm3": 0.0,
+      "divider_intersection_mm3": 0.0
+    },
+    {
+      "kind": "lower",
+      "divider_y_mm": 316.0,
+      "sheet_intersection_mm3": 0.0,
+      "divider_intersection_mm3": 0.0
+    }
+  ],
+  "physical_validation_required": true
+}

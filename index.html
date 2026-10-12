@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Дозатор БАД — 3D референс</title>
+<style>
+  :root{ --bg:#0f1115; --panel:#171a21; --line:#262b36; --txt:#e6e9ef; --mut:#8a93a6; --acc:#4da3ff; }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--txt);font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+  #app{display:flex;height:100%}
+  #scene{flex:1;position:relative}
+  canvas{display:block}
+  #ui{width:330px;background:var(--panel);border-left:1px solid var(--line);padding:18px;overflow:auto}
+  h1{font-size:16px;margin:0 0 4px}
+  .sub{color:var(--mut);font-size:12px;margin-bottom:16px;line-height:1.45}
+  .sku{display:flex;align-items:center;gap:10px;padding:10px;border:1px solid var(--line);border-radius:10px;margin-bottom:10px;background:#12151c}
+  .dot{width:14px;height:14px;border-radius:50%;flex:0 0 auto}
+  .sku .name{flex:1;font-size:14px}
+  .sku .cnt{color:var(--mut);font-size:11px}
+  .qty{display:flex;align-items:center;gap:6px}
+  .qty button{width:26px;height:26px;border:1px solid var(--line);background:#1d222c;color:var(--txt);border-radius:6px;cursor:pointer;font-size:16px}
+  .qty .v{width:30px;text-align:center}
+  #go{width:100%;padding:12px;margin-top:6px;border:none;border-radius:10px;background:var(--acc);color:#06121f;font-weight:700;font-size:15px;cursor:pointer}
+  #go:disabled{opacity:.5;cursor:default}
+  .tg{flex:1;padding:8px;border:1px solid var(--line);background:#1d222c;color:var(--mut);border-radius:8px;cursor:pointer;font-size:12px}
+  .tg.on{border-color:var(--acc);color:var(--acc)}
+  .log{margin-top:14px;font-size:12px;color:var(--mut);white-space:pre-wrap;line-height:1.5;max-height:150px;overflow:auto;border-top:1px solid var(--line);padding-top:10px}
+  .hint{margin-top:14px;font-size:11px;color:var(--mut);line-height:1.5}
+  .legend{position:absolute;left:14px;top:12px;font-size:12px;color:var(--mut);background:rgba(15,17,21,.6);padding:8px 10px;border-radius:8px;border:1px solid var(--line)}
+  .legend b{color:var(--txt)}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="scene">
+    <div class="legend">
+      <b>Управление:</b> ЛКМ — поворот · колесо — зум · ПКМ — сдвиг<br>
+      <span id="state">…</span>
+    </div>
+  </div>
+  <div id="ui">
+    <h1>Дозатор БАД — конвейер</h1>
+    <div class="sub">Вертикальные магазины (банки лёжа, столбиком). Внизу два серво-шлагбаума выдают по одной банке на СВОЮ дорожку. Дорожки сливаются в одну только в конце — у фасовщика.</div>
+    <div id="skus"></div>
+    <button id="go">Выдать заказ</button>
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <button id="tdim" class="tg on">Размеры</button>
+      <button id="tsolid" class="tg">Картон сплошной</button>
+    </div>
+    <div class="hint">Скорость замедлена для наглядности. Реальный цикл одной банки ≈ 0.8–1.2 с.</div>
+    <div class="log" id="log"></div>
+  </div>
+</div>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+}}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+// ---------- размеры (см) ----------
+const JAR_D = 4.7, JAR_H = 6.7;     // банка Ø47 × 67 мм (диаметр × высота)
+const W = JAR_H + 0.6;              // внутр. ширина (вдоль оси банки)
+const DEPTH = JAR_D + 0.6;          // глубина магазина (диаметр + зазор)
+const PITCH = JAR_D + 0.2;          // шаг банок в столбе
+const QUEUE = 6;                    // банок в магазине (визуально)
+const CH_GAP = 9;                   // расстояние между магазинами по X
+const YB0 = 8;                      // высота центра нижней банки
+const MAGZ = 7;                     // положение магазинов по Z (сзади)
+// общая воронка-слияние (хоппер) в конце
+const COL_ZB=-2, COL_YB=3.2;       // задняя кромка воронки (широкая)
+const COL_ZF=-12, COL_YF=1.4;      // передняя кромка (узкий спот)
+const SPOUT=4.7;                    // полуширина спота
+const HALF_BACK=14.5;              // полуширина задней кромки
+
+const SKUS = [
+  { id:0, name:'Берберин', color:0xffb454 },
+  { id:1, name:'Мемон',    color:0x4dd0a0 },
+  { id:2, name:'Магний B6',color:0x7aa2ff },
+];
+
+// ---------- сцена ----------
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x0f1115);
+scene.fog = new THREE.Fog(0x0f1115, 70, 180);
+
+const host = document.getElementById('scene');
+const camera = new THREE.PerspectiveCamera(50, host.clientWidth/host.clientHeight, 0.1, 1000);
+camera.position.set(42, 34, 52);
+
+const renderer = new THREE.WebGLRenderer({antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.setSize(host.clientWidth, host.clientHeight);
+renderer.shadowMap.enabled = true;
+host.appendChild(renderer.domElement);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.target.set(0, 12, -2);
+controls.enableDamping = true;
+
+scene.add(new THREE.HemisphereLight(0xbfd4ff, 0x202028, 0.95));
+const sun = new THREE.DirectionalLight(0xffffff, 1.05);
+sun.position.set(25, 45, 30); sun.castShadow = true;
+sun.shadow.mapSize.set(2048,2048);
+sun.shadow.camera.left=-60; sun.shadow.camera.right=60; sun.shadow.camera.top=60; sun.shadow.camera.bottom=-60;
+scene.add(sun);
+
+const floor = new THREE.Mesh(new THREE.PlaneGeometry(240,240),
+  new THREE.MeshStandardMaterial({color:0x0c0e13, roughness:1}));
+floor.rotation.x = -Math.PI/2; floor.receiveShadow = true; scene.add(floor);
+const grid = new THREE.GridHelper(240,120,0x223,0x182030); grid.position.y = 0.01; scene.add(grid);
+
+// ---------- материалы/хелперы ----------
+const cardMat = new THREE.MeshStandardMaterial({color:0xd9c4a0, roughness:.95, side:THREE.DoubleSide, transparent:true, opacity:.30});
+const cardEdge = new THREE.LineBasicMaterial({color:0xbda87f});
+const servoMat = new THREE.MeshStandardMaterial({color:0x2b3340, roughness:.6});
+const gateMat  = new THREE.MeshStandardMaterial({color:0xff5d5d, roughness:.5});
+
+function card(dx,dy,dz){
+  const g=new THREE.BoxGeometry(dx,dy,dz);
+  const m=new THREE.Mesh(g,cardMat); m.receiveShadow=true;
+  m.add(new THREE.LineSegments(new THREE.EdgesGeometry(g), cardEdge));
+  return m;
+}
+// наклонный лоток между двумя точками (дно + 2 борта)
+function rampBetween(p1,p2,width){
+  const dir=p2.clone().sub(p1); const len=dir.length();
+  const grp=new THREE.Group();
+  const fl=card(width,0.3,len); grp.add(fl);
+  for(const s of [-1,1]){ const r=card(0.3,1.6,len); r.position.set(s*width/2,0.7,0); grp.add(r); }
+  grp.position.copy(p1.clone().add(p2).multiplyScalar(0.5));
+  grp.quaternion.setFromUnitVectors(new THREE.Vector3(0,0,1), dir.clone().normalize());
+  scene.add(grp); return grp;
+}
+// плоский четырёхугольник (для воронки): bl,br,fr,fl — углы по часовой
+function quad(bl,br,fr,fl){
+  const geo=new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array([
+    bl.x,bl.y,bl.z, br.x,br.y,br.z, fr.x,fr.y,fr.z,
+    bl.x,bl.y,bl.z, fr.x,fr.y,fr.z, fl.x,fl.y,fl.z ]),3));
+  geo.computeVertexNormals();
+  const m=new THREE.Mesh(geo,cardMat); m.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo),cardEdge));
+  scene.add(m); return m;
+}
+// вертикальная стенка-направляющая по кромке a→b высотой h
+function wall(a,b,h){
+  const up=new THREE.Vector3(0,h,0);
+  quad(a, b, b.clone().add(up), a.clone().add(up));
+}
+
+// ---------- построение магазина (вертикальный) ----------
+const channels = [];
+const PACK = new THREE.Vector3(0, 0, -20);   // фасовщик по центру впереди
+
+function buildChannel(sku, xPos){
+  const mag = new THREE.Group();
+  mag.position.set(xPos, 0, MAGZ);
+  scene.add(mag);
+
+  // стенки магазина (задняя + 2 боковые, перёд открыт для загрузки)
+  const H = QUEUE*PITCH + 6;
+  const midY = YB0 - PITCH/2 + H/2 - 1;
+  const back = card(W+0.6, H, 0.3); back.position.set(0, midY, -DEPTH/2); mag.add(back);
+  for(const s of [-1,1]){ const w=card(0.3,H,DEPTH+0.6); w.position.set(s*(W/2+0.15), midY, 0); mag.add(w); }
+  // приёмная воронка сверху
+  const lip = card(W+2, 0.3, DEPTH+2); lip.position.set(0, YB0+(QUEUE-1)*PITCH+PITCH, 0);
+  lip.rotation.x = Math.PI; mag.add(lip);
+
+  // банки столбиком (ось вдоль X, лежат на боку, падают вниз)
+  const jarGeo = new THREE.CylinderGeometry(JAR_D/2, JAR_D/2, JAR_H, 28);
+  const jars=[];
+  for(let i=0;i<QUEUE;i++){
+    const m=new THREE.Mesh(jarGeo, new THREE.MeshStandardMaterial({color:sku.color, roughness:.4, metalness:.15}));
+    m.rotation.z = Math.PI/2;        // ось банки вдоль X
+    m.position.set(0, YB0 + i*PITCH, 0);
+    m.castShadow=true; mag.add(m); jars.push(m);
+  }
+
+  // передняя стенка (держит столб), низ оставлен открытым под выход банки вперёд
+  const fTop = YB0+(QUEUE-1)*PITCH+JAR_D/2;
+  const fBot = YB0+JAR_D/2+0.3;
+  const fpanel = card(W+0.6, fTop-fBot, 0.3); fpanel.position.set(0,(fTop+fBot)/2,-DEPTH/2); mag.add(fpanel);
+  // нижнее дно колонны, на котором лежит нижняя банка
+  const bfloor = card(W, 0.3, DEPTH); bfloor.position.set(0, YB0-JAR_D/2-0.25, 0); mag.add(bfloor);
+
+  // нижний горизонтальный участок-лоток: вмещает ОДНУ банку между двумя заслонками
+  const lipY  = YB0 - JAR_D/2 - 0.35;
+  const runLen= PITCH + 2.4;
+  const runCZ = -DEPTH/2 - runLen/2 + 0.2;
+  const lipB = card(W, 0.3, runLen); lipB.position.set(0, lipY, runCZ); mag.add(lipB);
+  for(const s of [-1,1]){ const r=card(0.3,1.5,runLen); r.position.set(s*W/2, lipY+0.75, runCZ); mag.add(r); }
+
+  // ДВА ПОДЪЁМНЫХ ШЛАГБАУМА (обе заслонки ходят ВВЕРХ)
+  function liftGate(zPos){
+    const Hb=JAR_D+1.4; const closedY=lipY+Hb/2-0.1;
+    // статичные направляющие стойки + серво сверху
+    for(const s of [-1,1]){ const p=new THREE.Mesh(new THREE.BoxGeometry(0.4,Hb+JAR_D+1.5,0.5), servoMat);
+      p.position.set(s*(W/2+0.45), closedY+JAR_D/2+0.5, zPos); mag.add(p); }
+    const sv=new THREE.Mesh(new THREE.BoxGeometry(2.0,1.6,1.6), servoMat);
+    sv.position.set(0, closedY+Hb/2+1.4, zPos); mag.add(sv);
+    // подвижное лезвие (поднимается)
+    const grp=new THREE.Group(); grp.position.set(0, closedY, zPos);
+    grp.add(new THREE.Mesh(new THREE.BoxGeometry(W+0.3, Hb, 0.3), gateMat));
+    mag.add(grp);
+    return {grp, closedY, openY: closedY + JAR_D + 1.1};
+  }
+  const G2 = liftGate(-DEPTH/2);            // придержка — у выхода из колонны (дальняя)
+  const G1 = liftGate(-DEPTH/2 - PITCH);    // главный — ближе к фасовщику
+
+  // позиции для анимации: место одной банки между заслонками и выход на дорожку
+  const runPos  = new THREE.Vector3(xPos, lipY+JAR_D/2+0.15, MAGZ - DEPTH/2 - PITCH/2);
+  const exit    = new THREE.Vector3(xPos, lipY+0.2, MAGZ - DEPTH/2 - runLen + 0.4);
+  const laneEnd = new THREE.Vector3(xPos, COL_YB+0.4, COL_ZB+0.6);
+  rampBetween(exit, laneEnd, W);
+
+  const obj={ sku, mag, jars, G1, G2, count:QUEUE, runPos, exit, laneEnd };
+  channels.push(obj); return obj;
+}
+
+const cx0 = -(SKUS.length-1)/2 * CH_GAP;
+SKUS.forEach((s,i)=> buildChannel(s, cx0 + i*CH_GAP));
+
+// общая воронка-слияние (все дорожки сходятся в ОДНУ только здесь)
+{
+  const BL=new THREE.Vector3(-HALF_BACK,COL_YB,COL_ZB);
+  const BR=new THREE.Vector3( HALF_BACK,COL_YB,COL_ZB);
+  const FR=new THREE.Vector3( SPOUT,COL_YF,COL_ZF);
+  const FL=new THREE.Vector3(-SPOUT,COL_YF,COL_ZF);
+  quad(BL,BR,FR,FL);                 // наклонное дно воронки
+  wall(BL,FL,3);                     // левая направляющая (сводит к центру)
+  wall(FR,BR,3);                     // правая направляющая
+  wall(BR,BL,2);                     // задний бортик
+}
+// финальная магистраль: спот воронки -> лоток фасовщика
+rampBetween(new THREE.Vector3(0,COL_YF,COL_ZF), new THREE.Vector3(0,0.9,-17), W*1.3);
+{ // лоток фасовщика
+  const tray=card(12,0.4,8); tray.material=new THREE.MeshStandardMaterial({color:0x1e2630,roughness:1,side:THREE.DoubleSide});
+  tray.position.set(0,0.7,-21); scene.add(tray);
+  for(const s of [-1,1]){ const r=card(0.4,2,8); r.material=tray.material; r.position.set(s*6,1.5,-21); scene.add(r);}
+}
+
+// ---------- подписи ----------
+function label(text,pos,color){
+  const c=document.createElement('canvas'); c.width=256;c.height=64; const x=c.getContext('2d');
+  x.fillStyle='rgba(18,21,28,.85)'; x.fillRect(0,0,256,64);
+  x.strokeStyle='#'+color.toString(16).padStart(6,'0'); x.lineWidth=4; x.strokeRect(2,2,252,60);
+  x.fillStyle='#e6e9ef'; x.font='bold 30px Segoe UI,Arial'; x.textAlign='center'; x.textBaseline='middle'; x.fillText(text,128,34);
+  const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),transparent:true}));
+  sp.scale.set(8,2,1); sp.position.copy(pos); scene.add(sp); return sp;
+}
+channels.forEach(ch=> label(ch.sku.name, new THREE.Vector3(ch.mag.position.x, YB0+(QUEUE)*PITCH+2.5, MAGZ), ch.sku.color));
+label('ФАСОВЩИК', new THREE.Vector3(0,3.5,-24), 0x4da3ff);
+
+// ---------- размерные линии ----------
+const dims=new THREE.Group(); scene.add(dims);
+function tag(text){
+  const c=document.createElement('canvas'); c.width=160;c.height=48; const x=c.getContext('2d');
+  x.fillStyle='rgba(77,163,255,.18)'; x.fillRect(0,0,160,48);
+  x.fillStyle='#bcd9ff'; x.font='bold 24px Segoe UI,Arial'; x.textAlign='center'; x.textBaseline='middle'; x.fillText(text,80,26);
+  const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),transparent:true,depthTest:false}));
+  sp.scale.set(5,1.5,1); return sp;
+}
+function dim(p1,p2,text){
+  dims.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([p1,p2]), new THREE.LineBasicMaterial({color:0x4da3ff})));
+  const t=tag(text); t.position.copy(p1.clone().add(p2).multiplyScalar(0.5)); dims.add(t);
+}
+{
+  const ch=channels[0]; const x=ch.mag.position.x;
+  dim(new THREE.Vector3(x-JAR_H/2,YB0,MAGZ+DEPTH/2+0.5), new THREE.Vector3(x+JAR_H/2,YB0,MAGZ+DEPTH/2+0.5), 'дл.67');
+  dim(new THREE.Vector3(x+4,YB0-JAR_D/2,MAGZ), new THREE.Vector3(x+4,YB0+JAR_D/2,MAGZ), 'Ø47');
+  const gy=YB0-JAR_D/2-0.35+JAR_D+1.4;
+  dim(new THREE.Vector3(x, gy, MAGZ-DEPTH/2), new THREE.Vector3(x, gy, MAGZ-DEPTH/2-PITCH), 'G1↔G2 ≈47');
+  const t1=tag('вертикальный магазин · ≈10 банок'); t1.scale.set(13,1.6,1);
+  t1.position.set(x, YB0+(QUEUE)*PITCH+5, MAGZ); dims.add(t1);
+  const t2=tag('у каждой своя дорожка'); t2.scale.set(11,1.6,1); t2.position.set(channels[2].mag.position.x+1, 6, -3); dims.add(t2);
+  const t3=tag('слияние в одну в конце'); t3.scale.set(11,1.6,1); t3.position.set(0, 5, -14); dims.add(t3);
+}
+document.getElementById('tdim').onclick=e=>{ dims.visible=!dims.visible; e.target.classList.toggle('on',dims.visible); };
+let solid=false;
+document.getElementById('tsolid').onclick=e=>{ solid=!solid; cardMat.opacity=solid?0.95:0.30; e.target.classList.toggle('on',solid); e.target.textContent=solid?'Картон прозрачный':'Картон сплошной'; };
+
+// ---------- анимация ----------
+const SPEED=1.0;
+function tween(obj,to,dur,ease=t=>t){
+  return new Promise(res=>{ const from={...obj.get()}; let t0=null;
+    function step(ts){ if(t0===null)t0=ts; const k=Math.min(1,(ts-t0)/(dur*1000*SPEED)); obj.set(from,to,ease(k));
+      if(k<1) requestAnimationFrame(step); else res(); } requestAnimationFrame(step); });
+}
+const easeOut=t=>1-Math.pow(1-t,3);
+const wait=ms=>new Promise(r=>setTimeout(r,ms*SPEED));
+// подъём/опускание заслонки (шлагбаум идёт ВВЕРХ)
+function moveGate(g,open){ const target=open?g.openY:g.closedY;
+  return tween({get:()=>({y:g.grp.position.y}), set:(f,t,e)=>{g.grp.position.y=f.y+(t.y-f.y)*e;}},{y:target},0.3);
+}
+function moveTo(jar,p,dur,spin){
+  return tween({get:()=>({x:jar.position.x,y:jar.position.y,z:jar.position.z,r:jar.rotation.x}),
+    set:(f,t,e)=>{ jar.position.set(f.x+(t.x-f.x)*e,f.y+(t.y-f.y)*e,f.z+(t.z-f.z)*e); jar.rotation.x=f.r+(t.r-f.r)*e; }},
+    {x:p.x,y:p.y,z:p.z,r:jar.rotation.x+spin}, dur, easeOut);
+}
+
+let trayN=0;
+async function dispenseOne(ch){
+  if(ch.count<=0){ logln(`⚠ ${ch.sku.name}: пусто`); return false; }
+  const jar=ch.jars.shift(); ch.count--;
+  // 1. ПРИДЕРЖКА G2 ВВЕРХ → нижняя банка выкатывается из колонны на участок между заслонками
+  await moveGate(ch.G2,true);
+  scene.attach(jar);
+  await moveTo(jar, ch.runPos, 0.45, Math.PI*1.6);
+  await moveGate(ch.G2,false);               // G2 вниз — держит остальной столб
+  // столб опускается на один шаг
+  await Promise.all(ch.jars.map((m,i)=> tween(
+    {get:()=>({y:m.position.y}), set:(f,t,e)=>{m.position.y=f.y+(t.y-f.y)*e;}}, {y:YB0+i*PITCH}, 0.4, easeOut)));
+  // 2. ГЛАВНЫЙ G1 ВВЕРХ → банка уходит на свою дорожку к фасовщику
+  await moveGate(ch.G1,true);
+  const x=ch.mag.position.x;
+  const path=[ ch.exit, ch.laneEnd,
+    new THREE.Vector3(x*0.45, COL_YB-0.4, (COL_ZB+COL_ZF)/2),          // на воронке, сходится к центру
+    new THREE.Vector3(0, COL_YF, COL_ZF),                             // спот воронки
+    new THREE.Vector3((trayN%3-1)*2.2, 0.9, -16-Math.floor(trayN/3)*1.6) ]; // лоток фасовщика
+  for(let i=0;i<path.length;i++) await moveTo(jar, path[i], 0.4, Math.PI*2);
+  trayN++;
+  await moveGate(ch.G1,false);               // G1 вниз
+  updateState(); return true;
+}
+
+let animating=false;
+async function runOrder(order){
+  if(animating) return; animating=true; document.getElementById('go').disabled=true; trayN=0;
+  logln('— Старт заказа —');
+  for(const ch of channels){ const n=order[ch.sku.id]||0; if(n>0) logln(`${ch.sku.name}: ${n} шт`);
+    for(let k=0;k<n;k++){ if(!await dispenseOne(ch)) break; await wait(120);} }
+  logln('✓ Заказ у фасовщика\n'); animating=false; document.getElementById('go').disabled=false;
+}
+
+// ---------- UI ----------
+const skusEl=document.getElementById('skus'); const qty={};
+SKUS.forEach(s=>{ qty[s.id]=0;
+  const row=document.createElement('div'); row.className='sku';
+  row.innerHTML=`<span class="dot" style="background:#${s.color.toString(16).padStart(6,'0')}"></span>
+    <div style="flex:1"><div class="name">${s.name}</div><div class="cnt" id="cnt${s.id}"></div></div>
+    <div class="qty"><button data-d="-1">–</button><span class="v" id="q${s.id}">0</span><button data-d="1">+</button></div>`;
+  skusEl.appendChild(row);
+  row.querySelectorAll('button').forEach(b=>b.onclick=()=>{ qty[s.id]=Math.max(0,qty[s.id]+(+b.dataset.d)); document.getElementById('q'+s.id).textContent=qty[s.id]; });
+});
+document.getElementById('go').onclick=()=>runOrder(qty);
+
+const logEl=document.getElementById('log');
+function logln(t){ logEl.textContent+=t+'\n'; logEl.scrollTop=logEl.scrollHeight; }
+function updateState(){
+  document.getElementById('state').textContent='Банок в магазинах: '+channels.map(c=>`${c.sku.name.split(' ')[0]} ${c.count}`).join(' · ');
+  channels.forEach(c=> document.getElementById('cnt'+c.sku.id).textContent=`в магазине: ${c.count}`);
+}
+updateState();
+
+addEventListener('resize',()=>{ camera.aspect=host.clientWidth/host.clientHeight; camera.updateProjectionMatrix(); renderer.setSize(host.clientWidth,host.clientHeight); });
+(function loop(){ requestAnimationFrame(loop); controls.update(); renderer.render(scene,camera); })();
+</script>
+</body>
+</html>

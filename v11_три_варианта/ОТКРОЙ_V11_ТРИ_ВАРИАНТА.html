@@ -1,0 +1,841 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="icon" href="data:,">
+  <title>V11 · три печатаемых дозатора банок</title>
+  <style>
+    :root{
+      --bg:#080d13;--panel:#111923;--panel2:#17232f;--line:#2b3b49;
+      --text:#eef5fa;--muted:#91a6b7;--blue:#4eacf2;--cyan:#45d1c4;
+      --green:#59d58a;--amber:#f0b45a;--orange:#ef9144;--red:#ee696e;
+      --wood:#c8965d;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-serif;overflow:hidden}
+    button,input{font:inherit}
+    #app{height:100%;display:grid;grid-template-columns:minmax(0,1fr) 430px}
+    #viewport{position:relative;min-width:0;background:radial-gradient(circle at 42% 24%,#1a2835 0,#080d13 62%)}
+    canvas{display:block;width:100%;height:100%;outline:none}
+    #panel{overflow:auto;background:linear-gradient(180deg,#15212c,#0d141c 75%);border-left:1px solid var(--line);padding:19px 18px 26px}
+    h1{font-size:21px;line-height:1.15;margin:0 0 6px}
+    .subtitle{font-size:12px;line-height:1.45;color:var(--muted);margin:0 0 14px}
+    .eyebrow{font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:#77afd5;font-weight:800;margin:17px 0 7px}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+    .grid.three{grid-template-columns:1fr 1fr 1fr}
+    button{border:1px solid var(--line);background:#1a2734;color:var(--text);border-radius:8px;padding:9px 10px;font-weight:750;font-size:12px;line-height:1.25;cursor:pointer;text-align:left;transition:.14s}
+    button:hover{background:#213443;border-color:#58748b}
+    button.active{background:#17547e;border-color:var(--blue);box-shadow:inset 0 0 0 1px rgba(78,172,242,.2)}
+    button:focus-visible,.downloads a:focus-visible,input:focus-visible{outline:3px solid var(--cyan);outline-offset:2px}
+    button.go{background:#174d3b;border-color:#2d765a}
+    button small{display:block;color:#9fb2c1;font-weight:500;margin-top:2px}
+    .range{display:grid;grid-template-columns:72px 1fr 48px;gap:8px;align-items:center;margin-top:8px;font-size:11px;color:var(--muted)}
+    .range output{font:700 12px Consolas,monospace;color:#dcecf7;text-align:right}
+    input[type=range]{width:100%;accent-color:var(--blue)}
+    #info{margin-top:13px;border:1px solid var(--line);border-radius:10px;background:#0e171f;padding:12px}
+    #info h2{font-size:15px;margin:0 0 6px}
+    #info p{font-size:11.5px;line-height:1.46;color:#adbfcc;margin:6px 0}
+    .facts{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:9px}
+    .fact{border:1px solid #263744;border-radius:7px;padding:7px;font-size:10px;color:#93a8b8}
+    .fact b{display:block;color:#f2f7fa;font-size:14px;margin-bottom:1px}
+    .note{margin-top:9px;border-left:3px solid var(--amber);background:#1d201f;border-radius:5px;padding:8px 9px;font-size:11px;line-height:1.45;color:#cad5dc}
+    .downloads{display:grid;gap:5px;margin-top:9px}.downloads a{display:block;border:1px solid #31546a;border-radius:7px;padding:7px 9px;background:#142634;color:#aedaFA;text-decoration:none;font-size:10px;font-weight:800}.downloads a:hover{background:#193247;border-color:#4eacf2;color:#fff}
+    table{width:100%;border-collapse:separate;border-spacing:0;font-size:10px;color:#aabcc9;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+    th,td{padding:7px 6px;border-bottom:1px solid #243440;text-align:left;vertical-align:top}
+    th{background:#192633;color:#edf5fa;font-weight:800}
+    tr:last-child td{border-bottom:0}
+    td:first-child{color:#edf5fa;font-weight:800}
+    .best{color:var(--green);font-weight:800}
+    .warn{color:var(--amber);font-weight:800}
+    #hud{position:absolute;left:15px;top:15px;max-width:660px;background:rgba(7,12,17,.84);border:1px solid rgba(158,193,217,.2);border-radius:9px;padding:9px 11px;backdrop-filter:blur(9px);font-size:11px;line-height:1.4;color:#afc2d0;pointer-events:none}
+    #viewTitle{position:absolute;left:15px;bottom:15px;max-width:75%;background:rgba(7,12,17,.86);border:1px solid rgba(158,193,217,.2);border-radius:9px;padding:9px 11px;backdrop-filter:blur(9px);font-size:12px;font-weight:800;pointer-events:none}
+    #viewTitle small{color:#9db2c1;font-weight:500;margin-left:7px}
+    #load{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#080d13;z-index:10;transition:opacity .25s}
+    #load.hidden{opacity:0;pointer-events:none}
+    .loader{width:min(440px,78vw);text-align:center}.loader h2{font-size:18px;margin:0 0 7px}.loader p{font-size:12px;color:var(--muted);margin:5px}
+    .bar{height:6px;border-radius:10px;background:#1c2a36;overflow:hidden;margin:13px 0}.bar i{display:block;height:100%;width:12%;background:linear-gradient(90deg,var(--blue),var(--cyan));transition:width .2s}
+    #error{position:absolute;z-index:12;left:15px;right:15px;top:15px;border:1px solid var(--red);border-radius:8px;background:#32171b;color:#ffd9db;padding:10px 12px;font-size:11px;white-space:pre-wrap}
+    #error:empty{display:none}
+    .legend{display:flex;gap:9px;flex-wrap:wrap;margin-top:13px;font-size:10px;color:var(--muted)}
+    .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px}
+    .badge{display:inline-block;padding:3px 7px;border-radius:99px;border:1px solid #2f6f55;color:var(--green);font-size:9px;font-weight:900;letter-spacing:.05em}
+    @media(max-width:980px){#app{grid-template-columns:1fr}#panel{position:absolute;right:0;top:0;width:min(430px,95vw);height:100%;z-index:5;background:rgba(17,25,35,.97)}#hud{max-width:calc(100% - 450px)}}
+  </style>
+  <script type="importmap">{"imports":{"three":"../libs/three.module.js"}}</script>
+</head>
+<body>
+<div id="app">
+  <main id="viewport" aria-label="Интерактивная трёхмерная модель" aria-busy="true">
+    <div id="hud"><strong>ЛКМ</strong> — вращать · колесо — масштаб · <strong>ПКМ</strong> — сдвиг. Здесь показаны новые V11; отклонённого V10 в модели нет.</div>
+    <div id="viewTitle" aria-live="polite">Стеллаж 4 × 2</div>
+    <div id="load" role="status" aria-live="polite" aria-atomic="true"><div class="loader"><h2>V11 · загружаю реальную геометрию STL</h2><p id="loadText">Подготавливаю сцену…</p><div class="bar"><i id="loadFill"></i></div></div></div>
+    <div id="error" role="alert" aria-live="assertive"></div>
+  </main>
+  <aside id="panel">
+    <h1>V11 · три простых механизма</h1>
+    <p class="subtitle">Коробка глубиной около 600 мм частично стоит на полке, а передняя часть с дозатором нависает к пользователю. Все три варианта — полноразмерные прототипы под одну SG90/MG90S на канал, а не готовые серийные устройства.</p>
+
+    <div class="eyebrow">Контекст и конструкция</div>
+    <div class="grid" id="modeButtons" role="group" aria-label="Режим трёхмерного просмотра">
+      <button data-mode="rack" class="active" aria-pressed="true">Стеллаж 4 × 2<small>коробки со свесом</small></button>
+      <button data-mode="cassette" aria-pressed="false">Кассета из 6 листов<small>4 разделителя + 2 ската + 8 фиксаторов</small></button>
+      <button data-mode="fixator" aria-pressed="false">Крепёж кассеты<small>реальный верхний и нижний узел</small></button>
+      <button data-mode="A" aria-pressed="false">A · коромысло<small>1 плита · минимум пластика</small></button>
+      <button data-mode="B" aria-pressed="false">B · звёздочка<small>5 плит · номинальная самофиксация</small></button>
+      <button data-mode="C" aria-pressed="false">C · два ножа<small>1 плита · 8 макроопераций</small></button>
+      <button data-mode="exploded" aria-pressed="false">Детали крупно<small>реальные печатные STL</small></button>
+      <button data-mode="print" aria-pressed="false">Столы 220 × 220<small>ориентация печати</small></button>
+    </div>
+
+    <div class="eyebrow">Вариант для взрыв-схемы / печати</div>
+    <div class="grid three" id="variantButtons" role="group" aria-label="Вариант для деталей и печатных плит">
+      <button data-variant="A" aria-pressed="false">A</button>
+      <button data-variant="B" aria-pressed="false">B</button>
+      <button data-variant="C" class="active" aria-pressed="true">C</button>
+    </div>
+
+    <div id="motionControls">
+      <div class="eyebrow">Состояние механизма</div>
+      <div class="grid three" id="stateButtons" role="group" aria-label="Состояние механизма">
+        <button data-state="HOME" class="active" aria-pressed="true">HOME<small>готов к выдаче</small></button>
+        <button data-state="MID" aria-pressed="false">ПЕРЕХОД<small>контроль сохранён</small></button>
+        <button data-state="EJECT" aria-pressed="false">ВЫДАЧА<small>1 банка</small></button>
+      </div>
+      <div class="grid" style="margin-top:7px">
+        <button id="cycle" class="go" aria-pressed="false">▶ Пошаговый цикл</button>
+        <button id="stop">■ Стоп</button>
+      </div>
+    </div>
+
+    <div id="overhangControls">
+      <div class="eyebrow">Свес коробки — только компоновочная оценка</div>
+      <div class="range"><label for="overhang">перед полкой</label><input id="overhang" name="overhang" type="range" min="100" max="260" value="200" step="10" aria-describedby="overhangValue"><output id="overhangValue" for="overhang" aria-live="polite">200 мм</output></div>
+    </div>
+
+    <section id="info" role="region" aria-label="Описание выбранного режима" aria-live="polite" aria-atomic="true"></section>
+
+    <h2 class="eyebrow" id="comparisonTitle">Сравнение сборки одного канала</h2>
+    <table aria-labelledby="comparisonTitle">
+      <thead><tr><th>Вариант</th><th>Печать</th><th>Сборка</th><th>Ключевой смысл</th></tr></thead>
+      <tbody>
+        <tr><td>A</td><td><span class="best">4 детали · 1 плита</span><br>без поддержек</td><td>6 + 2 действия</td><td>Самый лёгкий комплект</td></tr>
+        <tr><td>B</td><td>9 деталей + купон · 5 плит<br>без поддержек</td><td>12 + 2 действия</td><td>Самофиксацию подтвердить power-cut тестом</td></tr>
+        <tr><td>C</td><td><span class="best">5 деталей + купон · 1 плита</span><br>без поддержек</td><td>6 + 2 действия</td><td>Широкий двойной перехват</td></tr>
+      </tbody>
+    </table>
+    <div class="note">Одна макрооперация — один осознанный этап с единым результатом; парные одинаковые элементы в таком этапе считаются одной сгруппированной операцией. A/C требуют непрерывного корректного PWM; старое ПО прежнего дозатора несовместимо до добавления отдельных профилей V11. B — только кандидат на пассивное удержание, не доказанный fail-safe. Сначала поставить кожух и испытать один канал минимум 300 циклов, включая power-cut тесты.</div>
+    <div class="legend">
+      <span><i class="dot" style="background:#c8965d"></i>лист</span>
+      <span><i class="dot" style="background:#ef9144"></i>печать</span>
+      <span><i class="dot" style="background:#58d39a"></i>банка</span>
+      <span><i class="dot" style="background:#4178bd"></i>серво</span>
+      <span><i class="dot" style="background:#bac6ce"></i>металл</span>
+    </div>
+  </aside>
+</div>
+
+<script type="module">
+import * as THREE from 'three';
+import {OrbitControls} from '../libs/OrbitControls.js';
+
+const ROOT='.';
+const COMMON='00_ОБЩАЯ_КОМПОНОВКА/STL_КАССЕТА_СБОРКА/';
+const COMMON_FIX='00_ОБЩАЯ_КОМПОНОВКА/STL_ЗАМКИ_СБОРКА/';
+const DIR={
+  A:'A_верхнее_коромысло/',
+  B:'B_роторная_кассета/',
+  C:'C_верхние_линейные_ножи/'
+};
+let readyPlateLayoutPromise=null;
+async function readyPlateLayout(){
+  if(!readyPlateLayoutPromise){
+    readyPlateLayoutPromise=fetch('viewer_plate_assets/layout.json').then(function(r){
+      if(!r.ok)throw new Error(r.status+' · viewer_plate_assets/layout.json');
+      return r.json();
+    });
+  }
+  return readyPlateLayoutPromise;
+}
+const ROLE={
+  wood:'wood',frame:'printDark',clamp:'printDark',rocker:'orange',link:'cyan',
+  rotor:'orange',bladeFront:'orange',bladeRear:'cyan',pin:'metal',
+  servo:'servo',horn:'horn',screw:'metal',wireRed:'wireRed',wireBrown:'wireBrown',
+  wireOrange:'wireOrange',can:'can',ghost:'ghost'
+};
+const variantMeta={
+  A:{
+    title:'A · верхнее коромысло',
+    subtitle:'Одна V-образная качалка попеременно вводит два округлых пальца между банками.',
+    facts:[['4','рабочие детали'],['1','готовая 3MF-плита'],['0','поддержек'],['2','действия установки']],
+    body:'Самый лёгкий и быстрый в печати комплект. Рама надвигается на общий передний край нижнего ската и поджимается снизу двумя винтами; точные шесть листов не режутся и не сверлятся.',
+    risk:'Поддержки не нужны; для высокой A01 обязателен brim 4 мм. Полные 22 банки по 100 г расчётно допустимы; для банок по 200 г строгий предел — 12. Механизм не самотормозится и требует непрерывного корректного PWM. Старое ПО нельзя использовать с загруженным A до создания отдельного профиля V11.',
+    downloads:[
+      ['Скачать готовую плиту A · 1 канал','A_верхнее_коромысло/A_ПЛИТА_220x220_1_канал.3mf'],
+      ['Открыть инструкцию A','A_верхнее_коромысло/README_ВАРИАНТ_A.md']
+    ],
+    print:[
+      'STL_ПЕЧАТЬ/A01_рама_верхнего_коромысла.stl',
+      'STL_ПЕЧАТЬ/A02_коромысло_с_2_пальцами.stl',
+      'STL_ПЕЧАТЬ/A03_короткая_тяга_12мм.stl',
+      'STL_ПЕЧАТЬ/A04_нижний_прижим_ската.stl'
+    ]
+  },
+  B:{
+    title:'B · гравитационная звёздочка с собачкой',
+    subtitle:'По расчётной кинематике очередь индексирует четыре кармана на 90°; серва только кратко снимает механическую собачку.',
+    facts:[['9','рабочих деталей'],['5','готовых 3MF-плит'],['0','поддержек'],['2','действия установки']],
+    body:'Ротор вращается на отдельной M4-оси. Сборная плоская рама состоит из двух щёк, двух направляющих, входного зажима и выходного лотка; она ставится на общий скат без сверления. По замыслу в HOME собачка держит очередь, а вал сервы разгружен; точный шаг подтверждается только физическими 20/20 индексациями и тестом 300 циклов.',
+    risk:'Самый крупный и долгий в печати вариант: 12 первичных и 2 установочные операции. Самофиксация пока номинальная, не доказанный fail-safe. До тиража обязательны тест страгивания, 20 из 20 индексаций самой лёгкой банкой и power-cut тесты при пустой, частичной и полной очереди во всех состояниях.',
+    downloads:[
+      ['Скачать B · плита 1/5','B_роторная_кассета/PLATES_3MF/B11_plate_01_ротор_собачка_coupon.3mf'],
+      ['Скачать B · плита 2/5','B_роторная_кассета/PLATES_3MF/B11_plate_02_левая_рама.3mf'],
+      ['Скачать B · плита 3/5','B_роторная_кассета/PLATES_3MF/B11_plate_03_правая_рама.3mf'],
+      ['Скачать B · плита 4/5','B_роторная_кассета/PLATES_3MF/B11_plate_04_левая_направляющая_лоток.3mf'],
+      ['Скачать B · плита 5/5','B_роторная_кассета/PLATES_3MF/B11_plate_05_правая_направляющая.3mf'],
+      ['Открыть инструкцию B','B_роторная_кассета/README_СБОРКА.md']
+    ],
+    print:[
+      'STL_ПЕЧАТЬ/B01A_ротор_4_кармана_открытый.stl',
+      'STL_ПЕЧАТЬ/B01B_индексатор_3_ключа.stl',
+      'STL_ПЕЧАТЬ/B02L_левая_щека_серва.stl',
+      'STL_ПЕЧАТЬ/B02R_правая_щека_ось.stl',
+      'STL_ПЕЧАТЬ/B02GL_левая_направляющая.stl',
+      'STL_ПЕЧАТЬ/B02GR_правая_направляющая.stl',
+      'STL_ПЕЧАТЬ/B02I_входной_зажим_A02.stl',
+      'STL_ПЕЧАТЬ/B02O_выходной_лоток.stl',
+      'STL_ПЕЧАТЬ/B03_гравитационная_собачка.stl',
+      'STL_ПЕЧАТЬ/T01_coupon_ось_собачки_020_035_050.stl'
+    ]
+  },
+  C:{
+    title:'C · верхние линейные ножи',
+    subtitle:'Два прямых полноширинных барьера движутся навстречу друг другу от одного коромысла.',
+    facts:[['5','рабочих деталей'],['1','готовая 3MF-плита'],['0','поддержек'],['2','действия установки']],
+    body:'Передняя заслонка держит выдаваемую банку, задняя удерживает очередь; в середине хода обе перекрывают путь. Плоский кронштейн сервы крепится к раме двумя винтами одной операцией; вся широкая механика вынесена перед реальными носами разделителей.',
+    risk:'Условный первый выбор для одной плиты Ender‑3 и минимальной сборки — с MG90S. Полная заявленная очередь допускается только после измерения усилия и 300/300 циклов; SG90 — только для уменьшенной опытной очереди. Под нагрузкой нужен непрерывно корректный PWM: старое ПО несовместимо до отдельного профиля V11. Перед отключением — HOME и полная разгрузка. 22×200 г запрещены.',
+    downloads:[
+      ['Скачать готовую плиту C · 1 канал','C_верхние_линейные_ножи/STL_ПЕЧАТЬ/C2_ПЛИТА_1_КАНАЛ_готовая_220x220.3mf'],
+      ['Открыть инструкцию C','C_верхние_линейные_ножи/README_C2.md']
+    ],
+    print:[
+      'STL_ПЕЧАТЬ/C01_верхняя_рама_направляющая.stl',
+      'STL_ПЕЧАТЬ/C02_передняя_линейная_заслонка.stl',
+      'STL_ПЕЧАТЬ/C03_задний_линейный_сепаратор.stl',
+      'STL_ПЕЧАТЬ/C04_коромысло_SG90_MG90S.stl',
+      'STL_ПЕЧАТЬ/C05_плоский_кронштейн_сервы.stl',
+      'STL_ПЕЧАТЬ/T01_КУПОН_штатной_качалки.stl'
+    ]
+  }
+};
+
+const stateAssets={
+  A:{
+    HOME:[
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/A_VIEW_HOME_frame.stl','printDark'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/A_VIEW_HOME_clamp.stl','printDark'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/A_VIEW_HOME_rocker.stl','orange'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/A_VIEW_HOME_link.stl','cyan'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/A_VIEW_HOME_servo.stl','servo'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/A_VIEW_HOME_horn.stl','horn'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/A_VIEW_HOME_lower_sheet.stl','wood'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/A_VIEW_HOME_can_1.stl','can'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/A_VIEW_HOME_can_2.stl','can2'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/A_VIEW_HOME_can_3.stl','can3']
+    ],
+    MID:[
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/A_VIEW_MID_frame.stl','printDark'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/A_VIEW_MID_clamp.stl','printDark'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/A_VIEW_MID_rocker.stl','orange'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/A_VIEW_MID_link.stl','cyan'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/A_VIEW_MID_servo.stl','servo'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/A_VIEW_MID_horn.stl','horn'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/A_VIEW_MID_lower_sheet.stl','wood'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/A_VIEW_MID_can_1.stl','can'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/A_VIEW_MID_can_2.stl','can2'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/A_VIEW_MID_can_3.stl','can3']
+    ],
+    EJECT:[
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/A_VIEW_EJECT_frame.stl','printDark'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/A_VIEW_EJECT_clamp.stl','printDark'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/A_VIEW_EJECT_rocker.stl','orange'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/A_VIEW_EJECT_link.stl','cyan'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/A_VIEW_EJECT_servo.stl','servo'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/A_VIEW_EJECT_horn.stl','horn'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/A_VIEW_EJECT_lower_sheet.stl','wood'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/A_VIEW_EJECT_can_1.stl','can'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/A_VIEW_EJECT_can_2.stl','can2'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/A_VIEW_EJECT_can_3.stl','can3']
+    ]
+  },
+  B:{
+    HOME:[
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/HOME/frame_left.stl','printDark'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/HOME/frame_right.stl','printDark'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/HOME/rotor_star.stl','orange'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/HOME/gravity_pawl.stl','cyan'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/HOME/servo_body.stl','servo'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/HOME/servo_shaft.stl','metal'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/HOME/servo_horn.stl','horn'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/HOME/servo_center_screw.stl','metal'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/HOME/fixed_M4_axis.stl','metal'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/HOME/clamp_screw_left.stl','metal'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/HOME/clamp_screw_right.stl','metal'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/HOME/lower_sheet_A02.stl','wood'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/HOME/divider_left.stl','ghost'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/HOME/divider_right.stl','ghost'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/HOME/can_indexed.stl','can'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/HOME/can_queue_1.stl','can2'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/HOME/can_queue_2.stl','can3'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/HOME/wire_brown.stl','wireBrown'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/HOME/wire_red.stl','wireRed'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/HOME/wire_orange.stl','wireOrange']
+    ],
+    MID:[
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/MID/frame_left.stl','printDark'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/MID/frame_right.stl','printDark'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/MID/rotor_star.stl','orange'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/MID/gravity_pawl.stl','cyan'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/MID/servo_body.stl','servo'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/MID/servo_shaft.stl','metal'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/MID/servo_horn.stl','horn'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/MID/servo_center_screw.stl','metal'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/MID/fixed_M4_axis.stl','metal'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/MID/clamp_screw_left.stl','metal'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/MID/clamp_screw_right.stl','metal'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/MID/lower_sheet_A02.stl','wood'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/MID/divider_left.stl','ghost'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/MID/divider_right.stl','ghost'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/MID/can_indexed.stl','can'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/MID/can_queue_1.stl','can2'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/MID/can_queue_2.stl','can3'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/MID/wire_brown.stl','wireBrown'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/MID/wire_red.stl','wireRed'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/MID/wire_orange.stl','wireOrange']
+    ],
+    EJECT:[
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/EJECT/frame_left.stl','printDark'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/EJECT/frame_right.stl','printDark'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/EJECT/rotor_star.stl','orange'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/EJECT/gravity_pawl.stl','cyan'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/EJECT/servo_body.stl','servo'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/EJECT/servo_shaft.stl','metal'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/EJECT/servo_horn.stl','horn'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/EJECT/servo_center_screw.stl','metal'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/EJECT/fixed_M4_axis.stl','metal'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/EJECT/clamp_screw_left.stl','metal'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/EJECT/clamp_screw_right.stl','metal'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/EJECT/lower_sheet_A02.stl','wood'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/EJECT/divider_left.stl','ghost'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/EJECT/divider_right.stl','ghost'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/EJECT/can_indexed.stl','can'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/EJECT/can_queue_1.stl','can2'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/EJECT/can_queue_2.stl','can3'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/EJECT/wire_brown.stl','wireBrown'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/EJECT/wire_red.stl','wireRed'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/EJECT/wire_orange.stl','wireOrange']
+    ]
+  },
+  C:{
+    HOME:[
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_HOME_frame.stl','printDark'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_HOME_servo_bracket.stl','printDark'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_HOME_bracket_screw_lower.stl','metal'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_HOME_bracket_screw_upper.stl','metal'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_HOME_front_blade.stl','orange'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_HOME_rear_blade.stl','cyan'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_HOME_rocker.stl','orange'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_HOME_front_pin.stl','metal'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_HOME_rear_pin.stl','metal'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_HOME_lower_sheet.stl','wood'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_HOME_servo_body.stl','servo'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_HOME_servo_horn.stl','horn'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_HOME_servo_screw.stl','metal'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_HOME_servo_shaft.stl','metal'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_HOME_divider_left.stl','ghost'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_HOME_divider_right.stl','ghost'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_HOME_clamp_screw_left.stl','metal'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_HOME_clamp_screw_right.stl','metal'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_HOME_can_1.stl','can'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_HOME_can_2.stl','can2'],
+      ['STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_HOME_can_3.stl','can3']
+    ],
+    MID:[],
+    EJECT:[]
+  }
+};
+['MID','EJECT'].forEach(function(s){
+  stateAssets.C[s]=stateAssets.C.HOME.map(function(a){return [a[0].replace('C2_HOME_','C2_'+s+'_'),a[1]]});
+});
+
+const COLORS={
+  wood:0xc8965d,woodEdge:0x855832,printDark:0x3a4854,orange:0xef9144,cyan:0x45cfc2,
+  can:0x56cf91,can2:0x56aee5,can3:0xb985df,servo:0x4178bd,horn:0xf2f3ef,metal:0xbac6ce,
+  wireRed:0xe85659,wireBrown:0x6e432b,wireOrange:0xf28a36,ghost:0x7890a1,box:0x7d9aac
+};
+function material(color,opts){
+  opts=opts||{};
+  return new THREE.MeshStandardMaterial({
+    color:color,roughness:opts.roughness===undefined?.54:opts.roughness,
+    metalness:opts.metalness||0,transparent:!!opts.transparent,
+    opacity:opts.opacity===undefined?1:opts.opacity,side:opts.side||THREE.FrontSide,
+    depthWrite:opts.depthWrite===undefined?true:opts.depthWrite,
+    emissive:opts.emissive||0,emissiveIntensity:opts.emissiveIntensity||0
+  });
+}
+const MAT={
+  wood:material(COLORS.wood,{roughness:.82}),woodEdge:material(COLORS.woodEdge,{roughness:.9}),
+  printDark:material(COLORS.printDark,{roughness:.62}),orange:material(COLORS.orange,{roughness:.47}),
+  cyan:material(COLORS.cyan,{roughness:.46}),can:material(COLORS.can,{roughness:.28,metalness:.22}),
+  can2:material(COLORS.can2,{roughness:.28,metalness:.22}),can3:material(COLORS.can3,{roughness:.28,metalness:.22}),
+  servo:material(COLORS.servo,{roughness:.48}),horn:material(COLORS.horn,{roughness:.44}),
+  metal:material(COLORS.metal,{roughness:.25,metalness:.65}),
+  wireRed:material(COLORS.wireRed,{roughness:.65}),wireBrown:material(COLORS.wireBrown,{roughness:.65}),
+  wireOrange:material(COLORS.wireOrange,{roughness:.65}),
+  ghost:material(COLORS.ghost,{roughness:.7,transparent:true,opacity:.08,depthWrite:false}),
+  woodGhost:material(COLORS.wood,{roughness:.86,transparent:true,opacity:.16,side:THREE.DoubleSide,depthWrite:false}),
+  box:material(COLORS.box,{roughness:.7,transparent:true,opacity:.16,side:THREE.DoubleSide,depthWrite:false}),
+  cardboard:material(0xd0a06a,{roughness:.9,side:THREE.DoubleSide,emissive:0x392313,emissiveIntensity:.52}),
+  bed:material(0x202c35,{roughness:.95}),
+  shelf:material(0x91a5b4,{roughness:.62,metalness:.28,emissive:0x17232c,emissiveIntensity:.42})
+};
+
+function parseSTL(buffer){
+  const view=new DataView(buffer);let binary=false,count=0;
+  if(buffer.byteLength>=84){count=view.getUint32(80,true);binary=84+count*50===buffer.byteLength}
+  const p=[];
+  if(binary){
+    let o=84;
+    for(let f=0;f<count;f++,o+=50){
+      for(let v=0;v<3;v++){const q=o+12+v*12;p.push(view.getFloat32(q,true),view.getFloat32(q+4,true),view.getFloat32(q+8,true))}
+    }
+  }else{
+    const t=new TextDecoder().decode(buffer),re=/vertex\s+([+\-\d.eE]+)\s+([+\-\d.eE]+)\s+([+\-\d.eE]+)/g;let m;
+    while((m=re.exec(t))!==null)p.push(Number(m[1]),Number(m[2]),Number(m[3]));
+  }
+  if(!p.length||p.length%9)throw new Error('Некорректный STL');
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(p,3));
+  g.computeVertexNormals();g.computeBoundingBox();g.computeBoundingSphere();return g;
+}
+const cache=new Map();
+async function geometry(url){
+  if(cache.has(url))return cache.get(url);
+  const r=await fetch(url);
+  if(!r.ok)throw new Error(r.status+' · '+decodeURI(url));
+  const g=parseSTL(await r.arrayBuffer());cache.set(url,g);return g;
+}
+async function stl(url,role){
+  const m=new THREE.Mesh(await geometry(url),MAT[role]||MAT.printDark);
+  m.castShadow=true;m.receiveShadow=true;m.userData.url=url;return m;
+}
+const subsetCache=new Map();
+async function geometrySubsetY(url,minY,maxY){
+  const key=url+'|'+minY+'|'+maxY;
+  if(subsetCache.has(key))return subsetCache.get(key);
+  const source=await geometry(url),a=source.getAttribute('position').array,out=[];
+  for(let i=0;i<a.length;i+=9){
+    const cy=(a[i+1]+a[i+4]+a[i+7])/3;
+    if(cy>=minY&&cy<=maxY){for(let j=0;j<9;j++)out.push(a[i+j])}
+  }
+  if(!out.length)throw new Error('В hardware reference нет геометрии для выбранного разделителя');
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(out,3));
+  g.computeVertexNormals();g.computeBoundingBox();g.computeBoundingSphere();subsetCache.set(key,g);return g;
+}
+async function stlSubsetY(url,minY,maxY,role){
+  const m=new THREE.Mesh(await geometrySubsetY(url,minY,maxY),MAT[role]||MAT.metal);
+  m.castShadow=true;m.receiveShadow=true;m.userData.url=url;return m;
+}
+async function geometrySubsetBox(url,min,max){
+  const key=url+'|box|'+min.join(',')+'|'+max.join(',');
+  if(subsetCache.has(key))return subsetCache.get(key);
+  const source=await geometry(url),a=source.getAttribute('position').array,out=[];
+  for(let i=0;i<a.length;i+=9){
+    const cx=(a[i]+a[i+3]+a[i+6])/3,cy=(a[i+1]+a[i+4]+a[i+7])/3,cz=(a[i+2]+a[i+5]+a[i+8])/3;
+    if(cx>=min[0]&&cx<=max[0]&&cy>=min[1]&&cy<=max[1]&&cz>=min[2]&&cz<=max[2]){
+      for(let j=0;j<9;j++)out.push(a[i+j]);
+    }
+  }
+  if(!out.length)throw new Error('В hardware reference нет геометрии выбранного узла');
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(out,3));
+  g.computeVertexNormals();g.computeBoundingBox();g.computeBoundingSphere();subsetCache.set(key,g);return g;
+}
+async function stlSubsetBox(url,min,max,role){
+  const m=new THREE.Mesh(await geometrySubsetBox(url,min,max),MAT[role]||MAT.metal);
+  m.castShadow=true;m.receiveShadow=true;m.userData.url=url;return m;
+}
+function clippingBox(min,max){
+  return [
+    new THREE.Plane(new THREE.Vector3(1,0,0),-min[0]),new THREE.Plane(new THREE.Vector3(-1,0,0),max[0]),
+    new THREE.Plane(new THREE.Vector3(0,1,0),-min[1]),new THREE.Plane(new THREE.Vector3(0,-1,0),max[1]),
+    new THREE.Plane(new THREE.Vector3(0,0,1),-min[2]),new THREE.Plane(new THREE.Vector3(0,0,-1),max[2])
+  ];
+}
+async function stlClipped(url,role,planes){
+  const m=await stl(url,role),mt=(MAT[role]||MAT.printDark).clone();
+  mt.clippingPlanes=planes;mt.clipShadows=true;m.material=mt;return m;
+}
+function boxMesh(x,y,z,matl){
+  const m=new THREE.Mesh(new THREE.BoxGeometry(x,y,z),matl);m.castShadow=true;m.receiveShadow=true;return m;
+}
+function clearWorld(){
+  scene.remove(world);world=new THREE.Group();scene.add(world);labels=[];
+}
+function label(text,scale){
+  const c=document.createElement('canvas'),ctx=c.getContext('2d');c.width=768;c.height=128;
+  ctx.font='700 37px Segoe UI,Arial';ctx.textAlign='center';ctx.textBaseline='middle';
+  const w=Math.min(740,ctx.measureText(text).width+60);const x=(768-w)/2;
+  ctx.fillStyle='rgba(7,12,17,.88)';ctx.strokeStyle='rgba(150,188,215,.45)';ctx.lineWidth=3;
+  ctx.beginPath();ctx.roundRect(x,17,w,94,14);ctx.fill();ctx.stroke();ctx.fillStyle='#eef6fb';ctx.fillText(text,384,65);
+  const tx=new THREE.CanvasTexture(c);tx.colorSpace=THREE.SRGBColorSpace;
+  const s=new THREE.Sprite(new THREE.SpriteMaterial({map:tx,transparent:true,depthTest:false}));
+  s.scale.set(155*(scale||1),26*(scale||1),1);s.renderOrder=20;labels.push(s);return s;
+}
+function line(points,color,dashed){
+  const g=new THREE.BufferGeometry().setFromPoints(points.map(function(p){return new THREE.Vector3(p[0],p[1],p[2])}));
+  const mt=dashed?new THREE.LineDashedMaterial({color:color||0x8ea8ba,dashSize:5,gapSize:3}):new THREE.LineBasicMaterial({color:color||0x8ea8ba});
+  const l=new THREE.Line(g,mt);if(dashed)l.computeLineDistances();return l;
+}
+function dimension(a,b,text,parent,offset){
+  parent=parent||world;offset=offset||[0,0,0];
+  const aa=new THREE.Vector3(a[0]+offset[0],a[1]+offset[1],a[2]+offset[2]);
+  const bb=new THREE.Vector3(b[0]+offset[0],b[1]+offset[1],b[2]+offset[2]);
+  parent.add(line([[aa.x,aa.y,aa.z],[bb.x,bb.y,bb.z]],0x8eb8d4,false));
+  const s=label(text,.74);s.position.copy(aa).add(bb).multiplyScalar(.5);s.position.z+=12;parent.add(s);
+}
+function edgesForBox(x,y,z,color){
+  const e=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(x,y,z)),new THREE.LineBasicMaterial({color:color||0x7392a8,transparent:true,opacity:.55}));
+  return e;
+}
+
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x080d13);scene.fog=new THREE.Fog(0x080d13,2600,8500);
+const camera=new THREE.PerspectiveCamera(38,1,.5,6000);camera.up.set(0,0,1);
+const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+renderer.localClippingEnabled=true;
+renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.08;
+document.getElementById('viewport').prepend(renderer.domElement);
+const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.dampingFactor=.07;controls.minDistance=60;controls.maxDistance=4000;
+scene.add(new THREE.HemisphereLight(0xd8eeff,0x27313a,2.1));
+scene.add(new THREE.AmbientLight(0xffffff,.82));
+const key=new THREE.DirectionalLight(0xffffff,2.8);key.position.set(-500,-700,1000);key.castShadow=true;key.shadow.mapSize.set(2048,2048);key.shadow.camera.left=-1200;key.shadow.camera.right=1200;key.shadow.camera.top=1500;key.shadow.camera.bottom=-500;scene.add(key);
+const rim=new THREE.DirectionalLight(0x79caff,1.35);rim.position.set(900,550,650);scene.add(rim);
+const frontFill=new THREE.DirectionalLight(0xffe0bc,1.7);frontFill.position.set(-150,1300,720);scene.add(frontFill);
+const floor=new THREE.Mesh(new THREE.PlaneGeometry(4000,4000),material(0x0c141a,{roughness:1}));floor.position.z=-25;floor.receiveShadow=true;scene.add(floor);
+const grid=new THREE.GridHelper(3600,72,0x2c4252,0x17252e);grid.rotation.x=Math.PI/2;grid.position.z=-24.7;scene.add(grid);
+let world=new THREE.Group();scene.add(world);let labels=[];
+  let mode='rack',variant='C',state='HOME',cycle=false,cycleTimer=0,busy=0,renderEpoch=0;
+
+function fit(object,view){
+  const b=new THREE.Box3().setFromObject(object);if(b.isEmpty())return;
+  fitBounds(b,view);
+}
+function fitBounds(b,view){
+  if(b.isEmpty())return;
+  const c=b.getCenter(new THREE.Vector3()),s=b.getSize(new THREE.Vector3());
+  const radius=Math.max(s.x,s.y,s.z)*.74+35;
+  controls.target.copy(c);
+  const dir=view==='front'?new THREE.Vector3(0,-1,.22):view==='rack'?new THREE.Vector3(.48,1.4,.66):view==='fixator'?new THREE.Vector3(.18,1,.28):new THREE.Vector3(1.08,-1.25,.78);
+  dir.normalize();camera.position.copy(c).addScaledVector(dir,radius*2.15);
+  camera.near=Math.max(.2,radius/1000);camera.far=Math.max(2500,radius*14);camera.updateProjectionMatrix();controls.update();
+}
+function addCan(parent,pos,sku){
+  const matl=[MAT.can,MAT.can2,MAT.can3][sku%3];
+  const g=new THREE.Group(),body=new THREE.Mesh(new THREE.CylinderGeometry(23.5,23.5,64,48),matl);
+  body.castShadow=true;g.add(body);
+  const lid=new THREE.Mesh(new THREE.CylinderGeometry(24.1,24.1,6,48),MAT.metal);lid.position.y=35;lid.castShadow=true;g.add(lid);
+  const bottom=new THREE.Mesh(new THREE.TorusGeometry(22.7,.75,8,48),MAT.metal);bottom.rotation.x=Math.PI/2;bottom.position.y=-35;g.add(bottom);
+  g.position.set(pos[0],pos[1],pos[2]);parent.add(g);return g;
+}
+
+function buildRack(overhang,epoch){
+  clearWorld();
+  const rack=new THREE.Group();world.add(rack);
+  const shelfW=900,shelfD=400,shelfT=24,post=34,levels=[80,535,990,1445];
+  [-shelfW/2+post/2,shelfW/2-post/2].forEach(function(x){
+    [-shelfD+post/2,-post/2].forEach(function(y){
+      const p=boxMesh(post,post,1900,MAT.shelf);p.position.set(x,y,930);rack.add(p);
+    });
+  });
+  levels.forEach(function(z){
+    const s=boxMesh(shelfW,shelfD,shelfT,MAT.shelf);s.position.set(0,-shelfD/2,z);rack.add(s);
+    const frontEdge=boxMesh(shelfW,7,8,MAT.cyan);frontEdge.position.set(0,0,z+16);rack.add(frontEdge);
+  });
+  const boxW=395,boxD=600,boxH=395;
+  levels.forEach(function(z,li){
+    [-207,207].forEach(function(x,bi){
+      const rear=overhang-boxD,cy=(rear+overhang)/2,cz=z+shelfT/2+boxH/2;
+      const bottom=boxMesh(boxW,boxD,4,MAT.cardboard);bottom.position.set(x,cy,cz-boxH/2+2);rack.add(bottom);
+      const back=boxMesh(boxW,4,boxH,MAT.cardboard);back.position.set(x,rear+2,cz);rack.add(back);
+      const sideL=boxMesh(4,boxD,boxH,MAT.cardboard);sideL.position.set(x-boxW/2+2,cy,cz);rack.add(sideL);
+      const sideR=boxMesh(4,boxD,boxH,MAT.cardboard);sideR.position.set(x+boxW/2-2,cy,cz);rack.add(sideR);
+      const edge=edgesForBox(boxW,boxD,boxH,li===1?0x7fc7ed:0x6d8ca2);edge.position.set(x,cy,cz);rack.add(edge);
+      if(li===1&&bi===0){
+        for(let lane=0;lane<5;lane++){
+          const lx=x-boxW/2+39.5+79*lane;
+          const chute=boxMesh(72,175,4,MAT.wood);chute.rotation.x=-THREE.MathUtils.degToRad(15);chute.position.set(lx,overhang-125,cz-boxH/2+52);rack.add(chute);
+          const module=boxMesh(72,48,42,MAT.orange);module.position.set(lx,overhang+9,cz-boxH/2+28);rack.add(module);
+        }
+        const tag=label('рабочий фронт · 5 одинаковых каналов',1.0);tag.position.set(x,overhang+42,cz+boxH/2+36);rack.add(tag);
+      }
+    });
+  });
+  const frontPlane=line([[-520,0,20],[520,0,20]],0x59d58a,true);rack.add(frontPlane);
+  const edgeTag=label('КРОМКА ПОЛКИ · всё впереди линии нависает',.82);edgeTag.position.set(0,8,990);rack.add(edgeTag);
+  dimension([-420,0,1900],[-420,overhang,1900],'свес '+overhang+' мм',rack,[0,0,0]);
+  const front=label('ПОЛЬЗОВАТЕЛЬ / ВЫДАЧА',1.18);front.position.set(0,overhang+135,60);rack.add(front);
+  document.getElementById('viewTitle').innerHTML='Стеллаж 4 × 2 <small>передняя часть коробок нависает над краем полки</small>';
+  setInfo('rack');fit(world,'rack');
+}
+
+async function buildCassette(epoch){
+  clearWorld();loading(true,'Загружаю точные STL кассеты и восьми фиксаторов…');
+  try{
+    const g=new THREE.Group();world.add(g);
+    const lower=await stl(COMMON+'cassette_lower_sheet.stl','wood');if(epoch!==renderEpoch)return;g.add(lower);
+    const upper=await stl(COMMON+'cassette_upper_sheet.stl','wood');if(epoch!==renderEpoch)return;g.add(upper);
+    for(let i=1;i<=4;i++){
+      const y=79*i;
+      const d=await stl(COMMON+'cassette_divider.stl','woodEdge');if(epoch!==renderEpoch)return;d.position.y=y;g.add(d);
+    }
+    const upperFixators=await stl(COMMON_FIX+'фиксаторы_верхнего_ската_4шт_world_V11.stl','cyan');if(epoch!==renderEpoch)return;g.add(upperFixators);
+    const lowerFixators=await stl(COMMON_FIX+'фиксаторы_нижнего_ската_4шт_world_V11.stl','orange');if(epoch!==renderEpoch)return;g.add(lowerFixators);
+    const screws=await stl(COMMON_FIX+'M4x25_болты_8шт_world_REFERENCE.stl','metal');if(epoch!==renderEpoch)return;g.add(screws);
+    const washers=await stl(COMMON_FIX+'M4_шайбы_16шт_world_REFERENCE.stl','metal');if(epoch!==renderEpoch)return;g.add(washers);
+    const nuts=await stl(COMMON_FIX+'M4_гайки_Nyloc_8шт_world_REFERENCE.stl','metal');if(epoch!==renderEpoch)return;g.add(nuts);
+    const shell=boxMesh(600,395,395,MAT.box);shell.position.set(300,197.5,197.5);g.add(shell);
+    const edge=edgesForBox(600,395,395,0x698aa1);edge.position.copy(shell.position);g.add(edge);
+    for(let lane=0;lane<5;lane++){
+      for(let j=0;j<5;j++){const x=145+j*49;addCan(g,[x,39.5+79*lane,x*Math.tan(THREE.MathUtils.degToRad(15))+24],lane+j)}
+    }
+    dimension([0,420,0],[600,420,0],'глубина около 600 мм',g);
+    dimension([610,2,0],[610,393,0],'5 × 75 мм',g);
+    document.getElementById('viewTitle').innerHTML='Кассета из шести листов <small>8 внутренних фиксаторов · M4×25, широкие шайбы Ø12 и самоконтрящиеся гайки показаны по реальным координатам</small>';
+    setInfo('cassette');fit(world);
+  }catch(e){if(epoch===renderEpoch)showError(e)}finally{loading(false)}
+}
+
+async function buildFixatorDetail(epoch){
+  clearWorld();loading(true,'Загружаю реальный крепёж одного разделителя…');
+  try{
+    const g=new THREE.Group();world.add(g);
+    const upperMin=[-5,55,285],upperMax=[82,112,390],upperPlanes=clippingBox(upperMin,upperMax);
+    const lowerSourceMin=[512,55,95],lowerSourceMax=[595,112,215],lowerShift=[-350,0,190];
+    const lowerMin=lowerSourceMin.map(function(v,i){return v+lowerShift[i]});
+    const lowerMax=lowerSourceMax.map(function(v,i){return v+lowerShift[i]});
+    const lowerPlanes=clippingBox(lowerMin,lowerMax);
+
+    // Два увеличенных выреза относятся к одному и тому же разделителю y=79.
+    // Геометрия листов и разделителя остаётся канонической; меняется только
+    // экранная компоновка нижнего выреза, чтобы оба крепления были читаемы.
+    const upperSheet=await stlClipped(COMMON+'cassette_upper_sheet.stl','woodGhost',upperPlanes);if(epoch!==renderEpoch)return;g.add(upperSheet);
+    const upperDivider=await stlClipped(COMMON+'cassette_divider.stl','wood',upperPlanes);if(epoch!==renderEpoch)return;upperDivider.position.y=79;g.add(upperDivider);
+    const upperFixator=await stl(COMMON_FIX+'фиксатор_верхнего_ската_world_y79_V11.stl','cyan');if(epoch!==renderEpoch)return;g.add(upperFixator);
+
+    const lowerSheet=await stlClipped(COMMON+'cassette_lower_sheet.stl','woodGhost',lowerPlanes);if(epoch!==renderEpoch)return;lowerSheet.position.set(lowerShift[0],0,lowerShift[2]);g.add(lowerSheet);
+    const lowerDivider=await stlClipped(COMMON+'cassette_divider.stl','wood',lowerPlanes);if(epoch!==renderEpoch)return;lowerDivider.position.set(lowerShift[0],79,lowerShift[2]);g.add(lowerDivider);
+    const lowerFixator=await stl(COMMON_FIX+'фиксатор_нижнего_ската_world_y79_V11.stl','orange');if(epoch!==renderEpoch)return;lowerFixator.position.set(lowerShift[0],0,lowerShift[2]);g.add(lowerFixator);
+
+    const hardware=[
+      ['M4x25_болты_8шт_world_REFERENCE.stl',[-10,65,275],[90,115,400]],
+      ['M4_шайбы_16шт_world_REFERENCE.stl',[-10,65,275],[90,115,400]],
+      ['M4_гайки_Nyloc_8шт_world_REFERENCE.stl',[-10,65,275],[90,115,400]]
+    ];
+    for(let i=0;i<hardware.length;i++){
+      const h=hardware[i],upperMetal=await stlSubsetBox(COMMON_FIX+h[0],h[1],h[2],'metal');if(epoch!==renderEpoch)return;g.add(upperMetal);
+      const lowerMetal=await stlSubsetBox(COMMON_FIX+h[0],lowerSourceMin,lowerSourceMax,'metal');if(epoch!==renderEpoch)return;lowerMetal.position.set(lowerShift[0],0,lowerShift[2]);g.add(lowerMetal);
+    }
+    const upperTag=label('ВЕРХ · штифт Ø3.8 + M4×25',.72);upperTag.position.set(36,116,397);g.add(upperTag);
+    const lowerTag=label('НИЗ · штифт Ø3.8 + M4×25',.72);lowerTag.position.set(205,116,397);g.add(lowerTag);
+    document.getElementById('viewTitle').innerHTML='Крепёж кассеты <small>верхний и нижний узлы одного разделителя · реальные STL, показаны рядом крупным планом</small>';
+    setInfo('fixator');fitBounds(new THREE.Box3(new THREE.Vector3(-12,52,270),new THREE.Vector3(254,120,410)),'fixator');
+  }catch(e){if(epoch===renderEpoch)showError(e)}finally{loading(false)}
+}
+
+async function buildVariant(v,s,epoch){
+  clearWorld();loading(true,'Загружаю '+variantMeta[v].title+' · '+s+'…');
+  try{
+    const list=stateAssets[v][s];const g=new THREE.Group(),focus=new THREE.Box3();world.add(g);
+    for(let i=0;i<list.length;i++){
+      setProgress((i+1)/list.length,'STL '+(i+1)+' из '+list.length);
+      const role=list[i][1],m=await stl(DIR[v]+list[i][0],role);if(epoch!==renderEpoch)return;g.add(m);
+      if(role!=='wood'&&role!=='ghost')focus.expandByObject(m);
+    }
+    const allBox=new THREE.Box3().setFromObject(g),b=focus.isEmpty()?allBox:focus,size=b.getSize(new THREE.Vector3());
+    dimension([b.min.x,b.min.y,b.min.z],[b.max.x,b.min.y,b.min.z],Math.round(size.x)+' мм',g,[0,-16,-6]);
+    document.getElementById('viewTitle').innerHTML=variantMeta[v].title+' <small>'+s+' · реальные сборочные STL</small>';
+    setInfo(v);fitBounds(b);
+  }catch(e){if(epoch===renderEpoch)showError(e)}finally{loading(false)}
+}
+
+function bedGroup(index){
+  const g=new THREE.Group(),bed=boxMesh(220,220,3,MAT.bed);bed.position.z=-2;g.add(bed);
+  const e=edgesForBox(220,220,3,0x6f8999);e.position.z=-2;g.add(e);
+  for(let q=-100;q<=100;q+=20){g.add(line([[-110,q,0],[110,q,0]],0x344a58));g.add(line([[q,-110,0],[q,110,0]],0x344a58))}
+  const t=label('СТОЛ '+(index+1)+' · 220 × 220',.74);t.position.set(0,-136,8);g.add(t);return g;
+}
+async function buildPrint(v,exploded,epoch){
+  clearWorld();loading(true,'Раскладываю печатные STL '+v+'…');
+  try{
+    const list=variantMeta[v].print,whole=new THREE.Group();world.add(whole);
+    if(exploded){
+      const loaded=[];
+      for(let i=0;i<list.length;i++){
+        setProgress((i+1)/list.length,'Деталь '+(i+1)+' из '+list.length);
+        const m=await stl(DIR[v]+list[i],i%2?'orange':'printDark');if(epoch!==renderEpoch)return;
+        const b=new THREE.Box3().setFromObject(m),sz=b.getSize(new THREE.Vector3()),c=b.getCenter(new THREE.Vector3());
+        loaded.push({m:m,b:b,sz:sz,c:c});
+      }
+      const cols=list.length<=4?2:3;
+      const cellX=Math.max.apply(null,loaded.map(function(q){return q.sz.x}))+58;
+      const cellY=Math.max.apply(null,loaded.map(function(q){return q.sz.y}))+82;
+      for(let i=0;i<loaded.length;i++){
+        const q=loaded[i],col=i%cols,row=Math.floor(i/cols),px=col*cellX,py=-row*cellY;
+        q.m.position.set(px-q.c.x,py-q.c.y,-q.b.min.z);whole.add(q.m);
+        const name=decodeURI(list[i].split('/').pop()).replace('.stl','');
+        const t=label((i+1)+' · '+name,.72);t.position.set(px,py-q.sz.y/2-28,q.sz.z+18);whole.add(t);
+      }
+      document.getElementById('viewTitle').innerHTML='Детали '+v+' крупно <small>каждый объект — фактический STL для печати</small>';
+    }else{
+      const layout=await readyPlateLayout();if(epoch!==renderEpoch)return;const variantLayout=layout.variants[v];
+      if(!variantLayout||!variantLayout.plates||!variantLayout.plates.length)throw new Error('Нет готовых плит для '+v);
+      const total=variantLayout.plates.reduce(function(sum,p){return sum+p.items.length},0);let done=0;
+      for(let i=0;i<variantLayout.plates.length;i++){
+        const plate=variantLayout.plates[i],g=bedGroup(i);g.position.x=i*270;whole.add(g);
+        for(let j=0;j<plate.items.length;j++){
+          done++;setProgress(done/total,'Плита '+(i+1)+' · объект '+(j+1)+' из '+plate.items.length);
+          const m=await stl(plate.items[j].file,(i+j)%2?'orange':'printDark');if(epoch!==renderEpoch)return;
+          // 3MF хранит уже готовые координаты 0…220; стол сцены центрирован в нуле.
+          m.position.set(-110,-110,0);g.add(m);
+        }
+      }
+      const pc=variantLayout.plate_count;
+      const plateText=pc===1?'1 готовая плита':(pc>=2&&pc<=4?pc+' готовые плиты':pc+' готовых плит');
+      document.getElementById('viewTitle').innerHTML='Готовые 3MF-плиты '+v+' <small>'+plateText+' Ender‑3 · ничего вращать и раскладывать не нужно</small>';
+    }
+    setInfo(v);fit(world,exploded?'front':undefined);
+  }catch(e){if(epoch===renderEpoch)showError(e)}finally{loading(false)}
+}
+
+function setInfo(key){
+  const el=document.getElementById('info');
+  if(key==='rack'){
+    el.innerHTML='<span class="badge">КОМПОНОВКА ПОНЯТА</span><h2>Коробка не стоит целиком на полке</h2><p>Задняя часть опирается на полку. Передний участок с окном и дозаторами выходит к пользователю; снизу под ним остаётся свободное место для серво и механики.</p><div class="facts"><div class="fact"><b>4</b>полки</div><div class="fact"><b>2</b>коробки / полку</div><div class="fact"><b>8</b>коробок всего</div><div class="fact"><b>40</b>каналов всего</div></div><div class="note">Точный свес и координату окна надо снять с уже вырезанной коробки. Проверить нагрузку каждой полки и всего стеллажа с полной загрузкой и передним моментом; закрепить стеллаж по инструкции производителя. При отрыве задней части коробки нужен упор или ремень. Движущуюся зону закрыть съёмным кожухом.</div>';
+  }else if(key==='cassette'){
+    el.innerHTML='<h2>Шесть больших листов + восемь внутренних фиксаторов</h2><p>Четыре разделителя входят пазами в два цельных наклонных ската. Каждый из восьми одинаковых печатных фиксаторов соединяет один скат с одним разделителем: встроенный штифт Ø3,8 входит в отверстие Ø4,2 ската, широкая опорная пятка блокирует поворот, а болт M4×25 проходит поперёк разделителя.</p><div class="facts"><div class="fact"><b>4 ×</b>590 × 390 × 4</div><div class="fact"><b>2 ×</b>цельный скат</div><div class="fact"><b>8 ×</b>одинаковый фиксатор</div><div class="fact"><b>5 × 75</b>чистые каналы</div></div><div class="note">На каждый фиксатор: 1 болт M4×25, 2 широкие шайбы M4 DIN 9021 Ø12 мм и 1 самоконтрящаяся гайка. Обычную узкую шайбу со стороны PETG не использовать. Печатать из PETG без поддержек, с каймой (brim) 5 мм. Расчётная геометрия и слайсинг проверены, но это не физическая валидация: сначала сухая примерка одного верхнего и одного нижнего узла, затем испытание одного канала минимум 300 циклов.</div><div class="downloads"><a href="'+encodeURI('00_ОБЩАЯ_КОМПОНОВКА/PLATES_3MF/КАССЕТА_8_ВНУТРЕННИХ_ФИКСАТОРОВ_220x220.3mf')+'" download>Скачать готовую плиту · 8 внутренних фиксаторов</a><a href="'+encodeURI('00_ОБЩАЯ_КОМПОНОВКА/README_КОМПОНОВКА.md')+'" target="_blank" rel="noopener" data-readme="true">Открыть инструкцию кассеты</a></div>';
+  }else if(key==='fixator'){
+    el.innerHTML='<h2>Реальный крепёж одного разделителя</h2><p>Показаны канонические STL одного разделителя и обоих скатов, два индивидуальных сборочных STL фиксаторов и справочные STL металлического крепежа. Ската два, поэтому на один разделитель нужны два одинаковых печатных фиксатора; на всю кассету — восемь.</p><div class="facts"><div class="fact"><b>Ø3,8 → Ø4,2</b>встроенный штифт → отверстие ската</div><div class="fact"><b>1 × M4×25</b>поперёк разделителя</div><div class="fact"><b>2 × DIN 9021</b>широкие шайбы Ø12 мм</div><div class="fact"><b>без поддержек</b>кайма (brim) 5 мм</div></div><div class="note">Широкая опорная пятка упирается в скат и не даёт фиксатору провернуться вокруг болта; гайка — самоконтрящаяся M4. Сначала напечатать и всухую примерить один верхний и один нижний узел; проверить фактическую толщину листа, посадку штифта и свободное прохождение банки. Только после этого печатать все восемь и проводить тест минимум 300 циклов. Физическая проверка пока не заявлена.</div><div class="downloads"><a href="'+encodeURI('00_ОБЩАЯ_КОМПОНОВКА/PLATES_3MF/КАССЕТА_8_ВНУТРЕННИХ_ФИКСАТОРОВ_220x220.3mf')+'" download>Скачать плиту · 8 одинаковых фиксаторов</a><a href="'+encodeURI('00_ОБЩАЯ_КОМПОНОВКА/README_КОМПОНОВКА.md')+'" target="_blank" rel="noopener" data-readme="true">Открыть инструкцию кассеты</a></div>';
+  }else{
+    const m=variantMeta[key],facts=m.facts.map(function(f){return '<div class="fact"><b>'+f[0]+'</b>'+f[1]+'</div>'}).join('');
+    const downloads=(m.downloads||[]).map(function(f){
+      const attrs=/\.3mf$/i.test(f[1])?' download':' target="_blank" rel="noopener" data-readme="true"';
+      return '<a href="'+encodeURI(f[1])+'"'+attrs+'>'+f[0]+'</a>';
+    }).join('');
+    el.innerHTML='<h2>'+m.title+'</h2><p>'+m.subtitle+'</p><p>'+m.body+'</p><div class="facts">'+facts+'</div><div class="note">'+m.risk+'</div><div class="downloads">'+downloads+'</div>';
+  }
+}
+function setProgress(v,text){
+  document.getElementById('loadFill').style.width=Math.max(5,Math.min(100,v*100))+'%';
+  if(text)document.getElementById('loadText').textContent=text;
+}
+function loading(on,text){
+  busy+=on?1:-1;busy=Math.max(0,busy);
+  const el=document.getElementById('load');if(text)document.getElementById('loadText').textContent=text;
+  if(on){el.classList.remove('hidden');el.setAttribute('aria-hidden','false');setProgress(.08)}
+  else if(!busy){el.classList.add('hidden');el.setAttribute('aria-hidden','true')}
+  document.getElementById('viewport').setAttribute('aria-busy',busy?'true':'false');
+}
+function showError(e){
+  document.getElementById('error').textContent='Ошибка загрузки: '+(e&&e.message?e.message:e);
+}
+document.getElementById('info').addEventListener('click',function(e){
+  const link=e.target instanceof Element?e.target.closest('a[data-readme]'):null;
+  if(!link)return;
+  const tab=window.open('about:blank','_blank');
+  if(!tab)return;
+  e.preventDefault();tab.opener=null;
+  tab.document.open();
+  tab.document.write('<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Инструкция V11</title><style>body{max-width:900px;margin:0 auto;padding:28px 20px;background:#f7f9fb;color:#17212b;font:16px/1.55 system-ui,sans-serif}h1{font-size:24px}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:15px/1.55 ui-monospace,Consolas,monospace;background:#fff;border:1px solid #ccd6df;border-radius:10px;padding:20px}</style></head><body><h1 id="readmeTitle">Инструкция V11</h1><p id="readmeStatus" role="status">Загрузка…</p><pre id="readmeText"></pre></body></html>');
+  tab.document.close();
+  tab.document.getElementById('readmeTitle').textContent=link.textContent;
+  fetch(link.href).then(function(r){if(!r.ok)throw new Error(r.status+' '+r.statusText);return r.text()}).then(function(source){
+    tab.document.getElementById('readmeStatus').remove();
+    tab.document.getElementById('readmeText').textContent=source;
+  }).catch(function(err){
+    tab.document.getElementById('readmeStatus').textContent='Не удалось открыть инструкцию: '+err.message;
+  });
+});
+async function rebuild(){
+  const epoch=++renderEpoch;
+  document.getElementById('error').textContent='';
+  document.getElementById('motionControls').style.display=['A','B','C'].includes(mode)?'block':'none';
+  document.getElementById('overhangControls').style.display=mode==='rack'?'block':'none';
+  if(mode==='rack')buildRack(Number(document.getElementById('overhang').value),epoch);
+  else if(mode==='cassette')await buildCassette(epoch);
+  else if(mode==='fixator')await buildFixatorDetail(epoch);
+  else if(['A','B','C'].includes(mode)){variant=mode;syncVariantButtons();await buildVariant(variant,state,epoch)}
+  else await buildPrint(variant,mode==='exploded',epoch);
+}
+function syncVariantButtons(){
+  document.querySelectorAll('[data-variant]').forEach(function(b){
+    const active=b.dataset.variant===variant;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));
+  });
+}
+function syncModeButtons(){
+  document.querySelectorAll('[data-mode]').forEach(function(b){
+    const active=b.dataset.mode===mode;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));
+  });
+}
+function syncStateButtons(){
+  document.querySelectorAll('[data-state]').forEach(function(b){
+    const active=b.dataset.state===state;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));
+  });
+}
+function syncCycleButton(){
+  document.getElementById('cycle').setAttribute('aria-pressed',String(cycle));
+}
+document.querySelectorAll('[data-mode]').forEach(function(b){b.addEventListener('click',function(){
+  mode=b.dataset.mode;syncModeButtons();rebuild();
+})});
+document.querySelectorAll('[data-variant]').forEach(function(b){b.addEventListener('click',function(){variant=b.dataset.variant;syncVariantButtons();if(mode==='exploded'||mode==='print')rebuild()})});
+document.querySelectorAll('[data-state]').forEach(function(b){b.addEventListener('click',function(){
+  state=b.dataset.state;cycle=false;syncStateButtons();syncCycleButton();if(['A','B','C'].includes(mode))rebuild();
+})});
+document.getElementById('overhang').addEventListener('input',function(){
+  document.getElementById('overhangValue').value=this.value+' мм';if(mode==='rack')buildRack(Number(this.value),++renderEpoch);
+});
+document.getElementById('cycle').addEventListener('click',function(){cycle=true;cycleTimer=0;syncCycleButton()});
+document.getElementById('stop').addEventListener('click',function(){cycle=false;syncCycleButton()});
+window.addEventListener('keydown',function(e){
+  const interactive=e.target instanceof Element&&e.target.closest('button,a,input,select,textarea,[contenteditable="true"]');
+  if(interactive)return;
+  if(e.code==='Space'&&['A','B','C'].includes(mode)){e.preventDefault();cycle=!cycle;cycleTimer=0;syncCycleButton()}
+  if(['Digit1','Digit2','Digit3','Digit4','Digit5','Digit6','Digit7','Digit8'].includes(e.code)){
+    const idx=Number(e.code.slice(-1))-1,btn=document.querySelectorAll('[data-mode]')[idx];if(btn)btn.click();
+  }
+});
+function resize(){
+  const v=document.getElementById('viewport'),w=v.clientWidth,h=v.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();
+}
+window.addEventListener('resize',resize);resize();
+let last=performance.now();
+function animate(now){
+  requestAnimationFrame(animate);const dt=Math.min(.05,(now-last)/1000);last=now;
+  if(cycle&&['A','B','C'].includes(mode)&&!busy){
+    cycleTimer+=dt;
+    if(cycleTimer>1.55){
+      cycleTimer=0;state=state==='HOME'?'MID':state==='MID'?'EJECT':'HOME';
+      syncStateButtons();rebuild();
+    }
+  }
+  controls.update();renderer.render(scene,camera);
+}
+const initial=new URLSearchParams(location.search);
+if(initial.has('variant')&&variantMeta[initial.get('variant')])variant=initial.get('variant');
+if(initial.has('state')&&stateAssets.A[initial.get('state')])state=initial.get('state');
+if(initial.has('mode')&&['rack','cassette','A','B','C','exploded','print'].includes(initial.get('mode')))mode=initial.get('mode');
+const hashMode=decodeURIComponent(location.hash.replace(/^#/,''));
+if(['rack','cassette','A','B','C','exploded','print'].includes(hashMode))mode=hashMode;
+syncModeButtons();syncStateButtons();syncVariantButtons();syncCycleButton();loading(false);rebuild();animate(performance.now());
+</script>
+</body>
+</html>

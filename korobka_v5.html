@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Две картонки · склад + выдача · кликабельно</title>
+<style>
+  html,body{margin:0;height:100%;background:#0f1216;color:#e6e6e6;font-family:Segoe UI,Arial,sans-serif;overflow:hidden}
+  #top{position:fixed;top:12px;left:12px;z-index:10;background:rgba(20,24,30,.85);padding:12px 15px;border-radius:12px;max-width:330px}
+  #top h1{font-size:15px;margin:0 0 6px}
+  #top p{font-size:12.5px;line-height:1.5;margin:4px 0;color:#c7d2dd}
+  #top .hint{color:#8fd08f;font-weight:bold}
+  #card{position:fixed;top:12px;right:12px;z-index:11;width:320px;background:rgba(24,30,40,.95);border:1px solid #3a5570;border-radius:12px;padding:16px 18px;box-shadow:0 8px 30px rgba(0,0,0,.5);display:none}
+  #card h2{font-size:16px;margin:0 0 8px;color:#7fd1ff}
+  #card .d{font-size:13.5px;line-height:1.6;color:#dfe7ef}
+  #card .dim{margin-top:10px;padding-top:8px;border-top:1px solid #33465a;font-size:12.5px;color:#9fd0a0}
+  #card .close{position:absolute;top:10px;right:12px;cursor:pointer;color:#8aa;font-size:18px}
+  #help{position:fixed;bottom:12px;left:12px;z-index:10;background:rgba(20,24,30,.75);padding:8px 12px;border-radius:10px;font-size:12px;color:#9fb2c6}
+</style>
+</head>
+<body>
+<div id="top">
+  <h1>Коробка без крышки · 2 картонки на канал</h1>
+  <p>Верхняя — <b>склад</b>: сыпь кучей сверху. Нижняя — <b>выдача</b>: строго по одной к затвору. Банка падает с края верхней — просто с обрыва, деталей там нет.</p>
+  <p>Ёмкость: <b>~26-28 банок/канал · ~80 на коробку</b> (3 товара)</p>
+  <p class="hint">👆 Кликай по деталям · зелёный пунктир = путь банки</p>
+</div>
+<div id="card"><span class="close" onclick="document.getElementById('card').style.display='none'">✕</span>
+  <h2 id="ct"></h2><div class="d" id="cd"></div><div class="dim" id="cm"></div></div>
+<div id="help">🖱 ЛКМ — вращать · колесо — зум · <b>стрелки/WASD</b> — лететь · <b>R/F</b> — вверх/вниз</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// ================= параметры =================
+const POD=100, Y0=POD+2.5;
+const IN={w:395,h:295,d:295}, T=2.5;
+const JD=47,JR=23.5,JL=70,LANEW=75,PITCH=78;
+const TB=13*Math.PI/180, TAN_B=Math.tan(TB);    // нижняя (выдача)
+const TT=18*Math.PI/180, TAN_T=Math.tan(TT);    // верхняя (склад)
+const UP_LEN=335, GAP=IN.w-UP_LEN;              // верхняя короче на 60 — это и есть «обрыв»
+const CARD=0xc8a16a, EXITC=0x54c079, PRINT=0xd98a3f;
+const SKU=[0x4e93c8,0xd08a4e,0x9a5fd0];
+
+let scene,camera,renderer,world;
+const clickable=[];
+
+function lowY(lx){ return Y0 + lx*TAN_B; }                       // нижняя: 0 у выхода → 91 сзади
+function upY(lx){ return Y0+133 + (UP_LEN-lx)*TAN_T; }           // верхняя: 133 у обрыва → 242 спереди
+
+function makeJar(color){
+  const g=new THREE.Group();
+  const b=new THREE.Mesh(new THREE.CylinderGeometry(JR,JR,JL-6,20),
+    new THREE.MeshStandardMaterial({color:color,roughness:.5}));
+  b.rotation.x=Math.PI/2; g.add(b);
+  const c=new THREE.Mesh(new THREE.CylinderGeometry(JR*.68,JR*.68,6,16),
+    new THREE.MeshStandardMaterial({color:0xe8ecef,roughness:.6}));
+  c.rotation.x=Math.PI/2; c.position.z=JL/2-3; g.add(c);
+  return g;
+}
+function bxm(w,h,d,col,op){
+  const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),
+    new THREE.MeshStandardMaterial({color:col,roughness:.85,transparent:!!op,opacity:op||1}));
+  return m;
+}
+function part(mesh,title,desc,dim){ mesh.userData={title,desc,dim}; clickable.push(mesh); return mesh; }
+function frame(w,h,d,color){ return new THREE.LineSegments(
+  new THREE.EdgesGeometry(new THREE.BoxGeometry(w,h,d)),
+  new THREE.LineBasicMaterial({color:color})); }
+
+function buildChannel(zc,color,withPath){
+  // ---------- ЕДИНАЯ НИЖНЯЯ КАРТОНКА (выдача + дно лотка, 615) ----------
+  const FULL=IN.w+220;
+  const bl=bxm(FULL,4,LANEW,CARD);
+  bl.position.set(T+(IN.w-220)/2, lowY((IN.w-220)/2)-2, zc); bl.rotation.z=TB;
+  world.add(part(bl,'Единая нижняя картонка (выдача + дно лотка)',
+    'ОДИН длинный лист: от задней стенки, сквозь окно в стенке, наружу — до конца лотка. Внутри по нему банки едут строго по одной, снаружи он же — дно лотка под затвором. Стыка нет — банке не за что запнуться. Сзади опора 91, кромки клеятся к перегородкам.',
+    'наклон 13° · 615×75 (внутри 395 + снаружи 220) · картон 4 мм · сзади поднят на 91'));
+  for(const lx of [30,77,124,171,218,265,312,359]){
+    const j=makeJar(color); j.position.set(T+lx,lowY(lx)+2+JR,zc); world.add(j);
+  }
+  // банка сверху очереди в заднем углу (ждёт места)
+  const jc=makeJar(color); jc.position.set(T+368,lowY(368)+2+JR+44,zc); world.add(jc);
+  // ---------- ВЕРХНЯЯ КАРТОНКА (склад) ----------
+  const ul=bxm(UP_LEN,4,LANEW,CARD);
+  ul.position.set(T+UP_LEN/2, (upY(0)+upY(UP_LEN))/2-2, zc); ul.rotation.z=-TT;
+  world.add(part(ul,'Верхняя картонка — склад',
+    'Наклонный лист с уклоном к задней стенке. Коробка БЕЗ КРЫШКИ: сыпешь банки сверху кучей, как попало. Уклон сам сгоняет их к заднему краю — к обрыву. Угол крутой (18°), потому что капсулы внутри банок пересыпаются и тормозят кучу.',
+    'наклон 18° · 335×75 (короче коробки на 60!) · вмещает ~15-17 банок кучей'));
+  // куча на складе: слой 1
+  for(const lx of [40,87,134,181,228,275,318]){
+    const j=makeJar(color); j.position.set(T+lx,upY(lx)+2+JR,zc); world.add(j);
+  }
+  // слой 2 (в сёдлах, ближе к заду)
+  for(const lx of [157,204,251,298]){
+    const j=makeJar(color); j.position.set(T+lx,upY(lx)+2+JR+41,zc); world.add(j);
+  }
+  // слой 3 у обрыва
+  for(const lx of [255,302]){
+    const j=makeJar(color); j.position.set(T+lx,upY(lx)+2+JR+82,zc); world.add(j);
+  }
+  // ---------- ОБРЫВ (кликабельная пустота) ----------
+  const drop=bxm(GAP-4,150,LANEW-6,EXITC,0.10);
+  drop.position.set(T+IN.w-GAP/2, Y0+150, zc);
+  world.add(part(drop,'Обрыв — переход вниз (тут НЕТ детали!)',
+    'Это пустой зазор: верхняя картонка просто не доходит до задней стенки. Банка доезжает до края и ПАДАЕТ вниз, на нижнюю картонку. Если внизу очередь забита — падать некуда, куча лежит в углу и ждёт. Затвор выдал одну → очередь сдвинулась → съехала ровно одна. Работает само, настраивать нечего.',
+    'зазор 60 (чуть больше банки 47) · перепад падения 40-130 · деталей: ноль'));
+  // падающая банка
+  const jf=makeJar(color); jf.position.set(T+364,Y0+165,zc); jf.rotation.y=0.15; world.add(jf);
+  // ---------- ОКНО ВЫХОДА ----------
+  const ewv=bxm(5,56,77,EXITC,0.15); ewv.position.set(T,Y0+28,zc);
+  world.add(part(ewv,'Окно выхода',
+    'Дырка в передней стенке коробки на уровне дна. Сквозь неё проходит единый нижний лист (лист заводится через открытый верх и высовывается носом в окно). Над листом остаётся просвет ровно под одну банку.',
+    '77 ширина × 56 высота · нижняя кромка на дне · лист проходит насквозь'));
+  const ew=frame(6,56,77,EXITC); ew.position.set(T,Y0+28,zc); world.add(ew);
+  // ---------- БОРТА ЛОТКА (клеятся сверху на выступающий лист) ----------
+  for(const s of[-1,1]){ const w=bxm(220,47,3,CARD);
+    w.position.set(T-110, lowY(-110)+23, zc+s*(LANEW/2+1.5)); w.rotation.z=TB;
+    world.add(part(w,'Борта лотка (на них — затвор)',
+      'Две стенки, наклеенные сверху на выступающую часть нижнего листа. Вместе с листом образуют жёсткий «швеллер» — лоток не гнётся. На торцы этих стенок иглами садится рама затвора.',
+      '220×47 · картон СТРОГО 3 мм (под пазы рамы затвора) · внутр. просвет 75')); }
+  const gh=lowY(-190); const gus=bxm(3,gh,40,CARD); gus.position.set(T-190,gh/2,zc); world.add(gus);
+  // ---------- ЗАТВОР ----------
+  const gy=lowY(-135);
+  for(const s of[-1,1]){ const sd=bxm(84,56,3,PRINT);
+    sd.position.set(T-135, gy+47, zc+s*(PITCH/2-1.5)); sd.rotation.z=TB; world.add(sd); }
+  const sv=bxm(13,32,24,0x3a66aa); sv.position.set(T-135, gy+72, zc); world.add(sv);
+  const g1=bxm(4,40,66,PRINT); g1.position.set(T-112, lowY(-112)+50, zc); g1.rotation.z=TB;
+  world.add(part(g1,'Затвор gate12 (серво)',
+    'Наш печатный узел: серво SG90 крутит шестерню, та двигает два ножа в противофазе. Задний нож придерживает очередь, передний выпускает одну банку. Готовая деталь, не меняется.',
+    'рама 78 = шаг каналов · встаёт на лоток штатно'));
+  const g2=bxm(5,44,66,PRINT); g2.position.set(T-170, lowY(-170)+22, zc); g2.rotation.z=TB; world.add(g2);
+  const jp=makeJar(color); jp.position.set(T-150, lowY(-150)+2+JR, zc); world.add(jp);
+  // ---------- ПРИЁМНИК ----------
+  const ct=frame(110,42,96,EXITC); ct.position.set(T-250,21,zc); world.add(ct);
+  const cts=bxm(110,2,96,EXITC,0.15); cts.position.set(T-250,1,zc);
+  world.add(part(cts,'Приёмник','Сюда падает выданная банка.','~110×96, дно мягкое'));
+  const jt=makeJar(0x5fd08a); jt.position.set(T-250,JR+2,zc); world.add(jt);
+  // ---------- ПУТЬ БАНКИ (пунктир) ----------
+  if(withPath){
+    const pts=[
+      new THREE.Vector3(T+80, Y0+330, zc),
+      new THREE.Vector3(T+80, upY(80)+55, zc),
+      new THREE.Vector3(T+320, upY(320)+30, zc),
+      new THREE.Vector3(T+364, Y0+120, zc),
+      new THREE.Vector3(T+360, lowY(360)+26, zc),
+      new THREE.Vector3(T+30, lowY(30)+26, zc),
+      new THREE.Vector3(T-150, lowY(-150)+26, zc),
+      new THREE.Vector3(T-230, lowY(-220)+10, zc),
+      new THREE.Vector3(T-250, 30, zc)];
+    const geo=new THREE.BufferGeometry().setFromPoints(pts);
+    const ln=new THREE.Line(geo,new THREE.LineDashedMaterial({color:0x8fd08f,dashSize:9,gapSize:7}));
+    ln.computeLineDistances(); world.add(ln);
+  }
+}
+
+function build(){
+  const pod=part(bxm(400,POD,300,0x2a3340),'Подиум',
+    'Возвышение под коробкой: лоток с затвором ныряет ниже дна коробки, ему нужно место. Вместо подиума можно поставить коробку на край стола/полки.',
+    'высота 100');
+  pod.position.set(200,POD/2,150); world.add(pod);
+  const box=frame(400,300,300,0x3a5570); box.position.set(200,POD+150,150); world.add(box);
+  for(let k=0;k<3;k++) buildChannel(T+37.5+PITCH*k, SKU[k], k===0);
+  for(let k=0;k<3;k++){
+    const d=bxm(IN.w,IN.h,3,CARD,0.25);
+    d.position.set(200,POD+150,T+LANEW+1.5+PITCH*k);
+    world.add(part(d,'Перегородки — 3 канала',
+      'Делят коробку на 3 независимых канала = 3 разных товара. Канал 75 мм не даёт банке развернуться (её диагональ 84 > 75) — банки всегда лежат правильно.',
+      'шаг 78 · картон 3-4 мм · сзади остаётся запас 61 (провода серво)'));
+  }
+}
+
+// ================= клик =================
+const ray=new THREE.Raycaster(), ndc=new THREE.Vector2();
+function pick(x,y){
+  ndc.x=(x/innerWidth)*2-1; ndc.y=-(y/innerHeight)*2+1;
+  ray.setFromCamera(ndc,camera);
+  const hits=ray.intersectObjects(clickable,false);
+  if(hits.length){
+    const u=hits[0].object.userData;
+    document.getElementById('ct').textContent=u.title;
+    document.getElementById('cd').textContent=u.desc;
+    document.getElementById('cm').textContent='📐 '+u.dim;
+    document.getElementById('card').style.display='block';
+  }
+}
+
+// ================= сцена/управление =================
+function init(){
+  scene=new THREE.Scene(); scene.background=new THREE.Color(0x0f1216);
+  scene.fog=new THREE.Fog(0x0f1216,1100,2600);
+  camera=new THREE.PerspectiveCamera(48,innerWidth/innerHeight,1,5000);
+  renderer=new THREE.WebGLRenderer({antialias:true});
+  renderer.setPixelRatio(devicePixelRatio); renderer.setSize(innerWidth,innerHeight);
+  document.body.appendChild(renderer.domElement);
+  scene.add(new THREE.AmbientLight(0xffffff,.55));
+  const d1=new THREE.DirectionalLight(0xffffff,.85); d1.position.set(300,600,500); scene.add(d1);
+  const d2=new THREE.DirectionalLight(0x88aaff,.3); d2.position.set(-400,200,-300); scene.add(d2);
+  const fl=new THREE.Mesh(new THREE.PlaneGeometry(3400,3400),
+    new THREE.MeshStandardMaterial({color:0x161b22,roughness:1}));
+  fl.rotation.x=-Math.PI/2; fl.position.y=-2; scene.add(fl);
+  world=new THREE.Group(); scene.add(world);
+  setupControls();
+  addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
+}
+let tgt=new THREE.Vector3(110,190,150), radius=940, theta=-0.85, phi=1.05;
+const keys={};
+function setupControls(){
+  const el=renderer.domElement; let drag=false,px=0,py=0,mx=0,my=0,moved=0;
+  el.addEventListener('pointerdown',e=>{drag=true;px=mx=e.clientX;py=my=e.clientY;moved=0;});
+  addEventListener('pointerup',e=>{ drag=false; if(moved<6) pick(e.clientX,e.clientY); });
+  addEventListener('pointermove',e=>{
+    if(!drag)return;
+    moved+=Math.abs(e.clientX-mx)+Math.abs(e.clientY-my); mx=e.clientX; my=e.clientY;
+    theta-=(e.clientX-px)*0.006; phi-=(e.clientY-py)*0.006;
+    phi=Math.max(0.15,Math.min(Math.PI-0.15,phi)); px=e.clientX; py=e.clientY;
+  });
+  el.addEventListener('wheel',e=>{e.preventDefault();
+    radius*=(1+Math.sign(e.deltaY)*0.08); radius=Math.max(160,Math.min(3000,radius));},{passive:false});
+  addEventListener('keydown',e=>{keys[e.code]=true; if(e.code.startsWith('Arrow'))e.preventDefault();});
+  addEventListener('keyup',e=>{keys[e.code]=false;});
+}
+function flyStep(){
+  const st=14;
+  const fwd=new THREE.Vector3().subVectors(tgt,camera.position); fwd.y=0; fwd.normalize();
+  const rt=new THREE.Vector3().crossVectors(fwd,new THREE.Vector3(0,1,0)).normalize();
+  if(keys.KeyW||keys.ArrowUp)tgt.addScaledVector(fwd,st);
+  if(keys.KeyS||keys.ArrowDown)tgt.addScaledVector(fwd,-st);
+  if(keys.KeyD||keys.ArrowRight)tgt.addScaledVector(rt,st);
+  if(keys.KeyA||keys.ArrowLeft)tgt.addScaledVector(rt,-st);
+  if(keys.KeyR||keys.PageUp)tgt.y+=st;
+  if(keys.KeyF||keys.PageDown)tgt.y-=st;
+}
+function animate(){
+  requestAnimationFrame(animate);
+  flyStep();
+  camera.position.set(
+    tgt.x+radius*Math.sin(phi)*Math.cos(theta),
+    tgt.y+radius*Math.cos(phi),
+    tgt.z+radius*Math.sin(phi)*Math.sin(theta));
+  camera.lookAt(tgt);
+  renderer.render(scene,camera);
+}
+
+// запуск строго в конце
+init();
+build();
+animate();
+</script>
+</body>
+</html>

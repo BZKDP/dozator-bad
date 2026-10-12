@@ -1,0 +1,1579 @@
+{
+  "variant": "V11-C2",
+  "name": "Верхние линейные ножи с прямым коромыслом",
+  "status": "full-size comparison prototype; print one channel before replication",
+  "replaces": "C_опрокидывающаяся_люлька — rejected by kinematic/load audit",
+  "path_base": ".",
+  "path_base_definition": "directory containing MANIFEST_C2.json",
+  "path_roots": {
+    "print.ready_3mf_plate.file and print_parts[].file": "STL_ПЕЧАТЬ",
+    "assembly_parts[].file": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ",
+    "explicit paths with directories": "."
+  },
+  "selection_condition": "preferred for one Ender-3 plate and minimum assembly only with continuous valid PWM and safe startup/shutdown; choose B if passive power-off holding is mandatory",
+  "principle": "one rocker directly swaps two top-down linear blades; no rods and no cam",
+  "servo_mount": {
+    "servo_fastens_to": "C05 flat servo bracket with two M2x10 self-tapping screws",
+    "C05_fastens_to": "C01 with two separate M2x10 screws and washers",
+    "servo_direct_to_C01": false
+  },
+  "parameters_mm": {
+    "can_length": 70.0,
+    "can_diameter_nominal": 47.0,
+    "can_diameter_design": 48.0,
+    "can_center_step_reference": 48.0,
+    "lane_clear": 75.0,
+    "lane_pitch": 79.0,
+    "lane_count": 5,
+    "divider_thickness": 4.0,
+    "box_inside_width": 395.0,
+    "cassette_inside_width": 391.0,
+    "cassette_lower_sheet_length": 569.402,
+    "cassette_reference_depth": 590.0,
+    "divider_reference_height": 390.0,
+    "sheet_thickness": 4.0,
+    "lower_slope_deg": 15.0,
+    "gate_pitch": 50.5,
+    "front_gate_y": 25.5,
+    "rear_gate_y": -25.0,
+    "servo_home_deg": -42.0,
+    "servo_mid_deg": 0.0,
+    "servo_eject_deg": 42.0,
+    "rocker_half_radius": 31.383,
+    "rocker_axis_y": 8.25,
+    "rocker_axis_z": 89.0,
+    "blade_tip_low": 10.5,
+    "blade_tip_mid": 31.5,
+    "blade_tip_high": 52.5,
+    "blade_pin_above_tip": 57.5,
+    "blade_thickness": 3.0,
+    "blade_tip_thickness": 1.2,
+    "blade_taper_height": 18.0,
+    "blade_guide_sleeve_z": 56.5,
+    "blade_guide_sleeve_height": 7.0,
+    "blade_working_width": 70.0,
+    "blade_guide_tab_width": 71.2,
+    "front_slot_center_offset": 10.1,
+    "rear_slot_center_offset": 5.9,
+    "slot_centerline_half_travel": 4.8,
+    "frame_outer_width": 74.4,
+    "frame_inner_width": 71.6,
+    "clamp_above_sheet_width": 74.4,
+    "transition_road_width": 74.0,
+    "plywood_front_edge_y": -60.0,
+    "edge_clamp_gap": 1.3
+  },
+  "cassette_geometry": {
+    "source": "actual STL meshes from 00_ОБЩАЯ_КОМПОНОВКА/STL_КАССЕТА_СБОРКА; no synthetic collision substitutes",
+    "common_lower_sheet_mm": [
+      391.0,
+      569.402,
+      4.0
+    ],
+    "internal_dividers": 4,
+    "divider_blank_mm": [
+      4.0,
+      590.0,
+      390.0
+    ],
+    "lane_pitch_mm": 79.0,
+    "clear_between_divider_faces_mm": 75.0,
+    "lower_sheet_front_edge_local_y_mm": -60.0,
+    "real_divider_nose_at_road_plane_local_y_approx_mm": -18.6,
+    "rear_wide_guide_local_y_mm": -25.0,
+    "wide_78_4mm_frame_members_location": "free facade zone ahead of the real vertical divider noses",
+    "maximum_frame_width_upstream_of_sheet_edge_mm": 74.4
+  },
+  "counts_per_channel": {
+    "functional_printed_parts": 5,
+    "calibration_coupons_per_channel": 0,
+    "calibration_coupons_per_servo_filament_batch": 1,
+    "calibration_coupon_frequency": "one T01 per batch of matching servo horns and filament/printer settings; never one per channel",
+    "metal_fastener_sets_excluding_stock_horn_screw": 8,
+    "stock_horn_screws": 1,
+    "fasteners_tightened_total": 9,
+    "captive_nuts": 2,
+    "primary_assembly_steps_once": 6,
+    "installation_actions_each_time": 2,
+    "removal_actions_each_time": 2,
+    "attachment_screws_to_cassette": 2,
+    "holes_drilled_in_plywood": 0
+  },
+  "action_counting_basis": "one deliberate assembly step with one outcome; matched identical parts or fasteners handled in that step count as one grouped macro-operation; wiring is separate",
+  "print": {
+    "bed_220x220_ok": true,
+    "all_print_meshes_watertight_single_component": true,
+    "frame_orientation": "single flat left spine on bed; remote servo wall is a separate flat C05 part",
+    "frame_support": "none; broad continuous spine on bed; optional brim at most 2 mm",
+    "servo_bracket_orientation": "broad outer wall on bed; two short mounting arms grow vertically",
+    "servo_bracket_support": "none designed",
+    "blade_orientation": "broad face on bed; 10 mm ear-slot roof is a short bridge",
+    "blade_support": "none designed",
+    "rocker_orientation": "flat; stock-horn pocket upward",
+    "rocker_support": "none designed",
+    "ready_3mf_plate": {
+      "file": "C2_ПЛИТА_1_КАНАЛ_готовая_220x220.3mf",
+      "objects": [
+        "C01_frame",
+        "C02_front_blade",
+        "C03_rear_blade",
+        "C04_rocker",
+        "C05_servo_bracket",
+        "T01_horn_coupon"
+      ],
+      "functional_parts": 5,
+      "coupon_parts": 1,
+      "object_count": 6,
+      "envelope_xyz_mm": [
+        201.2,
+        201.4,
+        74.4
+      ],
+      "bed_220x220_pass": true,
+      "bounding_box_overlap_pairs": [],
+      "overlap_pass": true,
+      "optional_uniform_brim_mm": 2.0,
+      "optional_brim_expanded_bounds_xy_mm": [
+        [
+          5.0,
+          5.0
+        ],
+        [
+          210.2,
+          210.4
+        ]
+      ],
+      "optional_brim_overlap_pairs": [],
+      "optional_brim_bed_and_overlap_pass": true,
+      "manual_rotation_required": false
+    }
+  },
+  "kinematic_checks": {
+    "home_front_tip_mm": 10.501,
+    "home_rear_tip_mm": 52.499,
+    "mid_both_tips_mm": 31.5,
+    "eject_front_tip_mm": 52.499,
+    "eject_rear_tip_mm": 10.501,
+    "highest_lower_tip_over_full_cycle_mm": 31.5,
+    "open_tip_clearance_over_dia48_mm": 4.5,
+    "natural_gap_between_touching_design_cans_at_mid_tip_mm": 2.404,
+    "gap_after_queue_is_spread_to_gate_pitch50_5_mm": 4.904,
+    "queue_spread_required_from_touching_design_cans_mm": 2.5,
+    "rear_tip_initial_interference_for_touching_design_cans_mm": 0.593,
+    "blade_tip_thickness_mm": 1.2,
+    "max_pin_offset_from_gate_plane_mm_not_slot_center": 14.133,
+    "front_slot_center_relative_to_gate_mm": 10.1,
+    "rear_slot_center_relative_to_gate_mm": 5.9,
+    "max_pin_offset_from_actual_slot_center_mm": 4.033,
+    "slot_centerline_half_travel_mm": 4.8,
+    "slot_end_centerline_clearance_mm": 0.767,
+    "pin_radius_to_slot_radius_clearance_mm": 0.25,
+    "slot_travel_pass": true,
+    "minimum_vertical_jacobian_mm_per_rad": 23.322,
+    "kinematic_singularity_in_commanded_range": false,
+    "maximum_vertical_force_moment_arm_mm": 31.383,
+    "sg90_stall_torque_assumed_Nm": 0.1765,
+    "vertical_blade_force_at_30pct_stall_N": 1.69,
+    "hold_pwm_required": true,
+    "self_holding_without_pwm": false,
+    "gravity_balance": "two geometrically identical blades cancel their own weight; queue force does not cancel"
+  },
+  "collision_checks": {
+    "method": "29-angle manifold boolean sweep at 3deg increments using the actual common STL lower sheet and divider; all 5 lane positions",
+    "angle_samples": 29,
+    "lane_positions_x_mm": [
+      -158.0,
+      -79.0,
+      0.0,
+      79.0,
+      158.0
+    ],
+    "exact_source_files": {
+      "lower_sheet": "../00_ОБЩАЯ_КОМПОНОВКА/STL_КАССЕТА_СБОРКА/cassette_lower_sheet.stl",
+      "lower_sheet_sha256": "a139d99fce96895ee93f2346b14e14aa747d6b0896e7c75c78ecf0cb2931f404",
+      "divider": "../00_ОБЩАЯ_КОМПОНОВКА/STL_КАССЕТА_СБОРКА/cassette_divider.stl",
+      "divider_sha256": "cc19fa4ecf79f44e2ce96d72fd6fa4d5c24bcc6e6716a20a8d811255f44167cf"
+    },
+    "exact_lower_sheet_local_bounds_mm": [
+      [
+        -195.5,
+        -629.402,
+        -4.0
+      ],
+      [
+        195.5,
+        -60.0,
+        0.0
+      ]
+    ],
+    "exact_divider_local_bounds_mm": [
+      [
+        [
+          -120.5,
+          -689.425,
+          -154.703
+        ],
+        [
+          -116.5,
+          -18.589,
+          374.711
+        ]
+      ],
+      [
+        [
+          -41.5,
+          -689.425,
+          -154.703
+        ],
+        [
+          -37.5,
+          -18.589,
+          374.711
+        ]
+      ],
+      [
+        [
+          37.5,
+          -689.425,
+          -154.703
+        ],
+        [
+          41.5,
+          -18.589,
+          374.711
+        ]
+      ],
+      [
+        [
+          116.5,
+          -689.425,
+          -154.703
+        ],
+        [
+          120.5,
+          -18.589,
+          374.711
+        ]
+      ]
+    ],
+    "maximum_intersection_by_pair_mm3": {
+      "frame/servo_bracket": 0.0,
+      "frame/front_blade": 0.0,
+      "frame/rear_blade": 0.0,
+      "frame/rocker": 0.0,
+      "frame/front_pin": 0.0,
+      "frame/rear_pin": 0.0,
+      "frame/servo_body": 0.0,
+      "frame/servo_horn": 0.0,
+      "frame/servo_shaft": 0.0,
+      "frame/servo_screw": 0.0,
+      "frame/lower_sheet": 0.0,
+      "frame/divider_left": 0.0,
+      "frame/divider_right": 0.0,
+      "front_blade/lower_sheet": 0.0,
+      "front_blade/divider_left": 0.0,
+      "front_blade/divider_right": 0.0,
+      "rear_blade/lower_sheet": 0.0,
+      "rear_blade/divider_left": 0.0,
+      "rear_blade/divider_right": 0.0,
+      "clamp_screw_left/lower_sheet": 0.0,
+      "clamp_screw_right/lower_sheet": 0.0,
+      "rocker/front_blade": 0.0,
+      "rocker/rear_blade": 0.0,
+      "servo_bracket/front_blade": 0.0,
+      "servo_bracket/rear_blade": 0.0,
+      "servo_bracket/rocker": 0.0,
+      "servo_bracket/servo_body": 0.0,
+      "servo_bracket/servo_horn": 0.0,
+      "rocker/servo_body": 0.0,
+      "rocker/servo_horn": 0.0,
+      "rocker/servo_shaft": 0.0,
+      "rocker/servo_screw": 0.0,
+      "front_blade/rear_blade": 0.0,
+      "front_pin/rear_blade": 0.0,
+      "rear_pin/front_blade": 0.0
+    },
+    "maximum_exact_cassette_intersection_by_lane_mm3": {
+      "lane_1": 1e-06,
+      "lane_2": 0.0,
+      "lane_3": 0.0,
+      "lane_4": 0.0,
+      "lane_5": 0.0
+    },
+    "maximum_exact_cassette_intersection_mm3": 1e-06,
+    "nonzero_exact_cassette_pairs_over_0_01mm3": {},
+    "maximum_reference_can_unintended_intersection_mm3": 0.0,
+    "maximum_intentional_can_gate_contact_mm3": 18.267446,
+    "maximum_unintended_intersection_mm3": 1e-06,
+    "pass_at_0_01_mm3": true,
+    "intentional_interfaces_excluded": [
+      "each M3 follower pin inside its own blade slot and rocker hole",
+      "two lower clamp screws inside their printed pilot threads",
+      "two C05 mounting screws inside C01/C05 holes",
+      "reference can tangent/contact with the active front or rear gate"
+    ],
+    "adjacent_lane_pitch_mm": 79.0,
+    "maximum_module_width_mm": 74.4,
+    "adjacent_modules_minimum_x_clearance_mm": 4.6,
+    "adjacent_modules_aabb_pass": true,
+    "above_sheet_clamp_width_in_divider_zone_mm": 74.4,
+    "mesh_measured_width_upstream_of_sheet_edge_mm": 74.4,
+    "mesh_inside_cassette_width_limit_pass": true,
+    "clear_lane_between_divider_faces_mm": 75.0,
+    "clearance_to_each_divider_face_mm": 0.3,
+    "divider_and_common_sheet_boolean_pass": true
+  },
+  "force_and_torque": {
+    "calculation": "lane_thrust=N*m*g*sin(15deg); blade_force=lane_thrust*(taper_slope+mu)/(1-mu*taper_slope); torque=blade_force*31.383mm",
+    "assumptions": {
+      "SG90_stall_at_4_8V_kg_cm": 1.8,
+      "MG90S_stall_at_4_8V_kg_cm": 2.2,
+      "blade_can_friction_mu": 0.2,
+      "half_taper_slope_dy_dz": 0.05,
+      "ignored": "guide friction, can impacts, warped plywood, servo-clone variation and gearbox losses"
+    },
+    "cases": [
+      {
+        "cans": 11,
+        "mass_each_g": 100,
+        "gravity_lane_thrust_N": 2.792,
+        "estimated_blade_insertion_force_N": 0.705,
+        "estimated_servo_torque_Nm": 0.0221,
+        "estimated_servo_torque_kg_cm": 0.226,
+        "fraction_of_assumed_SG90_stall_percent": 12.5,
+        "fraction_of_assumed_MG90S_stall_percent": 10.3
+      },
+      {
+        "cans": 11,
+        "mass_each_g": 200,
+        "gravity_lane_thrust_N": 5.584,
+        "estimated_blade_insertion_force_N": 1.41,
+        "estimated_servo_torque_Nm": 0.0443,
+        "estimated_servo_torque_kg_cm": 0.451,
+        "fraction_of_assumed_SG90_stall_percent": 25.1,
+        "fraction_of_assumed_MG90S_stall_percent": 20.5
+      },
+      {
+        "cans": 22,
+        "mass_each_g": 100,
+        "gravity_lane_thrust_N": 5.584,
+        "estimated_blade_insertion_force_N": 1.41,
+        "estimated_servo_torque_Nm": 0.0443,
+        "estimated_servo_torque_kg_cm": 0.451,
+        "fraction_of_assumed_SG90_stall_percent": 25.1,
+        "fraction_of_assumed_MG90S_stall_percent": 20.5
+      },
+      {
+        "cans": 22,
+        "mass_each_g": 200,
+        "gravity_lane_thrust_N": 11.168,
+        "estimated_blade_insertion_force_N": 2.82,
+        "estimated_servo_torque_Nm": 0.0885,
+        "estimated_servo_torque_kg_cm": 0.903,
+        "fraction_of_assumed_SG90_stall_percent": 50.1,
+        "fraction_of_assumed_MG90S_stall_percent": 41.0
+      }
+    ],
+    "conservative_measured_acceptance_limit_peak_blade_force_N": {
+      "SG90": 1.0,
+      "MG90S": 1.5
+    },
+    "load_policy": {
+      "11x100g": {
+        "SG90": "prototype-only after measured peak blade force <=1.0 N and one-lane endurance test",
+        "MG90S": "prototype-only after measured peak blade force <=1.5 N and one-lane endurance test"
+      },
+      "11x200g": {
+        "SG90": "not accepted: calculated 1.410 N exceeds the 1.0 N measured-force limit; reduce the queue and measure",
+        "MG90S": "conditionally accepted only after measured peak blade force <=1.5 N and a 300-cycle one-lane test"
+      },
+      "22x100g": {
+        "SG90": "not accepted: calculated 1.410 N exceeds the 1.0 N measured-force limit; reduce the queue and measure",
+        "MG90S": "conditionally accepted only after measured peak blade force <=1.5 N and a 300-cycle one-lane test"
+      },
+      "22x200g": {
+        "SG90": "rejected",
+        "MG90S": "rejected before unmodelled losses"
+      }
+    },
+    "SG90_pretest_queue_ceiling_from_1N_model": {
+      "100g_cans": 15,
+      "200g_cans": 7,
+      "note": "starting ceiling only; actual peak blade force still must be measured <=1.0 N"
+    },
+    "verdict": "11x200g and 22x100g are MG90S-only conditional loads after a measured <=1.5 N peak and a 300-cycle one-lane test. They are not accepted for SG90 because the calculated 1.410 N exceeds its 1.0 N measured-force limit; shorten the SG90 queue and measure. 22x200g is rejected for both."
+  },
+  "print_parts": [
+    {
+      "file": "C01_верхняя_рама_направляющая.stl",
+      "extents_mm": [
+        133.3,
+        122.0,
+        74.4
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 47.92
+    },
+    {
+      "file": "C02_передняя_линейная_заслонка.stl",
+      "extents_mm": [
+        71.2,
+        66.0,
+        18.85
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 11.17
+    },
+    {
+      "file": "C03_задний_линейный_сепаратор.stl",
+      "extents_mm": [
+        71.2,
+        66.0,
+        14.65
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 10.66
+    },
+    {
+      "file": "C04_коромысло_SG90_MG90S.stl",
+      "extents_mm": [
+        16.4,
+        73.57,
+        5.4
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 3.49
+    },
+    {
+      "file": "C05_плоский_кронштейн_сервы.stl",
+      "extents_mm": [
+        55.0,
+        14.8,
+        8.7
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 2.07
+    },
+    {
+      "file": "T01_КУПОН_штатной_качалки.stl",
+      "extents_mm": [
+        118.0,
+        30.0,
+        3.2
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 9.24
+    }
+  ],
+  "assembly_parts": [
+    {
+      "file": "C2_HOME_frame.stl",
+      "extents_mm": [
+        74.4,
+        122.0,
+        133.3
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 47.92
+    },
+    {
+      "file": "C2_HOME_servo_bracket.stl",
+      "extents_mm": [
+        8.7,
+        14.8,
+        55.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 2.07
+    },
+    {
+      "file": "C2_HOME_bracket_screw_lower.stl",
+      "extents_mm": [
+        11.6,
+        4.0,
+        4.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 0.05
+    },
+    {
+      "file": "C2_HOME_bracket_screw_upper.stl",
+      "extents_mm": [
+        11.6,
+        4.0,
+        4.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 0.05
+    },
+    {
+      "file": "C2_HOME_front_blade.stl",
+      "extents_mm": [
+        71.2,
+        18.85,
+        66.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 11.17
+    },
+    {
+      "file": "C2_HOME_rear_blade.stl",
+      "extents_mm": [
+        71.2,
+        14.65,
+        66.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 10.66
+    },
+    {
+      "file": "C2_HOME_rocker.stl",
+      "extents_mm": [
+        5.4,
+        57.44,
+        52.8
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 3.49
+    },
+    {
+      "file": "C2_HOME_front_pin.stl",
+      "extents_mm": [
+        20.0,
+        6.0,
+        6.3
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 0.23
+    },
+    {
+      "file": "C2_HOME_rear_pin.stl",
+      "extents_mm": [
+        20.0,
+        6.0,
+        6.3
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 0.23
+    },
+    {
+      "file": "C2_HOME_lower_sheet.stl",
+      "extents_mm": [
+        391.0,
+        569.4,
+        4.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 890.32
+    },
+    {
+      "file": "C2_HOME_divider_left.stl",
+      "extents_mm": [
+        4.0,
+        670.84,
+        529.41
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 900.95
+    },
+    {
+      "file": "C2_HOME_divider_right.stl",
+      "extents_mm": [
+        4.0,
+        670.84,
+        529.41
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 900.95
+    },
+    {
+      "file": "C2_HOME_clamp_screw_left.stl",
+      "extents_mm": [
+        6.0,
+        6.0,
+        12.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 0.13
+    },
+    {
+      "file": "C2_HOME_clamp_screw_right.stl",
+      "extents_mm": [
+        6.0,
+        6.0,
+        12.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 0.13
+    },
+    {
+      "file": "C2_HOME_servo_body.stl",
+      "extents_mm": [
+        34.1,
+        15.0,
+        32.5
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 9.51
+    },
+    {
+      "file": "C2_HOME_servo_shaft.stl",
+      "extents_mm": [
+        5.0,
+        4.7,
+        4.7
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 0.09
+    },
+    {
+      "file": "C2_HOME_servo_horn.stl",
+      "extents_mm": [
+        1.8,
+        27.48,
+        25.14
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 0.33
+    },
+    {
+      "file": "C2_HOME_servo_screw.stl",
+      "extents_mm": [
+        8.2,
+        4.39,
+        4.39
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 0.04
+    },
+    {
+      "file": "C2_HOME_can_1.stl",
+      "extents_mm": [
+        70.0,
+        48.0,
+        48.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 121.74
+    },
+    {
+      "file": "C2_HOME_can_2.stl",
+      "extents_mm": [
+        70.0,
+        48.0,
+        48.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 121.74
+    },
+    {
+      "file": "C2_HOME_can_3.stl",
+      "extents_mm": [
+        70.0,
+        48.0,
+        48.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 121.74
+    },
+    {
+      "file": "C2_HOME_complete.stl",
+      "extents_mm": [
+        391.0,
+        734.42,
+        529.41
+      ],
+      "watertight": false,
+      "components": 22,
+      "volume_cm3": 3143.54
+    },
+    {
+      "file": "C2_MID_frame.stl",
+      "extents_mm": [
+        74.4,
+        122.0,
+        133.3
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 47.92
+    },
+    {
+      "file": "C2_MID_servo_bracket.stl",
+      "extents_mm": [
+        8.7,
+        14.8,
+        55.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 2.07
+    },
+    {
+      "file": "C2_MID_bracket_screw_lower.stl",
+      "extents_mm": [
+        11.6,
+        4.0,
+        4.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 0.05
+    },
+    {
+      "file": "C2_MID_bracket_screw_upper.stl",
+      "extents_mm": [
+        11.6,
+        4.0,
+        4.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 0.05
+    },
+    {
+      "file": "C2_MID_front_blade.stl",
+      "extents_mm": [
+        71.2,
+        18.85,
+        66.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 11.17
+    },
+    {
+      "file": "C2_MID_rear_blade.stl",
+      "extents_mm": [
+        71.2,
+        14.65,
+        66.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 10.66
+    },
+    {
+      "file": "C2_MID_rocker.stl",
+      "extents_mm": [
+        5.4,
+        73.57,
+        16.4
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 3.49
+    },
+    {
+      "file": "C2_MID_front_pin.stl",
+      "extents_mm": [
+        20.0,
+        6.0,
+        6.3
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 0.23
+    },
+    {
+      "file": "C2_MID_rear_pin.stl",
+      "extents_mm": [
+        20.0,
+        6.0,
+        6.3
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 0.23
+    },
+    {
+      "file": "C2_MID_lower_sheet.stl",
+      "extents_mm": [
+        391.0,
+        569.4,
+        4.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 890.32
+    },
+    {
+      "file": "C2_MID_divider_left.stl",
+      "extents_mm": [
+        4.0,
+        670.84,
+        529.41
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 900.95
+    },
+    {
+      "file": "C2_MID_divider_right.stl",
+      "extents_mm": [
+        4.0,
+        670.84,
+        529.41
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 900.95
+    },
+    {
+      "file": "C2_MID_clamp_screw_left.stl",
+      "extents_mm": [
+        6.0,
+        6.0,
+        12.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 0.13
+    },
+    {
+      "file": "C2_MID_clamp_screw_right.stl",
+      "extents_mm": [
+        6.0,
+        6.0,
+        12.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 0.13
+    },
+    {
+      "file": "C2_MID_servo_body.stl",
+      "extents_mm": [
+        34.1,
+        15.0,
+        32.5
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 9.51
+    },
+    {
+      "file": "C2_MID_servo_shaft.stl",
+      "extents_mm": [
+        5.0,
+        4.7,
+        4.7
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 0.09
+    },
+    {
+      "file": "C2_MID_servo_horn.stl",
+      "extents_mm": [
+        1.8,
+        35.6,
+        7.4
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 0.33
+    },
+    {
+      "file": "C2_MID_servo_screw.stl",
+      "extents_mm": [
+        8.2,
+        4.4,
+        4.4
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 0.04
+    },
+    {
+      "file": "C2_MID_can_1.stl",
+      "extents_mm": [
+        70.0,
+        48.0,
+        48.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 121.74
+    },
+    {
+      "file": "C2_MID_can_2.stl",
+      "extents_mm": [
+        70.0,
+        48.0,
+        48.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 121.74
+    },
+    {
+      "file": "C2_MID_can_3.stl",
+      "extents_mm": [
+        70.0,
+        48.0,
+        48.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 121.74
+    },
+    {
+      "file": "C2_MID_complete.stl",
+      "extents_mm": [
+        391.0,
+        734.46,
+        529.41
+      ],
+      "watertight": false,
+      "components": 22,
+      "volume_cm3": 3143.54
+    },
+    {
+      "file": "C2_EJECT_frame.stl",
+      "extents_mm": [
+        74.4,
+        122.0,
+        133.3
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 47.92
+    },
+    {
+      "file": "C2_EJECT_servo_bracket.stl",
+      "extents_mm": [
+        8.7,
+        14.8,
+        55.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 2.07
+    },
+    {
+      "file": "C2_EJECT_bracket_screw_lower.stl",
+      "extents_mm": [
+        11.6,
+        4.0,
+        4.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 0.05
+    },
+    {
+      "file": "C2_EJECT_bracket_screw_upper.stl",
+      "extents_mm": [
+        11.6,
+        4.0,
+        4.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 0.05
+    },
+    {
+      "file": "C2_EJECT_front_blade.stl",
+      "extents_mm": [
+        71.2,
+        18.85,
+        66.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 11.17
+    },
+    {
+      "file": "C2_EJECT_rear_blade.stl",
+      "extents_mm": [
+        71.2,
+        14.65,
+        66.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 10.66
+    },
+    {
+      "file": "C2_EJECT_rocker.stl",
+      "extents_mm": [
+        5.4,
+        57.44,
+        52.8
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 3.49
+    },
+    {
+      "file": "C2_EJECT_front_pin.stl",
+      "extents_mm": [
+        20.0,
+        6.0,
+        6.3
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 0.23
+    },
+    {
+      "file": "C2_EJECT_rear_pin.stl",
+      "extents_mm": [
+        20.0,
+        6.0,
+        6.3
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 0.23
+    },
+    {
+      "file": "C2_EJECT_lower_sheet.stl",
+      "extents_mm": [
+        391.0,
+        569.4,
+        4.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 890.32
+    },
+    {
+      "file": "C2_EJECT_divider_left.stl",
+      "extents_mm": [
+        4.0,
+        670.84,
+        529.41
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 900.95
+    },
+    {
+      "file": "C2_EJECT_divider_right.stl",
+      "extents_mm": [
+        4.0,
+        670.84,
+        529.41
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 900.95
+    },
+    {
+      "file": "C2_EJECT_clamp_screw_left.stl",
+      "extents_mm": [
+        6.0,
+        6.0,
+        12.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 0.13
+    },
+    {
+      "file": "C2_EJECT_clamp_screw_right.stl",
+      "extents_mm": [
+        6.0,
+        6.0,
+        12.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 0.13
+    },
+    {
+      "file": "C2_EJECT_servo_body.stl",
+      "extents_mm": [
+        34.1,
+        15.0,
+        32.5
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 9.51
+    },
+    {
+      "file": "C2_EJECT_servo_shaft.stl",
+      "extents_mm": [
+        5.0,
+        4.7,
+        4.7
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 0.09
+    },
+    {
+      "file": "C2_EJECT_servo_horn.stl",
+      "extents_mm": [
+        1.8,
+        27.48,
+        25.14
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 0.33
+    },
+    {
+      "file": "C2_EJECT_servo_screw.stl",
+      "extents_mm": [
+        8.2,
+        4.39,
+        4.39
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 0.04
+    },
+    {
+      "file": "C2_EJECT_can_1.stl",
+      "extents_mm": [
+        70.0,
+        48.0,
+        48.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 121.74
+    },
+    {
+      "file": "C2_EJECT_can_2.stl",
+      "extents_mm": [
+        70.0,
+        48.0,
+        48.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 121.74
+    },
+    {
+      "file": "C2_EJECT_can_3.stl",
+      "extents_mm": [
+        70.0,
+        48.0,
+        48.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 121.74
+    },
+    {
+      "file": "C2_EJECT_complete.stl",
+      "extents_mm": [
+        391.0,
+        786.92,
+        529.41
+      ],
+      "watertight": false,
+      "components": 22,
+      "volume_cm3": 3143.54
+    },
+    {
+      "file": "C2_REFERENCE_точный_нижний_лист_391x569_402.stl",
+      "extents_mm": [
+        391.0,
+        569.4,
+        4.0
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 890.32
+    },
+    {
+      "file": "C2_REFERENCE_точная_перегородка_1.stl",
+      "extents_mm": [
+        4.0,
+        670.84,
+        529.41
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 900.95
+    },
+    {
+      "file": "C2_REFERENCE_точная_перегородка_2.stl",
+      "extents_mm": [
+        4.0,
+        670.84,
+        529.41
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 900.95
+    },
+    {
+      "file": "C2_REFERENCE_точная_перегородка_3.stl",
+      "extents_mm": [
+        4.0,
+        670.84,
+        529.41
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 900.95
+    },
+    {
+      "file": "C2_REFERENCE_точная_перегородка_4.stl",
+      "extents_mm": [
+        4.0,
+        670.84,
+        529.41
+      ],
+      "watertight": true,
+      "components": 1,
+      "volume_cm3": 900.95
+    }
+  ],
+  "viewer_assets": {
+    "coordinate_system": "X can axis, Y downhill/dispense direction, Z road normal; millimetres",
+    "component_style": {
+      "frame": {
+        "color": "#566573",
+        "explode_mm": [
+          0,
+          0,
+          0
+        ]
+      },
+      "servo_bracket": {
+        "color": "#6F8291",
+        "explode_mm": [
+          -12,
+          0,
+          12
+        ]
+      },
+      "bracket_screw_lower": {
+        "color": "#C3CBD3",
+        "explode_mm": [
+          -24,
+          0,
+          4
+        ]
+      },
+      "bracket_screw_upper": {
+        "color": "#C3CBD3",
+        "explode_mm": [
+          -24,
+          0,
+          18
+        ]
+      },
+      "front_blade": {
+        "color": "#F28C28",
+        "explode_mm": [
+          16,
+          14,
+          8
+        ]
+      },
+      "rear_blade": {
+        "color": "#28B7B0",
+        "explode_mm": [
+          16,
+          -14,
+          8
+        ]
+      },
+      "rocker": {
+        "color": "#E1B84B",
+        "explode_mm": [
+          -12,
+          0,
+          22
+        ]
+      },
+      "front_pin": {
+        "color": "#C3CBD3",
+        "explode_mm": [
+          28,
+          14,
+          8
+        ]
+      },
+      "rear_pin": {
+        "color": "#C3CBD3",
+        "explode_mm": [
+          28,
+          -14,
+          8
+        ]
+      },
+      "servo_body": {
+        "color": "#3576B8",
+        "explode_mm": [
+          0,
+          0,
+          30
+        ]
+      },
+      "servo_shaft": {
+        "color": "#AEB7C2",
+        "explode_mm": [
+          -6,
+          0,
+          28
+        ]
+      },
+      "servo_horn": {
+        "color": "#F2F4F5",
+        "explode_mm": [
+          -16,
+          0,
+          22
+        ]
+      },
+      "servo_screw": {
+        "color": "#AEB7C2",
+        "explode_mm": [
+          -28,
+          0,
+          22
+        ]
+      },
+      "lower_sheet": {
+        "color": "#B98B5F",
+        "explode_mm": [
+          0,
+          -12,
+          -18
+        ]
+      },
+      "divider_left": {
+        "color": "#9B744F",
+        "explode_mm": [
+          -8,
+          0,
+          0
+        ]
+      },
+      "divider_right": {
+        "color": "#9B744F",
+        "explode_mm": [
+          8,
+          0,
+          0
+        ]
+      },
+      "clamp_screw_left": {
+        "color": "#AEB7C2",
+        "explode_mm": [
+          0,
+          -6,
+          -18
+        ]
+      },
+      "clamp_screw_right": {
+        "color": "#AEB7C2",
+        "explode_mm": [
+          0,
+          -6,
+          -18
+        ]
+      },
+      "can_1": {
+        "color": "#43B97F",
+        "explode_mm": [
+          20,
+          10,
+          0
+        ]
+      },
+      "can_2": {
+        "color": "#4A90D9",
+        "explode_mm": [
+          20,
+          0,
+          0
+        ]
+      },
+      "can_3": {
+        "color": "#8E6CCF",
+        "explode_mm": [
+          20,
+          -10,
+          0
+        ]
+      }
+    },
+    "states": {
+      "HOME": {
+        "angle_deg": -42.0,
+        "parts": {
+          "frame": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_HOME_frame.stl",
+          "servo_bracket": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_HOME_servo_bracket.stl",
+          "bracket_screw_lower": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_HOME_bracket_screw_lower.stl",
+          "bracket_screw_upper": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_HOME_bracket_screw_upper.stl",
+          "front_blade": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_HOME_front_blade.stl",
+          "rear_blade": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_HOME_rear_blade.stl",
+          "rocker": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_HOME_rocker.stl",
+          "front_pin": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_HOME_front_pin.stl",
+          "rear_pin": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_HOME_rear_pin.stl",
+          "servo_body": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_HOME_servo_body.stl",
+          "servo_shaft": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_HOME_servo_shaft.stl",
+          "servo_horn": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_HOME_servo_horn.stl",
+          "servo_screw": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_HOME_servo_screw.stl",
+          "lower_sheet": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_HOME_lower_sheet.stl",
+          "divider_left": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_HOME_divider_left.stl",
+          "divider_right": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_HOME_divider_right.stl",
+          "clamp_screw_left": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_HOME_clamp_screw_left.stl",
+          "clamp_screw_right": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_HOME_clamp_screw_right.stl",
+          "can_1": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_HOME_can_1.stl",
+          "can_2": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_HOME_can_2.stl",
+          "can_3": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_HOME_can_3.stl"
+        },
+        "complete": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_HOME_complete.stl"
+      },
+      "MID": {
+        "angle_deg": 0.0,
+        "parts": {
+          "frame": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_MID_frame.stl",
+          "servo_bracket": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_MID_servo_bracket.stl",
+          "bracket_screw_lower": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_MID_bracket_screw_lower.stl",
+          "bracket_screw_upper": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_MID_bracket_screw_upper.stl",
+          "front_blade": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_MID_front_blade.stl",
+          "rear_blade": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_MID_rear_blade.stl",
+          "rocker": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_MID_rocker.stl",
+          "front_pin": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_MID_front_pin.stl",
+          "rear_pin": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_MID_rear_pin.stl",
+          "servo_body": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_MID_servo_body.stl",
+          "servo_shaft": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_MID_servo_shaft.stl",
+          "servo_horn": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_MID_servo_horn.stl",
+          "servo_screw": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_MID_servo_screw.stl",
+          "lower_sheet": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_MID_lower_sheet.stl",
+          "divider_left": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_MID_divider_left.stl",
+          "divider_right": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_MID_divider_right.stl",
+          "clamp_screw_left": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_MID_clamp_screw_left.stl",
+          "clamp_screw_right": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_MID_clamp_screw_right.stl",
+          "can_1": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_MID_can_1.stl",
+          "can_2": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_MID_can_2.stl",
+          "can_3": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_MID_can_3.stl"
+        },
+        "complete": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_MID_complete.stl"
+      },
+      "EJECT": {
+        "angle_deg": 42.0,
+        "parts": {
+          "frame": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_EJECT_frame.stl",
+          "servo_bracket": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_EJECT_servo_bracket.stl",
+          "bracket_screw_lower": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_EJECT_bracket_screw_lower.stl",
+          "bracket_screw_upper": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_EJECT_bracket_screw_upper.stl",
+          "front_blade": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_EJECT_front_blade.stl",
+          "rear_blade": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_EJECT_rear_blade.stl",
+          "rocker": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_EJECT_rocker.stl",
+          "front_pin": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_EJECT_front_pin.stl",
+          "rear_pin": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_EJECT_rear_pin.stl",
+          "servo_body": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_EJECT_servo_body.stl",
+          "servo_shaft": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_EJECT_servo_shaft.stl",
+          "servo_horn": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_EJECT_servo_horn.stl",
+          "servo_screw": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_EJECT_servo_screw.stl",
+          "lower_sheet": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_EJECT_lower_sheet.stl",
+          "divider_left": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_EJECT_divider_left.stl",
+          "divider_right": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_EJECT_divider_right.stl",
+          "clamp_screw_left": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_EJECT_clamp_screw_left.stl",
+          "clamp_screw_right": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_EJECT_clamp_screw_right.stl",
+          "can_1": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_EJECT_can_1.stl",
+          "can_2": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_EJECT_can_2.stl",
+          "can_3": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_EJECT_can_3.stl"
+        },
+        "complete": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_EJECT_complete.stl"
+      }
+    },
+    "exploded_view": {
+      "base_state": "HOME",
+      "apply_component_explode_mm": true,
+      "note": "offsets are viewer transforms; source STL files remain in assembly coordinates"
+    },
+    "printable": {
+      "ready_3mf_plate": "STL_ПЕЧАТЬ/C2_ПЛИТА_1_КАНАЛ_готовая_220x220.3mf",
+      "frame": "STL_ПЕЧАТЬ/C01_верхняя_рама_направляющая.stl",
+      "servo_bracket": "STL_ПЕЧАТЬ/C05_плоский_кронштейн_сервы.stl",
+      "front_blade": "STL_ПЕЧАТЬ/C02_передняя_линейная_заслонка.stl",
+      "rear_blade": "STL_ПЕЧАТЬ/C03_задний_линейный_сепаратор.stl",
+      "rocker": "STL_ПЕЧАТЬ/C04_коромысло_SG90_MG90S.stl",
+      "horn_coupon": "STL_ПЕЧАТЬ/T01_КУПОН_штатной_качалки.stl"
+    },
+    "cassette_references": {
+      "common_lower_sheet": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_REFERENCE_точный_нижний_лист_391x569_402.stl",
+      "divider_1": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_REFERENCE_точная_перегородка_1.stl",
+      "divider_2": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_REFERENCE_точная_перегородка_2.stl",
+      "divider_3": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_REFERENCE_точная_перегородка_3.stl",
+      "divider_4": "STL_СБОРКА_НЕ_ПЕЧАТАТЬ/C2_REFERENCE_точная_перегородка_4.stl"
+    }
+  },
+  "attachment": {
+    "type": "integral lower edge clamp",
+    "procedure": "push C01 onto the common-sheet front edge to Y=-60; tighten M3 screws from below at X=+/-34,Y=-61.2",
+    "removal": "unload lane; loosen only the two lower M3 screws by 2-3 turns; slide the complete module forward",
+    "plywood_nominal_thickness_mm": 4.0,
+    "unloaded_clamp_gap_below_sheet_mm": 1.3,
+    "upper_pad_outer_x_mm": 37.2,
+    "divider_inner_face_x_mm": 37.5,
+    "static_clearance_to_each_divider_face_mm": 0.3,
+    "support_free_upper_pad_cantilever_mm": 2.8,
+    "integral_can_centering_ramp_clear_width_entry_mm": 73.0,
+    "integral_can_centering_ramp_clear_width_throat_mm": 71.0,
+    "integral_can_centering_ramp_height_mm": [
+      0.4,
+      2.0
+    ],
+    "requires_drilling_road": false
+  },
+  "power_safety": {
+    "self_holding_without_pwm": false,
+    "continuous_pwm_required_while_loaded": true,
+    "gravity_balanced_printed_blades": true,
+    "endpoint_detent": false,
+    "why_no_printed_detent": "a rubbing PETG detent adds uncertain breakaway force and wear to the weakest SG90 load case",
+    "required": [
+      "10 kOhm pull-down from each orange signal wire to common GND",
+      "ESP32 establishes HOME pulses before the servo 5 V rail is enabled",
+      "while any can remains in the lane, valid calibrated 50 Hz PWM remains continuously present in HOME, EJECT and during motion; servo power alone is insufficient",
+      "never leave loaded cans above an energized servo with ESP32 disconnected",
+      "shutdown order: stop dispensing, command HOME, fully unload the lane, remove servo 5 V, then stop PWM and power down the controller"
+    ]
+  },
+  "risks_and_acceptance": [
+    "PWM must remain continuously valid in HOME, EJECT and during motion while loaded: symmetric blades balance gravity but the queue can back-drive a servo with missing signal",
+    "measure ten real cans; design envelope is diameter 48.0 and length 70.0 mm",
+    "with the intended queue and rocker disconnected, measure peak vertical blade force: SG90 <=1.0 N, MG90S <=1.5 N",
+    "11x200g and 22x100g are allowed only with MG90S after measured peak <=1.5 N and a 300-cycle one-lane test; they are not accepted for SG90",
+    "for SG90 shorten the initial queue to at most 7x200g or 15x100g, then measure and keep only a load whose real peak is <=1.0 N",
+    "22 cans x 200 g is rejected by calculation for both SG90 and MG90S before unmodelled losses",
+    "test one lane for 300 cycles before printing the remaining four",
+    "verify the lower M3 clamp screws press the plywood without dimpling or entering the rolling surface",
+    "verify the integral 73-to-71 mm centering ramps guide every real 70 mm can without an end-ring jam",
+    "production follower pins require a smooth 3 mm working shoulder; fully threaded M3 is prototype-only and the PETG slots must be inspected after 300 cycles",
+    "use only PETG-safe low-strength threadlocker on the captive nuts, or use a witness lacquer mark and inspect it"
+  ]
+}
